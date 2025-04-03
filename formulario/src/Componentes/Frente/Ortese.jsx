@@ -1,6 +1,6 @@
-import Observacoes from "./Observacoes";
-import Option from "./Option";
-import { baseFormStyle, vFormStyle } from "./utils";
+import Observacoes from "../Compartilhados/Observacoes";
+import Option from "../Compartilhados/Option";
+import { baseFormStyle, vFormStyle } from "../../utils";
 
 function Ortese() {
   return (

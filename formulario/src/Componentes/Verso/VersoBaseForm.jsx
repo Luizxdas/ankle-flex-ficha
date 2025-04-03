@@ -1,6 +1,6 @@
-import CampoForm from "./CampoForm";
-import Observacoes from "./Observacoes";
-import { vFormStyle } from "./utils";
+import CampoForm from "../Compartilhados/CampoForm";
+import Observacoes from "../Compartilhados/Observacoes";
+import { vFormStyle } from "../../utils";
 
 function VersoBaseForm() {
   return (

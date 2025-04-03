@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import Frente from "./Frente";
-import Verso from "./Verso";
+import Frente from "./Componentes/Frente/Frente";
+import Verso from "./Componentes/Verso/Verso";
 
 function App() {
   return (

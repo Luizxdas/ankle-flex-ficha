@@ -1,4 +1,4 @@
-import { inputStyle } from "./utils";
+import { inputStyle } from "../../utils";
 
 function CampoForm({ content, id, width, border }) {
   return (

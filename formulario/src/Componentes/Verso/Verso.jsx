@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import CampoForm from "./CampoForm";
+import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
 
 function Verso() {
