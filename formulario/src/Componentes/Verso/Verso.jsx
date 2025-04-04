@@ -1,11 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
+import { useEffect, useState } from "react";
 
 function Verso() {
+  const [formData, setFormData] = useState({});
+  const location = useLocation();
+
   const handlePrint = () => {
     window.print();
   };
+
+  useEffect(() => {
+    const idPaciente = sessionStorage.getItem("nPaciente");
+
+    if (idPaciente) {
+      console.log(
+        "Número do paciente encontrado no sessionStorage:",
+        idPaciente
+      );
+    } else {
+      console.log("Número do paciente não encontrado!");
+    }
+  }, [location.pathname]);
 
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center flex-row">
