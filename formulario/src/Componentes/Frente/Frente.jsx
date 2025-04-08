@@ -34,7 +34,9 @@ function Frente() {
         >
           Salvar
         </button>
-        <button onClick={() => db.buscarPaciente(pacienteRef.current.value)}>
+        <button
+          onClick={() => db.buscarPaciente(pacienteRef.current.value, formRef)}
+        >
           Buscar Paciente
         </button>
       </div>
@@ -58,11 +60,11 @@ function Frente() {
                   {/* TOPO DO FORMULÁRIO */}
                   <div className="flex flex-col justify-center mt-5 mr-5 w-[40em] h-[7em] rounded-md border-[1.5px] border-black">
                     <div className="border-b-[1.5px] border-black py-2">
-                      <label htmlFor="paciente" className="ml-2">
+                      <label htmlFor="nome_paciente" className="ml-2">
                         PACIENTE:
                       </label>
                       <input
-                        id="paciente"
+                        id="nome_paciente"
                         className={`w-[34em] ${inputStyle}`}
                         maxLength={78}
                       />
@@ -77,11 +79,11 @@ function Frente() {
                           className={`w-[20em] ${inputStyle}`}
                           maxLength={35}
                         />
-                        <label htmlFor="numero" className="ml-4">
+                        <label htmlFor="n_endereco" className="ml-4">
                           N:
                         </label>
                         <input
-                          id="numero"
+                          id="n_endereco"
                           className={`w-[3.5em] ${inputStyle}`}
                           maxLength={6}
                         />
@@ -124,32 +126,32 @@ function Frente() {
                   </div>
                   <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
                     <div className="border-b-[1.5px] border-black py-2">
-                      <label htmlFor="nPaciente" className="ml-2">
+                      <label htmlFor="n_ficha_paciente" className="ml-2">
                         Nº:
                       </label>
                       <input
-                        id="nPaciente"
+                        id="n_ficha_paciente"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
                         ref={pacienteRef}
                       />
                     </div>
                     <div className="border-b-[1.5px] border-black py-2">
-                      <label htmlFor="data" className="ml-2">
+                      <label htmlFor="data_ficha" className="ml-2">
                         DATA:
                       </label>
                       <input
-                        id="data"
+                        id="data_ficha"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={10}
                       />
                     </div>
                     <div className="border-black py-2">
-                      <label htmlFor="telefone" className="ml-2">
+                      <label htmlFor="numero_telefone" className="ml-2">
                         FONE:
                       </label>
                       <input
-                        id="telefone"
+                        id="numero_telefone"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
                       />
