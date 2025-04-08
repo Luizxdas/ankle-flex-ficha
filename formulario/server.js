@@ -139,27 +139,61 @@ app.post("/salvar", (req, res) => {
 
 app.get("/buscar", (req, res) => {
   const n_ficha_paciente = req.query.nPaciente;
-  console.log("Recebido número da ficha do paciente: ", n_ficha_paciente);
+  const lado = req.query.lado;
 
-  db.get(
-    `SELECT * FROM IDENTIDADE WHERE n_ficha_paciente = ?`,
-    [n_ficha_paciente],
-    (err, row) => {
-      if (err) {
-        console.error(err.message);
-        return res.status(500).json({ success: false, message: err.message });
+  if (!n_ficha_paciente) {
+    return res.status(400).json({
+      success: false,
+      message: "Número da ficha do paciente é obrigatório",
+    });
+  }
+
+  if (lado === "frente") {
+    db.get(
+      `SELECT * FROM IDENTIDADE WHERE n_ficha_paciente = ?`,
+      [n_ficha_paciente],
+      (err, identidade) => {
+        if (err) {
+          console.error("Erro ao buscar IDENTIDADE:", err.message);
+          return res.status(500).json({ success: false, message: err.message });
+        }
+
+        db.get(
+          `SELECT * FROM LOCALIZACAO WHERE n_ficha_paciente = ?`,
+          [n_ficha_paciente],
+          (err, localizacao) => {
+            if (err) {
+              console.error("Erro ao buscar LOCALIZACAO:", err.message);
+              return res
+                .status(500)
+                .json({ success: false, message: err.message });
+            }
+
+            if (!identidade && !localizacao) {
+              return res
+                .status(404)
+                .json({ success: false, message: "Paciente não encontrado" });
+            }
+
+            res.json({
+              success: true,
+              data: {
+                ...identidade,
+                ...localizacao,
+              },
+            });
+          }
+        );
       }
-
-      if (!row) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Paciente não encontrado" });
-      }
-
-      console.log("Enviando resposta:", row);
-      res.json({ success: true, data: row });
-    }
-  );
+    );
+  } else if (lado === "verso") {
+    console.log("A implementar!");
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: "Parâmetro 'lado' inválido. Use 'frente' ou 'verso'.",
+    });
+  }
 });
 
 app.listen(5000, () => {

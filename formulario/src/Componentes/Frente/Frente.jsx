@@ -35,7 +35,9 @@ function Frente() {
           Salvar
         </button>
         <button
-          onClick={() => db.buscarPaciente(pacienteRef.current.value, formRef)}
+          onClick={() =>
+            db.buscarPaciente(pacienteRef.current.value, formRef, "frente")
+          }
         >
           Buscar Paciente
         </button>
