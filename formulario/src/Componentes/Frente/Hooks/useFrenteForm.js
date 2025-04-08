@@ -21,15 +21,28 @@ const useFrenteForm = (pacienteRef, pathname) => {
     }
   }, [pacienteRef, pathname]);
 
-  const buscarPaciente = async (nPaciente) => {
+  const preencherFormulario = (dados, formRef) => {
+    if (!formRef?.current) return;
+
+    const dadosParaPreencher = dados.data || dados;
+
+    Object.entries(dadosParaPreencher).forEach(([key, value]) => {
+      const input = formRef.current.querySelector(`#${key}`);
+      if (input) {
+        input.value = value;
+      }
+    });
+
+    console.log("Formulário preenchido com os dados:", dadosParaPreencher);
+  };
+
+  const buscarPaciente = async (nPaciente, formRef) => {
     try {
       const resultado = await fetchData(nPaciente);
       if (resultado) {
         setDados(resultado);
-        console.log("Dados do paciente recebidos:", resultado);
+        preencherFormulario(resultado, formRef);
       }
-
-      return dados;
     } catch (error) {
       console.error("Erro ao buscar paciente:", error);
     }
@@ -55,6 +68,7 @@ const useFrenteForm = (pacienteRef, pathname) => {
     db: {
       buscarPaciente,
       salvarPaciente,
+      dados,
     },
     pagina: {
       imprimir,
