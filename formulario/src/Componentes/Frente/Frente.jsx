@@ -1,41 +1,17 @@
+import { useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { inputStyle } from "../../utils";
+import useFrenteForm from "./Hooks/useFrenteForm";
 import Colete from "./Colete";
 import Ortese from "./Ortese";
 import Palmilha from "./Palmilha";
 import Protese from "./Protese";
-import { handleSubmit, inputStyle } from "../../utils";
-import { useEffect, useState } from "react";
 
 function Frente() {
-  const [formData, setFormData] = useState({});
-  const [nPaciente, setNPaciente] = useState("");
+  const pacienteRef = useRef(null);
+  const formRef = useRef(null);
   const location = useLocation();
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  useEffect(() => {
-    const idPaciente = sessionStorage.getItem("nPaciente");
-    const inputPaciente = document.getElementById("nPaciente");
-
-    if (idPaciente && inputPaciente) {
-      inputPaciente.value = idPaciente;
-      console.log("Número do paciente encontrado e atualizado no input!");
-    } else if (!inputPaciente) {
-      console.log("Elemento de input não encontrado!");
-    } else if (!idPaciente) {
-      console.log("Número do paciente não encontrado no sessionStorage!");
-    } else {
-      console.log("Erro desconhecido!");
-    }
-  }, [location.pathname]);
-
-  const handleSave = () => {
-    const form = document.getElementById("patient-form");
-    sessionStorage.setItem("nPaciente", nPaciente);
-    handleSubmit(form, setFormData);
-  };
+  const { db, pagina } = useFrenteForm(pacienteRef, location.pathname);
 
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center flex-row">
@@ -47,16 +23,19 @@ function Frente() {
           </button>
         </Link>
         <button
-          onClick={handlePrint}
+          onClick={pagina.imprimir}
           className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white"
         >
           Imprimir
         </button>
         <button
-          onClick={handleSave}
+          onClick={() => db.salvarPaciente(pacienteRef.current.value, formRef)}
           className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white"
         >
           Salvar
+        </button>
+        <button onClick={() => db.buscarPaciente(pacienteRef.current.value)}>
+          Buscar Paciente
         </button>
       </div>
 
@@ -65,7 +44,7 @@ function Frente() {
         <div className="print:hidden mt-16"></div>
         <div className="bg-white shadow-md border border-gray-300 h-[50em]">
           <div className="w-[297mm] h-[210mm] flex justify-center">
-            <form id="patient-form" action="">
+            <form id="patient-form" ref={formRef} action="">
               <div className="flex flex-col text-[17px]">
                 {/* LOGO DO FORMULÁRIO */}
                 <div className="flex flex-row">
@@ -152,7 +131,7 @@ function Frente() {
                         id="nPaciente"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
-                        onChange={(e) => setNPaciente(e.target.value)}
+                        ref={pacienteRef}
                       />
                     </div>
                     <div className="border-b-[1.5px] border-black py-2">
