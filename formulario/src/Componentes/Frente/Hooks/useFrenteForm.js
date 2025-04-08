@@ -24,21 +24,21 @@ const useFrenteForm = (pacienteRef, pathname) => {
   const preencherFormulario = (dados, formRef) => {
     if (!formRef?.current) return;
 
-    const dadosParaPreencher = dados.data || dados;
+    const dadosParaPreencher = dados.data;
 
     Object.entries(dadosParaPreencher).forEach(([key, value]) => {
       const input = formRef.current.querySelector(`#${key}`);
       if (input) {
         input.value = value;
+      } else {
+        console.log("Input não encontrado de id: ", key);
       }
     });
-
-    console.log("Formulário preenchido com os dados:", dadosParaPreencher);
   };
 
-  const buscarPaciente = async (nPaciente, formRef) => {
+  const buscarPaciente = async (n_ficha_paciente, formRef, lado) => {
     try {
-      const resultado = await fetchData(nPaciente);
+      const resultado = await fetchData(n_ficha_paciente, lado);
       if (resultado) {
         setDados(resultado);
         preencherFormulario(resultado, formRef);
@@ -48,13 +48,13 @@ const useFrenteForm = (pacienteRef, pathname) => {
     }
   };
 
-  const salvarPaciente = (nPaciente, formRef) => {
+  const salvarPaciente = (n_ficha_paciente, formRef) => {
     if (!formRef?.current) {
       console.error("Formulário não encontrado!");
       return;
     }
 
-    sessionStorage.setItem("nPaciente", nPaciente);
+    sessionStorage.setItem("nPaciente", n_ficha_paciente);
     handleSubmit(formRef.current, (data) => {
       dadosFormRef.current = data;
     });
