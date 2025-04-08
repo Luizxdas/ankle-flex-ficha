@@ -22,15 +22,13 @@ export const saveData = async (formData) => {
   }
 };
 
-export const fetchData = async (nPaciente) => {
-  if (!nPaciente) {
+export const fetchData = async (n_ficha_paciente, lado) => {
+  if (!n_ficha_paciente) {
     throw new Error("Número da ficha do paciente inválido!");
   }
 
-  console.log("Número da ficha do paciente: ", nPaciente);
-
   const response = await fetch(
-    `http://localhost:5000/buscar?nPaciente=${nPaciente}`,
+    `http://localhost:5000/buscar?nPaciente=${n_ficha_paciente}&lado=${lado}`,
     {
       method: "GET",
     }
@@ -41,7 +39,6 @@ export const fetchData = async (nPaciente) => {
   }
 
   const data = await response.json();
-  console.log(data);
 
   return data;
 };
