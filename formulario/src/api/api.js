@@ -1,6 +1,4 @@
 export const saveData = async (formData) => {
-  console.log("Enviando para o backend:", formData);
-
   try {
     const response = await fetch("http://localhost:5000/salvar", {
       method: "POST",
@@ -22,4 +20,28 @@ export const saveData = async (formData) => {
     console.error("Erro ao enviar:", error.message);
     return { success: false, message: error.message };
   }
+};
+
+export const fetchData = async (nPaciente) => {
+  if (!nPaciente) {
+    throw new Error("Número da ficha do paciente inválido!");
+  }
+
+  console.log("Número da ficha do paciente: ", nPaciente);
+
+  const response = await fetch(
+    `http://localhost:5000/buscar?nPaciente=${nPaciente}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar os dados.");
+  }
+
+  const data = await response.json();
+  console.log(data);
+
+  return data;
 };

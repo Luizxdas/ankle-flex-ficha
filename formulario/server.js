@@ -109,6 +109,29 @@ app.post("/salvar", (req, res) => {
   );
 });
 
+app.get("/buscar", (req, res) => {
+  const nPaciente = req.query.nPaciente;
+  console.log("Recebido número da ficha do paciente: ", nPaciente);
+
+  db.get(
+    `SELECT * FROM IDENTIDADE WHERE n_ficha_paciente = ?`,
+    [nPaciente],
+    (err, row) => {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).json({ error: err.message });
+      }
+
+      if (!row) {
+        return res.status(404).json({ error: "Paciente não encontrado" });
+      }
+
+      console.log("Enviando resposta:", row);
+      res.json(row);
+    }
+  );
+});
+
 app.listen(5000, () => {
   console.log("Servidor rodando na porta 5000");
 });
