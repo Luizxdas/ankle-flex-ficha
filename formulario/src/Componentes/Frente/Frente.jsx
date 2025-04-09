@@ -6,6 +6,7 @@ import Colete from "./Colete";
 import Ortese from "./Ortese";
 import Palmilha from "./Palmilha";
 import Protese from "./Protese";
+import Botao from "../Compartilhados/Botao";
 
 function Frente() {
   const pacienteRef = useRef(null);
@@ -14,38 +15,34 @@ function Frente() {
   const { db, pagina } = useFrenteForm(pacienteRef, location.pathname);
 
   return (
-    <div className="h-screen w-screen bg-slate-400 flex justify-center flex-row">
+    <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
       {/*  BOTÕES */}
-      <div className="print:hidden flex flex-col justify-center mt-44 space-y-4">
-        <Link to={"/verso"}>
-          <button className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white">
-            Ir para o verso
-          </button>
-        </Link>
-        <button
-          onClick={pagina.imprimir}
-          className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white"
-        >
-          Imprimir
-        </button>
-        <button
-          onClick={() => db.salvarPaciente(pacienteRef.current.value, formRef)}
-          className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white"
-        >
-          Salvar
-        </button>
-        <button
-          onClick={() =>
-            db.buscarPaciente(pacienteRef.current.value, formRef, "frente")
-          }
-        >
-          Buscar Paciente
-        </button>
+      <div className="mt-20 mr-4 space-y-4 self-start print:hidden">
+        <div>
+          <Link to={"/pacientes"}>
+            <Botao conteudo={"Buscar Pacientes"} />
+          </Link>
+        </div>
+        <div>
+          <Link to={"/verso"}>
+            <Botao conteudo={"Ir para o verso"} />
+          </Link>
+        </div>
+        <div>
+          <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
+        </div>
+        <div>
+          <Botao
+            conteudo={"Salvar"}
+            onClick={() =>
+              db.salvarPaciente(pacienteRef.current.value, formRef)
+            }
+          />
+        </div>
       </div>
 
       {/*  FORMULÁRIO */}
       <div>
-        <div className="print:hidden mt-16"></div>
         <div className="bg-white shadow-md border border-gray-300 h-[50em]">
           <div className="w-[297mm] h-[210mm] flex justify-center">
             <form id="patient-form" ref={formRef} action="">
