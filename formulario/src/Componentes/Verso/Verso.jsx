@@ -1,53 +1,47 @@
+import { useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import useVersoForm from "./Hooks/useVersoForm";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
-import { useEffect, useState } from "react";
+import Botao from "../Compartilhados/Botao";
+import { inputStyle } from "../../utils";
 
 function Verso() {
-  const [formData, setFormData] = useState({});
+  const pacienteRef = useRef(null);
+  const formRef = useRef(null);
   const location = useLocation();
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-  useEffect(() => {
-    const idPaciente = sessionStorage.getItem("nPaciente");
-
-    if (idPaciente) {
-      console.log(
-        "Número do paciente encontrado no sessionStorage:",
-        idPaciente
-      );
-    } else {
-      console.log("Número do paciente não encontrado!");
-    }
-  }, [location.pathname]);
+  const { db, pagina } = useVersoForm(pacienteRef, location.pathname);
 
   return (
-    <div className="h-screen w-screen bg-slate-400 flex justify-center flex-row">
+    <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
       {/*  BOTÕES */}
-      <div className="print:hidden flex flex-col justify-center mt-24 space-y-4">
-        <Link to={"/"}>
-          <button className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white">
-            Ir para a frente
-          </button>
-        </Link>
-        <button
-          onClick={handlePrint}
-          className="relative flex justify-center items-center p-4 text-center right-[1em] bottom-[22em] rounded-md bg-slate-500 shadow-xl w-35 h-20 text-white"
-        >
-          Imprimir
-        </button>
+      <div className="relative bottom-[13em] mr-3 flex flex-col justify-center space-y-4 print:hidden">
+        <div>
+          <Link to={"/pacientes"}>
+            <Botao conteudo={"Buscar Pacientes"} />
+          </Link>
+        </div>
+        <div>
+          <Link to={"/"}>
+            <Botao conteudo={"Ir para a frente"} />
+          </Link>
+        </div>
+        <div>
+          <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
+        </div>
+        <div>
+          <Botao
+            conteudo={"Salvar"}
+            onClick={() => db.salvarPaciente(pacienteRef, formRef)}
+          />
+        </div>
       </div>
 
       {/*  FORMULÁRIO */}
       <div>
-        <div className="print:hidden mt-16"></div>
-
         <div className="bg-white shadow-md border border-gray-300 flex flex-row">
           <div className="w-[297mm] h-[210mm] flex justify-center items-center">
-            <form action="">
+            <form action="" ref={formRef}>
               <div className="flex flex-col text-[17px]">
                 <div className="flex flex-row">
                   {/* LOGO */}
@@ -59,7 +53,7 @@ function Verso() {
                     />
                   </div>
                   {/* TOPO DO FORMULÁRIO */}
-                  <div className="flex flex-col justify-center mt-5 w-[50em] h-[5em] rounded-md border-[1.5px] border-black">
+                  <div className="flex flex-col justify-center mt-5 w-[45em] h-[5em] rounded-md border-[1.5px] border-black">
                     <div className="border-b-[1.5px] border-black py-2">
                       <div className="flex justify-between">
                         <CampoForm
@@ -90,7 +84,7 @@ function Verso() {
                       </div>
                     </div>
                     <div className="py-2 flex justify-between">
-                      <CampoForm id={"npe"} content={"Nº PÉ:"} width={"5em"} />
+                      <CampoForm id={"n_pe"} content={"Nº PÉ:"} width={"3em"} />
                       <CampoForm
                         id={"causa"}
                         content={"CAUSA DA AMPUTAÇÃO:"}
@@ -100,6 +94,19 @@ function Verso() {
                         id={"tempo"}
                         content={"TEMPO:"}
                         width={"6em"}
+                      />
+                    </div>
+                  </div>
+                  <div className="w-[8em] h-[5em] mx-6 rounded-md border-[1.5px] border-black mt-5">
+                    <div className="flex flex-col items-center p-1">
+                      <label htmlFor="n_ficha_paciente" className="ml-2">
+                        Nº:
+                      </label>
+                      <input
+                        id="n_ficha_paciente"
+                        className={`w-[6.5em] ${inputStyle}`}
+                        maxLength={16}
+                        ref={pacienteRef}
                       />
                     </div>
                   </div>
