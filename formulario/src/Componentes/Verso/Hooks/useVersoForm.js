@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { buscarDados } from "../../../api/api";
-import { enviarDados } from "../Utils/frenteUtils";
+import { enviarDados } from "../utils/versoUtils";
 
-const useFrenteForm = (pacienteRef, pathname) => {
+const useVersoForm = (pacienteRef, pathname) => {
   const [dados, setDados] = useState(null);
   const dadosFormRef = useRef({});
 
@@ -77,4 +77,4 @@ const useFrenteForm = (pacienteRef, pathname) => {
   };
 };
 
-export default useFrenteForm;
+export default useVersoForm;
