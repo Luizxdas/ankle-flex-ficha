@@ -17,7 +17,7 @@ function Frente() {
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
       {/*  BOTÕES */}
-      <div className="relative bottom-[13em] mr-3 flex flex-col justify-center space-y-4">
+      <div className="relative bottom-[13em] mr-3 flex flex-col justify-center space-y-4 print:hidden">
         <div>
           <Link to={"/pacientes"}>
             <Botao conteudo={"Buscar Pacientes"} />

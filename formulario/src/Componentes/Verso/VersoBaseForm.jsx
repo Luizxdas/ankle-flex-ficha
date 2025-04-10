@@ -44,7 +44,7 @@ function VersoBaseForm() {
             border={true}
           />
           <div className="flex justify-start text-start ml-2">
-            <Observacoes id={"obs-verso"} />
+            <Observacoes id={"obs"} />
           </div>
         </div>
       </div>

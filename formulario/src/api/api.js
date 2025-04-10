@@ -1,34 +1,34 @@
-export const saveData = async (formData) => {
+export const salvarDados = async (dadosForm, lado) => {
   try {
-    const response = await fetch("http://localhost:5000/salvar", {
+    const resposta = await fetch(`http://localhost:5000/salvar/${lado}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(dadosForm),
     });
 
-    const result = await response.json();
+    const resultado = await resposta.json();
 
-    if (!response.ok) {
-      throw new Error(result.message || "Erro ao salvar os dados.");
+    if (!resposta.ok) {
+      throw new Error(resultado.message || "Erro ao salvar os dados.");
     }
 
-    console.log("Resposta do backend:", result);
-    return result;
+    console.log("Resposta do backend:", resultado);
+    return resultado;
   } catch (error) {
     console.error("Erro ao enviar:", error.message);
     return { success: false, message: error.message };
   }
 };
 
-export const fetchData = async (n_ficha_paciente, lado) => {
+export const buscarDados = async (n_ficha_paciente, lado) => {
   if (!n_ficha_paciente) {
     throw new Error("Número da ficha do paciente inválido!");
   }
 
   const response = await fetch(
-    `http://localhost:5000/buscar?nPaciente=${n_ficha_paciente}&lado=${lado}`,
+    `http://localhost:5000/buscar/${lado}?n_ficha_paciente=${n_ficha_paciente}`,
     {
       method: "GET",
     }
