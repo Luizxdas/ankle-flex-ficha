@@ -35,7 +35,10 @@ export const buscarDados = async (n_ficha_paciente, lado) => {
   );
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar os dados.");
+    const errorText = await response.text();
+    throw new Error(
+      `Erro ao buscar os dados. Status: ${response.status} ${response.statusText}. Detalhes: ${errorText}`
+    );
   }
 
   const data = await response.json();
