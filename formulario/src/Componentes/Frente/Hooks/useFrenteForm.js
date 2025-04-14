@@ -1,59 +1,63 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { buscarDados } from "../../../api/api";
 import { enviarDados } from "../Utils/frenteUtils";
 
-const useFrenteForm = (pacienteRef, pathname) => {
+const useFrenteForm = (pacienteRef, formRef) => {
   const [dados, setDados] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const dadosFormRef = useRef({});
 
-  useEffect(() => {
-    const n_ficha_paciente = sessionStorage.getItem("n_ficha_paciente");
+  const preencherFormulario = useCallback(
+    (dados) => {
+      if (!formRef?.current) return;
 
-    if (n_ficha_paciente && pacienteRef?.current) {
-      pacienteRef.current.value = n_ficha_paciente;
-      console.log("Número do paciente atualizado no input!");
-    } else if (!pacienteRef?.current) {
-      console.log("Ref do input não encontrada!");
-    } else if (!n_ficha_paciente) {
-      console.log("Número do paciente não encontrado no sessionStorage!");
-    } else {
-      console.log("Erro desconhecido!");
-    }
-  }, [pacienteRef, pathname]);
+      const dadosParaPreencher = dados.data;
+      console.log("useFrenteForm.js preenchendo formulário...");
 
-  const preencherFormulario = (dados, formRef) => {
-    if (!formRef?.current) return;
+      Object.entries(dadosParaPreencher).forEach(([key, value]) => {
+        console.log("id input: ", key);
+        const input = formRef.current.querySelector(`#${key}`);
+        if (input) {
+          input.value = value;
+          console.log("valor do input: ", input.value);
+        } else {
+          console.log("Input não encontrado de id: ", key);
+        }
+      });
+    },
+    [formRef]
+  );
 
-    const dadosParaPreencher = dados.data;
+  const buscarPaciente = useCallback(
+    async (n_ficha_paciente, lado = "frente") => {
+      if (!n_ficha_paciente) return;
 
-    Object.entries(dadosParaPreencher).forEach(([key, value]) => {
-      const input = formRef.current.querySelector(`#${key}`);
-      if (input) {
-        input.value = value;
-      } else {
-        console.log("Input não encontrado de id: ", key);
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const resultado = await buscarDados(n_ficha_paciente, lado);
+        if (resultado) {
+          setDados(resultado);
+          preencherFormulario(resultado);
+          return resultado;
+        }
+      } catch (error) {
+        console.error("Erro ao buscar paciente:", error);
+        setError(error.message || "Erro ao buscar dados do paciente");
+      } finally {
+        setIsLoading(false);
       }
-    });
-  };
+    },
+    [preencherFormulario]
+  );
 
-  const buscarPaciente = async (n_ficha_paciente, formRef, lado) => {
-    try {
-      const resultado = await buscarDados(n_ficha_paciente, lado);
-      if (resultado) {
-        setDados(resultado);
-        preencherFormulario(resultado, formRef);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar paciente:", error);
-    }
-  };
-
-  const salvarPaciente = (n_ficha_paciente, formRef) => {
+  const salvarPaciente = (n_ficha_paciente) => {
     if (!formRef?.current) {
       console.error("Formulário não encontrado!");
       return;
     }
-
     sessionStorage.setItem("n_ficha_paciente", n_ficha_paciente);
     enviarDados(formRef.current);
   };
@@ -62,11 +66,24 @@ const useFrenteForm = (pacienteRef, pathname) => {
     window.print();
   };
 
+  useEffect(() => {
+    const n_ficha_paciente = sessionStorage.getItem("n_ficha_paciente");
+
+    if (!n_ficha_paciente || !pacienteRef?.current) {
+      console.log("Erro ao buscar dados do paciente no sessionStorage!");
+      return;
+    }
+
+    buscarPaciente(n_ficha_paciente);
+  }, [pacienteRef, buscarPaciente]);
+
   return {
     db: {
       buscarPaciente,
       salvarPaciente,
       dados,
+      isLoading,
+      error,
     },
     pagina: {
       imprimir,
