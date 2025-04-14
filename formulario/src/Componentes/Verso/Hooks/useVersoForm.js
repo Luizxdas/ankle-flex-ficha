@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { buscarDados } from "../../../api/api";
-import { enviarDados } from "../utils/versoUtils";
+import { buscarDadosPaciente } from "../../../api/api";
+import { enviarDados } from "../Utils/versoUtils";
 
 const useVersoForm = (pacienteRef, pathname) => {
   const [dados, setDados] = useState(null);
@@ -38,7 +38,7 @@ const useVersoForm = (pacienteRef, pathname) => {
 
   const buscarPaciente = async (n_ficha_paciente, formRef, lado) => {
     try {
-      const resultado = await buscarDados(n_ficha_paciente, lado);
+      const resultado = await buscarDadosPaciente(n_ficha_paciente, lado);
       if (resultado) {
         setDados(resultado);
         preencherFormulario(resultado, formRef);

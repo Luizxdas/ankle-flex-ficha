@@ -22,7 +22,24 @@ export const salvarDados = async (dadosForm, lado) => {
   }
 };
 
-export const buscarDados = async (n_ficha_paciente, lado) => {
+export const buscarDados = async () => {
+  const resposta = await fetch(`http://localhost:5000/buscar`, {
+    method: "GET",
+  });
+
+  if (!resposta.ok) {
+    const errorText = await resposta.text();
+    throw new Error(
+      `Erro ao buscar os dados dos pacientes. Status: ${resposta.status} ${resposta.statusText}. Detalhes: ${errorText}`
+    );
+  }
+
+  const dados = await resposta.json();
+
+  return dados;
+};
+
+export const buscarDadosPaciente = async (n_ficha_paciente, lado) => {
   if (!n_ficha_paciente) {
     throw new Error("Número da ficha do paciente inválido!");
   }
@@ -37,11 +54,11 @@ export const buscarDados = async (n_ficha_paciente, lado) => {
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `Erro ao buscar os dados. Status: ${response.status} ${response.statusText}. Detalhes: ${errorText}`
+      `Erro ao buscar os dados do paciente. Status: ${response.status} ${response.statusText}. Detalhes: ${errorText}`
     );
   }
 
-  const data = await response.json();
+  const dados = await response.json();
 
-  return data;
+  return dados;
 };

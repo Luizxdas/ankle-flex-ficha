@@ -309,7 +309,7 @@ app.get("/buscar", (req, res) => {
         .json({ success: false, message: "Paciente não encontrado" });
     }
 
-    res.json({ success: true, data: rows });
+    res.json({ success: true, dados: rows });
   });
 });
 

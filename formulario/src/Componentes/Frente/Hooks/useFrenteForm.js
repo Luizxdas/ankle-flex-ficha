@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { buscarDados } from "../../../api/api";
+import { buscarDadosPaciente } from "../../../api/api";
 import { enviarDados } from "../Utils/frenteUtils";
 
 const useFrenteForm = (pacienteRef, formRef) => {
@@ -37,7 +37,7 @@ const useFrenteForm = (pacienteRef, formRef) => {
       setError(null);
 
       try {
-        const resultado = await buscarDados(n_ficha_paciente, lado);
+        const resultado = await buscarDadosPaciente(n_ficha_paciente, lado);
         if (resultado) {
           setDados(resultado);
           preencherFormulario(resultado);
