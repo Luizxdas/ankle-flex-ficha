@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { inputStyle } from "../../utils";
 import useFrenteForm from "./Hooks/useFrenteForm";
 import Colete from "./Colete";
@@ -11,8 +11,7 @@ import Botao from "../Compartilhados/Botao";
 function Frente() {
   const pacienteRef = useRef(null);
   const formRef = useRef(null);
-  const location = useLocation();
-  const { db, pagina } = useFrenteForm(pacienteRef, location.pathname);
+  const { db, pagina } = useFrenteForm(pacienteRef, formRef);
 
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
