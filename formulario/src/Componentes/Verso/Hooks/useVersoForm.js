@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { buscarDadosPaciente } from "../../../api/api";
 import { enviarDados } from "../Utils/versoUtils";
+import { preencherFormulario } from "../../../utils";
 
 const useVersoForm = (pacienteRef, pathname) => {
   const [dados, setDados] = useState(null);
@@ -20,21 +21,6 @@ const useVersoForm = (pacienteRef, pathname) => {
       console.log("Erro desconhecido!");
     }
   }, [pacienteRef, pathname]);
-
-  const preencherFormulario = (dados, formRef) => {
-    if (!formRef?.current) return;
-
-    const dadosParaPreencher = dados.data;
-
-    Object.entries(dadosParaPreencher).forEach(([key, value]) => {
-      const input = formRef.current.querySelector(`#${key}`);
-      if (input) {
-        input.value = value;
-      } else {
-        console.log("Input não encontrado de id: ", key);
-      }
-    });
-  };
 
   const buscarPaciente = async (n_ficha_paciente, formRef, lado) => {
     try {

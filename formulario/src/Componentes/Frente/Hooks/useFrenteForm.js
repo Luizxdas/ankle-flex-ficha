@@ -1,33 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { buscarDadosPaciente } from "../../../api/api";
 import { enviarDados } from "../Utils/frenteUtils";
+import { preencherFormulario } from "../../../utils";
 
 const useFrenteForm = (pacienteRef, formRef) => {
   const [dados, setDados] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const dadosFormRef = useRef({});
-
-  const preencherFormulario = useCallback(
-    (dados) => {
-      if (!formRef?.current) return;
-
-      const dadosParaPreencher = dados.data;
-      console.log("useFrenteForm.js preenchendo formulário...");
-
-      Object.entries(dadosParaPreencher).forEach(([key, value]) => {
-        console.log("id input: ", key);
-        const input = formRef.current.querySelector(`#${key}`);
-        if (input) {
-          input.value = value;
-          console.log("valor do input: ", input.value);
-        } else {
-          console.log("Input não encontrado de id: ", key);
-        }
-      });
-    },
-    [formRef]
-  );
 
   const buscarPaciente = useCallback(
     async (n_ficha_paciente, lado = "frente") => {
@@ -40,7 +20,7 @@ const useFrenteForm = (pacienteRef, formRef) => {
         const resultado = await buscarDadosPaciente(n_ficha_paciente, lado);
         if (resultado) {
           setDados(resultado);
-          preencherFormulario(resultado);
+          preencherFormulario(resultado, formRef);
           return resultado;
         }
       } catch (error) {
@@ -50,7 +30,7 @@ const useFrenteForm = (pacienteRef, formRef) => {
         setIsLoading(false);
       }
     },
-    [preencherFormulario]
+    [formRef]
   );
 
   const salvarPaciente = (n_ficha_paciente) => {
