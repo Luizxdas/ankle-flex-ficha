@@ -1,6 +1,7 @@
 import express from "express";
 import sqlite3Pkg from "sqlite3";
 import cors from "cors";
+import { buscarDadosPaciente } from "./src/api/api.js";
 
 const app = express();
 const sqlite3 = sqlite3Pkg.verbose();
@@ -70,24 +71,47 @@ function criarTabelas() {
   });
 }
 
-app.post("/salvar/frente", (req, res) => {
-  console.log("Recebendo dados:", JSON.stringify(req.body, null, 2));
+app.post("/salvar/frente", async (req, res) => {
+  const operacao = req.query.operacao;
 
-  if (!req.body.identidade || !req.body.localizacao) {
+  const { identidade, localizacao } = req.body;
+
+  if (!identidade || !localizacao) {
     return res.status(400).json({
       success: false,
       message: "Dados incompletos. Verifique identidade e localizacao.",
     });
   }
 
-  const { identidade, localizacao } = req.body;
+  const resultado = await fetch(
+    `http://localhost:5000/buscar/frente?n_ficha_paciente=${identidade.n_ficha_paciente}`,
+    {
+      method: "GET",
+    }
+  );
+  const pacienteExiste = resultado?.success && resultado?.data;
+
+  if (pacienteExiste && operacao === "salvar") {
+    return res.status(409).json({
+      success: false,
+      message: "Uma ficha com esse número já existe no banco de dados.",
+    });
+  } else if (!pacienteExiste && operacao === "atualizar") {
+    return res.status(404).json({
+      success: false,
+      message: "Ficha com esse número não encontrada no banco de dados.",
+    });
+  }
 
   db.serialize(() => {
     db.run("BEGIN TRANSACTION");
 
     db.run(
       `INSERT INTO IDENTIDADE (n_ficha_paciente, nome_paciente, data_ficha, numero_telefone)
-       VALUES (?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET 
+       nome_paciente = excluded.nome_paciente,
+       data_ficha = excluded.data_ficha,
+       numero_telefone = excluded.numero_telefone`,
       [
         identidade.n_ficha_paciente,
         identidade.nome_paciente,
@@ -103,7 +127,13 @@ app.post("/salvar/frente", (req, res) => {
 
         db.run(
           `INSERT INTO LOCALIZACAO (n_ficha_paciente, endereco, n_endereco, cep, bairro, cidade, estado)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+           VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET 
+           endereco = excluded.endereco,
+           n_endereco = excluded.n_endereco,
+           cep = excluded.cep,
+           bairro = excluded.bairro,
+           cidade = excluded.cidade,
+           estado = excluded.estado`,
           [
             localizacao.n_ficha_paciente,
             localizacao.endereco,
@@ -144,7 +174,8 @@ app.post("/salvar/frente", (req, res) => {
   });
 });
 
-app.post("/salvar/verso", (req, res) => {
+app.post("/salvar/verso", async (req, res) => {
+  const operacao = req.query.operacao || req.body.operacao;
   console.log("Recebendo dados:", JSON.stringify(req.body, null, 2));
 
   if (!req.body.informacoes || !req.body.caracteristicas) {
@@ -155,13 +186,35 @@ app.post("/salvar/verso", (req, res) => {
   }
 
   const { informacoes, caracteristicas } = req.body;
+  const resultado = await buscarDadosPaciente(
+    informacoes.n_ficha_paciente,
+    "verso"
+  );
+  const pacienteExiste = resultado?.success && resultado?.data;
+
+  if (pacienteExiste && operacao === "salvar") {
+    return res.status(409).json({
+      success: false,
+      message: "Uma ficha com esse número já existe no banco de dados.",
+    });
+  } else if (!pacienteExiste && operacao === "atualizar") {
+    return res.status(404).json({
+      success: false,
+      message: "Ficha com esse número não encontrada no banco de dados.",
+    });
+  }
 
   db.serialize(() => {
     db.run("BEGIN TRANSACTION");
 
     db.run(
       `INSERT INTO CARACTERISTICAS (n_ficha_paciente, idade, sexo, altura, peso)
-       VALUES (?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET
+       n_ficha_paciente = excluded.n_ficha_paciente
+       idade = excluded.idade,
+       sexo = excluded.sexo,
+       altura = excluded.altura,
+       peso = excluded.peso`,
       [
         caracteristicas.n_ficha_paciente,
         caracteristicas.idade,

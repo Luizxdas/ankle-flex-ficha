@@ -33,13 +33,19 @@ const useFrenteForm = (pacienteRef, formRef) => {
     [formRef]
   );
 
-  const salvarPaciente = (n_ficha_paciente) => {
+  const salvarPaciente = (n_ficha_paciente, operacao) => {
     if (!formRef?.current) {
       console.error("Formulário não encontrado!");
       return;
+    } else if (!n_ficha_paciente) {
+      console.error("Número da ficha não encontrado!");
+      return;
+    } else if (!operacao) {
+      console.error("Operação não definida!");
+      return;
     }
     sessionStorage.setItem("n_ficha_paciente", n_ficha_paciente);
-    enviarDados(formRef.current);
+    enviarDados(formRef.current, operacao);
   };
 
   const imprimir = () => {
@@ -50,7 +56,6 @@ const useFrenteForm = (pacienteRef, formRef) => {
     const n_ficha_paciente = sessionStorage.getItem("n_ficha_paciente");
 
     if (!n_ficha_paciente || !pacienteRef?.current) {
-      console.log("Erro ao buscar dados do paciente no sessionStorage!");
       return;
     }
 

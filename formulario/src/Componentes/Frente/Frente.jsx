@@ -16,7 +16,7 @@ function Frente() {
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
       {/*  BOTÕES */}
-      <div className="relative bottom-[13em] mr-3 flex flex-col justify-center space-y-4 print:hidden">
+      <div className="relative bottom-[19em] mr-3 flex flex-col justify-center space-y-4 print:hidden">
         <div>
           <Link to={"/pacientes"}>
             <Botao conteudo={"Buscar Pacientes"} />
@@ -26,17 +26,6 @@ function Frente() {
           <Link to={"/verso"}>
             <Botao conteudo={"Ir para o verso"} />
           </Link>
-        </div>
-        <div>
-          <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
-        </div>
-        <div>
-          <Botao
-            conteudo={"Salvar"}
-            onClick={() =>
-              db.salvarPaciente(pacienteRef.current.value, formRef)
-            }
-          />
         </div>
       </div>
 
@@ -166,6 +155,28 @@ function Frente() {
               </div>
             </form>
           </div>
+        </div>
+      </div>
+
+      <div className="relative bottom-[16em] ml-3 flex flex-col justify-center space-y-4 print:hidden">
+        <div>
+          <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
+        </div>
+        <div>
+          <Botao
+            conteudo={"Salvar"}
+            onClick={() =>
+              db.salvarPaciente(pacienteRef.current.value, "salvar")
+            }
+          />
+        </div>
+        <div>
+          <Botao
+            conteudo={"Atualizar"}
+            onClick={() =>
+              db.salvarPaciente(pacienteRef.current.value, "atualizar")
+            }
+          />
         </div>
       </div>
     </div>

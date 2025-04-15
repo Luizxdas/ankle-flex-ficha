@@ -1,12 +1,15 @@
-export const salvarDados = async (dadosForm, lado) => {
+export const salvarDados = async (dadosForm, lado, operacao) => {
   try {
-    const resposta = await fetch(`http://localhost:5000/salvar/${lado}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dadosForm),
-    });
+    const resposta = await fetch(
+      `http://localhost:5000/salvar/${lado}?operacao=${operacao}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dadosForm),
+      }
+    );
 
     const resultado = await resposta.json();
 

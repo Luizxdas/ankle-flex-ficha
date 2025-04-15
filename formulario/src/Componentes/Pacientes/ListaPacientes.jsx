@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
 import { buscarDados } from "../../api/api";
 
-function ListaPacientes() {
+function ListaPacientes({ setFicha }) {
   const divStyle = "h-full flex flex-row justify-center mt-1";
   const [dados, setDados] = useState([]);
+  const [ativo, setAtivo] = useState(null);
+
+  const handleClick = (item, index) => {
+    if (ativo === index) {
+      setAtivo(null);
+      setFicha(null);
+    } else {
+      setAtivo(index);
+      setFicha(item.n_ficha_paciente);
+    }
+  };
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -34,19 +45,20 @@ function ListaPacientes() {
           <h1>DATA DA FICHA</h1>
         </div>
       </div>
-      <div className="flex flex-col gap-2 mt-3">
+      <div className="flex flex-col gap-2 mt-2">
         {dados.map((item, index) => (
-          <div
+          <button
+            onClick={() => handleClick(item, index)}
             key={index}
             className={`flex justify-between h-[2em] pt-1 ${
               index % 2 === 0 ? "bg-slate-400" : "bg-slate-300"
-            }`}
+            } ${ativo === index ? "bg-blue-400" : ""}`}
           >
             <span className="w-[6em] text-center">{item.n_ficha_paciente}</span>
             <span className="w-[30em] text-center">{item.nome_paciente}</span>
             <span className="w-[12em] text-center">{item.produto}</span>
             <span className="w-[10em] text-center">{item.data_ficha}</span>
-          </div>
+          </button>
         ))}
       </div>
     </div>
