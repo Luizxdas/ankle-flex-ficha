@@ -1,8 +1,11 @@
 import { salvarDados } from "../../../api/api";
 
-export const enviarDados = async (form) => {
+export const enviarDados = async (form, operacao) => {
   if (!form) {
     console.error("Formulário não foi encontrado");
+    return;
+  } else if (!operacao) {
+    console.error("Operação não definida");
     return;
   }
 
@@ -43,10 +46,8 @@ export const enviarDados = async (form) => {
     obs,
   };
 
-  console.log("Dados capturados:", formData);
-
   try {
-    const response = await salvarDados(formData, "verso");
+    const response = await salvarDados(formData, "verso", operacao);
     if (response.success) {
       alert("Dados salvos com sucesso!");
     } else {
