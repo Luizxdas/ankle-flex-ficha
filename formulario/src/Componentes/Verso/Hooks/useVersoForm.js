@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { buscarDadosPaciente } from "../../../api/api";
-import { enviarDados } from "../Utils/versoUtils";
 import { preencherFormulario } from "../../../utils";
 
-const useVersoForm = (pacienteRef, formRef) => {
+const useVersoForm = (formRef, setFicha) => {
   const [dados, setDados] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,40 +32,26 @@ const useVersoForm = (pacienteRef, formRef) => {
     [formRef]
   );
 
-  const salvarPaciente = (n_ficha_paciente, operacao) => {
-    if (!formRef?.current) {
-      console.error("Formulário não encontrado!");
-      return;
-    } else if (!n_ficha_paciente) {
-      console.error("Número da ficha não encontrado!");
-      return;
-    } else if (!operacao) {
-      console.error("Operação não definida!");
-      return;
-    }
-
-    sessionStorage.setItem("n_ficha_paciente", n_ficha_paciente);
-    enviarDados(formRef.current, operacao);
-  };
-
   const imprimir = () => {
     window.print();
   };
 
   useEffect(() => {
-    const n_ficha_paciente = sessionStorage.getItem("n_ficha_paciente");
+    const fichaFrente = JSON.parse(sessionStorage.getItem("formFrente"));
+    const formPaciente = JSON.parse(sessionStorage.getItem("formVerso"));
 
-    if (!n_ficha_paciente || !pacienteRef?.current) {
-      return;
+    if (formPaciente) {
+      preencherFormulario(formPaciente, formRef);
     }
 
-    buscarPaciente(n_ficha_paciente);
-  }, [pacienteRef, buscarPaciente]);
+    if (fichaFrente && setFicha) {
+      setFicha(fichaFrente.n_ficha_paciente);
+    }
+  }, [formRef, setFicha]);
 
   return {
     db: {
       buscarPaciente,
-      salvarPaciente,
       dados,
       isLoading,
       error,
