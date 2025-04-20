@@ -1,53 +1,33 @@
 import { salvarDados } from "../../../api/api";
+import { checarObrigatorio, salvarFicha } from "../../../utils";
 
-export const enviarDados = async (form, operacao) => {
-  if (!form) {
-    console.error("Formulário não foi encontrado");
-    return;
-  } else if (!operacao) {
-    console.error("Operação não definida");
+export const enviarDados = async (formRef, operacao) => {
+  if (!operacao) {
+    console.error("Operação não definida!");
+  }
+
+  salvarFicha(formRef, "verso");
+
+  const frenteRaw = sessionStorage.getItem("formFrente");
+  const versoRaw = sessionStorage.getItem("formVerso");
+
+  if (!frenteRaw || !versoRaw || !checarObrigatorio("verso")) {
+    alert("Dados do formulário incompletos.");
     return;
   }
 
-  const inputs = form.querySelectorAll("input, select");
+  const formFrente = JSON.parse(frenteRaw);
+  const formVerso = JSON.parse(versoRaw);
 
-  const caracteristicas = {};
-  const informacoes = {};
-  const obs = {};
-
-  inputs.forEach((input) => {
-    const id = input.id;
-
-    if (["n_ficha_paciente", "idade", "sexo", "altura", "peso"].includes(id)) {
-      caracteristicas[id] = input.value.trim();
-    }
-
-    if (
-      [
-        "n_ficha_paciente",
-        "lado",
-        "n_pe",
-        "causa_amputacao",
-        "tempo",
-        "produto",
-      ].includes(id)
-    ) {
-      informacoes[id] = input.value.trim();
-    }
-
-    if (["n_ficha_paciente", "obs"].includes(id)) {
-      obs[id] = input.value.trim();
-    }
-  });
-
-  const formData = {
-    caracteristicas,
-    informacoes,
-    obs,
+  const dados = {
+    ...formFrente,
+    ...formVerso,
   };
 
+  console.log("Dados sendo enviado para api: ", dados);
+
   try {
-    const response = await salvarDados(formData, "verso", operacao);
+    const response = await salvarDados(dados, operacao);
     if (response.success) {
       alert("Dados salvos com sucesso!");
     } else {
