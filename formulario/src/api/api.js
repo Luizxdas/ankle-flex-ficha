@@ -1,13 +1,13 @@
-export const salvarDados = async (dadosForm, lado, operacao) => {
+export const salvarDados = async (dados, operacao) => {
   try {
     const resposta = await fetch(
-      `http://localhost:5000/salvar/${lado}?operacao=${operacao}`,
+      `http://localhost:5000/salvar?operacao=${operacao}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dadosForm),
+        body: JSON.stringify(dados),
       }
     );
 
@@ -42,26 +42,34 @@ export const buscarDados = async () => {
   return dados;
 };
 
-export const buscarDadosPaciente = async (n_ficha_paciente, lado) => {
+export const buscarDadosPaciente = async (n_ficha_paciente) => {
   if (!n_ficha_paciente) {
-    throw new Error("Número da ficha do paciente inválido!");
+    return { success: false, message: "Número da ficha do paciente inválido!" };
   }
 
-  const response = await fetch(
-    `http://localhost:5000/buscar/${lado}?n_ficha_paciente=${n_ficha_paciente}`,
-    {
-      method: "GET",
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `Erro ao buscar os dados do paciente. Status: ${response.status} ${response.statusText}. Detalhes: ${errorText}`
+  try {
+    const response = await fetch(
+      `http://localhost:5000/buscarPaciente?n_ficha_paciente=${n_ficha_paciente}`,
+      {
+        method: "GET",
+      }
     );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { success: false, message: "Paciente não encontrado" };
+      }
+
+      const errorText = await response.text();
+      return {
+        success: false,
+        message: `Erro ao buscar os dados do paciente. Status: ${response.status} ${response.statusText}. Detalhes: ${errorText}`,
+      };
+    }
+
+    const dados = await response.json();
+    return { success: true, data: dados };
+  } catch (error) {
+    return { success: false, message: error.message };
   }
-
-  const dados = await response.json();
-
-  return dados;
 };
