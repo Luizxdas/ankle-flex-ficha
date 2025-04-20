@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { inputStyle } from "../../utils";
+import { inputStyle, limparFicha, salvarFicha } from "../../utils";
 import useFrenteForm from "./Hooks/useFrenteForm";
 import Colete from "./Colete";
 import Ortese from "./Ortese";
@@ -8,25 +8,30 @@ import Palmilha from "./Palmilha";
 import Protese from "./Protese";
 import Botao from "../Compartilhados/Botao";
 
-function Frente() {
-  const pacienteRef = useRef(null);
+function Frente({ mudarPagina }) {
   const formRef = useRef(null);
-  const { db, pagina } = useFrenteForm(pacienteRef, formRef);
+  const [ficha, setFicha] = useState("");
+  const { pagina } = useFrenteForm(formRef, setFicha);
+
+  const handleProximo = () => {
+    if (salvarFicha(formRef, "frente")) {
+      mudarPagina();
+    }
+  };
 
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
-      {/*  BOTÕES */}
-      <div className="relative bottom-[19em] mr-3 flex flex-col justify-center space-y-4 print:hidden">
+      {/* BOTÕES */}
+      <div className="relative h-[50em] mr-3 space-y-4 print:hidden">
         <div>
-          <Link to={"/pacientes"}>
-            <Botao conteudo={"Buscar Pacientes"} />
+          <Link to={"/"}>
+            <Botao conteudo={"Voltar"} />
           </Link>
         </div>
-        <div>
-          <Link to={"/verso"}>
-            <Botao conteudo={"Ir para o verso"} />
-          </Link>
-        </div>
+        <Botao
+          conteudo={"Limpar ficha"}
+          onClick={() => limparFicha(formRef, "frente")}
+        />
       </div>
 
       {/*  FORMULÁRIO */}
@@ -52,6 +57,7 @@ function Frente() {
                       </label>
                       <input
                         id="nome_paciente"
+                        name="nome_paciente"
                         className={`w-[34em] ${inputStyle}`}
                         maxLength={78}
                       />
@@ -63,6 +69,7 @@ function Frente() {
                         </label>
                         <input
                           id="endereco"
+                          name="endereco"
                           className={`w-[20em] ${inputStyle}`}
                           maxLength={35}
                         />
@@ -71,6 +78,7 @@ function Frente() {
                         </label>
                         <input
                           id="n_endereco"
+                          name="n_endereco"
                           className={`w-[3.5em] ${inputStyle}`}
                           maxLength={6}
                         />
@@ -79,6 +87,7 @@ function Frente() {
                         </label>
                         <input
                           id="cep"
+                          name="cep"
                           className={`w-[5em] ${inputStyle}`}
                           maxLength={9}
                         />
@@ -90,6 +99,7 @@ function Frente() {
                       </label>
                       <input
                         id="bairro"
+                        name="bairro"
                         className={`w-[16em] ${inputStyle}`}
                         maxLength={41}
                       />
@@ -98,6 +108,7 @@ function Frente() {
                       </label>
                       <input
                         id="cidade"
+                        name="cidade"
                         className={`w-[8em] ${inputStyle}`}
                         maxLength={13}
                       />
@@ -106,6 +117,7 @@ function Frente() {
                       </label>
                       <input
                         id="estado"
+                        name="estado"
                         className={`w-[1.5em] ${inputStyle}`}
                         maxLength={2}
                       />
@@ -118,9 +130,11 @@ function Frente() {
                       </label>
                       <input
                         id="n_ficha_paciente"
+                        name="n_ficha_paciente"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
-                        ref={pacienteRef}
+                        value={ficha}
+                        onChange={(e) => setFicha(e.target.value)}
                       />
                     </div>
                     <div className="border-b-[1.5px] border-black py-2">
@@ -129,6 +143,7 @@ function Frente() {
                       </label>
                       <input
                         id="data_ficha"
+                        name="data_ficha"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={10}
                       />
@@ -139,6 +154,7 @@ function Frente() {
                       </label>
                       <input
                         id="numero_telefone"
+                        name="numero_telefone"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
                       />
@@ -158,25 +174,12 @@ function Frente() {
         </div>
       </div>
 
-      <div className="relative bottom-[16em] ml-3 flex flex-col justify-center space-y-4 print:hidden">
+      <div className="relative h-[50em] ml-3 flex flex-col space-y-4 print:hidden">
         <div>
           <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
         </div>
         <div>
-          <Botao
-            conteudo={"Salvar"}
-            onClick={() =>
-              db.salvarPaciente(pacienteRef.current.value, "salvar")
-            }
-          />
-        </div>
-        <div>
-          <Botao
-            conteudo={"Atualizar"}
-            onClick={() =>
-              db.salvarPaciente(pacienteRef.current.value, "atualizar")
-            }
-          />
+          <Botao conteudo={"Próximo"} onClick={handleProximo} />
         </div>
       </div>
     </div>
