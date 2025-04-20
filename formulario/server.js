@@ -71,52 +71,52 @@ function criarTabelas() {
   });
 }
 
-app.post("/salvar/frente", async (req, res) => {
-  const operacao = req.query.operacao;
+app.post("/salvar", async (req, res) => {
+  const operacao = req.query.operacao || req.body.operacao;
+  const dados = req.body;
 
-  const { identidade, localizacao } = req.body;
+  const n_ficha_paciente = dados?.n_ficha_paciente;
 
-  if (!identidade || !localizacao) {
+  if (!n_ficha_paciente) {
     return res.status(400).json({
       success: false,
-      message: "Dados incompletos. Verifique identidade e localizacao.",
+      message: "Número da ficha não fornecido.",
     });
   }
 
-  const resultado = await fetch(
-    `http://localhost:5000/buscar/frente?n_ficha_paciente=${identidade.n_ficha_paciente}`,
-    {
-      method: "GET",
-    }
-  );
-  const pacienteExiste = resultado?.success && resultado?.data;
+  try {
+    const resultado = await buscarDadosPaciente(n_ficha_paciente);
+    const pacienteExiste = resultado?.success && resultado?.data;
 
-  if (pacienteExiste && operacao === "salvar") {
-    return res.status(409).json({
-      success: false,
-      message: "Uma ficha com esse número já existe no banco de dados.",
-    });
-  } else if (!pacienteExiste && operacao === "atualizar") {
-    return res.status(404).json({
-      success: false,
-      message: "Ficha com esse número não encontrada no banco de dados.",
-    });
+    if (pacienteExiste && operacao === "salvar") {
+      return res.status(409).json({
+        success: false,
+        message: "Uma ficha com esse número já existe no banco de dados.",
+      });
+    } else if (!pacienteExiste && operacao === "atualizar") {
+      return res.status(404).json({
+        success: false,
+        message: "Ficha com esse número não encontrada no banco de dados.",
+      });
+    }
+  } catch (error) {
+    console.error("Erro ao buscar dados do paciente:", error.message);
+    return res.status(500).json({ success: false, message: error.message });
   }
 
   db.serialize(() => {
     db.run("BEGIN TRANSACTION");
-
     db.run(
       `INSERT INTO IDENTIDADE (n_ficha_paciente, nome_paciente, data_ficha, numero_telefone)
-       VALUES (?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET 
-       nome_paciente = excluded.nome_paciente,
-       data_ficha = excluded.data_ficha,
-       numero_telefone = excluded.numero_telefone`,
+         VALUES (?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET
+         nome_paciente = excluded.nome_paciente,
+         data_ficha = excluded.data_ficha,
+         numero_telefone = excluded.numero_telefone`,
       [
-        identidade.n_ficha_paciente,
-        identidade.nome_paciente,
-        identidade.data_ficha,
-        identidade.numero_telefone,
+        dados.n_ficha_paciente,
+        dados.nome_paciente,
+        dados.data_ficha,
+        dados.numero_telefone,
       ],
       function (err) {
         if (err) {
@@ -124,103 +124,49 @@ app.post("/salvar/frente", async (req, res) => {
           db.run("ROLLBACK");
           return res.status(500).json({ success: false, message: err.message });
         }
-
-        db.run(
-          `INSERT INTO LOCALIZACAO (n_ficha_paciente, endereco, n_endereco, cep, bairro, cidade, estado)
-           VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET 
-           endereco = excluded.endereco,
-           n_endereco = excluded.n_endereco,
-           cep = excluded.cep,
-           bairro = excluded.bairro,
-           cidade = excluded.cidade,
-           estado = excluded.estado`,
-          [
-            localizacao.n_ficha_paciente,
-            localizacao.endereco,
-            localizacao.n_endereco,
-            localizacao.cep,
-            localizacao.bairro,
-            localizacao.cidade,
-            localizacao.estado,
-          ],
-          function (err) {
-            if (err) {
-              console.error("Erro ao inserir em LOCALIZACAO:", err.message);
-              db.run("ROLLBACK");
-              return res
-                .status(500)
-                .json({ success: false, message: err.message });
-            }
-
-            db.run("COMMIT", (err) => {
-              if (err) {
-                console.error(
-                  "Erro ao fazer commit da transação:",
-                  err.message
-                );
-                db.run("ROLLBACK");
-                return res
-                  .status(500)
-                  .json({ success: false, message: err.message });
-              }
-
-              console.log("Dados salvos com sucesso!");
-              res.json({ success: true, id: identidade.n_ficha_paciente });
-            });
-          }
-        );
       }
     );
-  });
-});
 
-app.post("/salvar/verso", async (req, res) => {
-  const operacao = req.query.operacao || req.body.operacao;
-  console.log("Recebendo dados:", JSON.stringify(req.body, null, 2));
-
-  if (!req.body.informacoes || !req.body.caracteristicas) {
-    return res.status(400).json({
-      success: false,
-      message: "Dados incompletos. Verifique informacoes e caracteristicas.",
-    });
-  }
-
-  const { informacoes, caracteristicas } = req.body;
-  const resultado = await buscarDadosPaciente(
-    informacoes.n_ficha_paciente,
-    "verso"
-  );
-  const pacienteExiste = resultado?.success && resultado?.data;
-
-  if (pacienteExiste && operacao === "salvar") {
-    return res.status(409).json({
-      success: false,
-      message: "Uma ficha com esse número já existe no banco de dados.",
-    });
-  } else if (!pacienteExiste && operacao === "atualizar") {
-    return res.status(404).json({
-      success: false,
-      message: "Ficha com esse número não encontrada no banco de dados.",
-    });
-  }
-
-  db.serialize(() => {
-    db.run("BEGIN TRANSACTION");
+    db.run(
+      `INSERT INTO LOCALIZACAO (n_ficha_paciente, endereco, n_endereco, cep, bairro, cidade, estado)
+         VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET
+         endereco = excluded.endereco,
+         n_endereco = excluded.n_endereco,
+         cep = excluded.cep,
+         bairro = excluded.bairro,
+         cidade = excluded.cidade,
+         estado = excluded.estado`,
+      [
+        dados.n_ficha_paciente,
+        dados.endereco,
+        dados.n_endereco,
+        dados.cep,
+        dados.bairro,
+        dados.cidade,
+        dados.estado,
+      ],
+      function (err) {
+        if (err) {
+          console.error("Erro ao inserir em LOCALIZACAO:", err.message);
+          db.run("ROLLBACK");
+          return res.status(500).json({ success: false, message: err.message });
+        }
+      }
+    );
 
     db.run(
       `INSERT INTO CARACTERISTICAS (n_ficha_paciente, idade, sexo, altura, peso)
-       VALUES (?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET
-       n_ficha_paciente = excluded.n_ficha_paciente
-       idade = excluded.idade,
-       sexo = excluded.sexo,
-       altura = excluded.altura,
-       peso = excluded.peso`,
+         VALUES (?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET
+         idade = excluded.idade,
+         sexo = excluded.sexo,
+         altura = excluded.altura,
+         peso = excluded.peso`,
       [
-        caracteristicas.n_ficha_paciente,
-        caracteristicas.idade,
-        caracteristicas.sexo,
-        caracteristicas.altura,
-        caracteristicas.peso,
+        dados.n_ficha_paciente,
+        dados.idade,
+        dados.sexo,
+        dados.altura,
+        dados.peso,
       ],
       function (err) {
         if (err) {
@@ -228,50 +174,48 @@ app.post("/salvar/verso", async (req, res) => {
           db.run("ROLLBACK");
           return res.status(500).json({ success: false, message: err.message });
         }
-
-        db.run(
-          `INSERT INTO INFORMACOES (n_ficha_paciente, lado, n_pe, causa_amputacao, tempo, produto)
-           VALUES (?, ?, ?, ?, ?, ?)`,
-          [
-            informacoes.n_ficha_paciente,
-            informacoes.lado,
-            informacoes.n_pe,
-            informacoes.causa_amputacao,
-            informacoes.tempo,
-            informacoes.produto,
-          ],
-          function (err) {
-            if (err) {
-              console.error("Erro ao inserir em INFORMACOES:", err.message);
-              db.run("ROLLBACK");
-              return res
-                .status(500)
-                .json({ success: false, message: err.message });
-            }
-
-            db.run("COMMIT", (err) => {
-              if (err) {
-                console.error(
-                  "Erro ao fazer commit da transação:",
-                  err.message
-                );
-                db.run("ROLLBACK");
-                return res
-                  .status(500)
-                  .json({ success: false, message: err.message });
-              }
-
-              console.log("Dados salvos com sucesso!");
-              res.json({ success: true, id: informacoes.n_ficha_paciente });
-            });
-          }
-        );
       }
     );
+
+    db.run(
+      `INSERT INTO INFORMACOES (n_ficha_paciente, lado, n_pe, causa_amputacao, tempo, produto)
+         VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(n_ficha_paciente) DO UPDATE SET
+         lado = excluded.lado,
+         n_pe = excluded.n_pe,
+         causa_amputacao = excluded.causa_amputacao,
+         tempo = excluded.tempo,
+         produto = excluded.produto`,
+      [
+        dados.n_ficha_paciente,
+        dados.lado,
+        dados.n_pe,
+        dados.causa_amputacao,
+        dados.tempo,
+        dados.produto,
+      ],
+      function (err) {
+        if (err) {
+          console.error("Erro ao inserir em INFORMACOES:", err.message);
+          db.run("ROLLBACK");
+          return res.status(500).json({ success: false, message: err.message });
+        }
+      }
+    );
+
+    db.run("COMMIT", (err) => {
+      if (err) {
+        console.error("Erro no COMMIT:", err.message);
+        db.run("ROLLBACK");
+        return res.status(500).json({ success: false, message: err.message });
+      }
+
+      console.log("Dados salvos com sucesso!");
+      res.json({ success: true, id: n_ficha_paciente });
+    });
   });
 });
 
-app.get("/buscar/frente", (req, res) => {
+app.get("/buscarPaciente", async (req, res) => {
   const n_ficha_paciente = req.query.n_ficha_paciente;
 
   if (!n_ficha_paciente) {
@@ -281,66 +225,57 @@ app.get("/buscar/frente", (req, res) => {
     });
   }
 
-  db.get(
-    `SELECT i.*, l.* 
-     FROM IDENTIDADE i
-     LEFT JOIN LOCALIZACAO l ON i.n_ficha_paciente = l.n_ficha_paciente
-     WHERE i.n_ficha_paciente = ?`,
-    [n_ficha_paciente],
-    (err, row) => {
-      if (err) {
-        console.error("Erro ao buscar dados:", err.message);
-        return res.status(500).json({ success: false, message: err.message });
-      }
-
-      if (!row) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Paciente não encontrado" });
-      }
-
-      res.json({
-        success: true,
-        data: row,
-      });
-    }
-  );
-});
-
-app.get("/buscar/verso", (req, res) => {
-  const n_ficha_paciente = req.query.n_ficha_paciente;
-
-  if (!n_ficha_paciente) {
-    return res.status(400).json({
-      success: false,
-      message: "Número da ficha do paciente é obrigatório",
+  try {
+    const frentePromise = new Promise((resolve, reject) => {
+      db.get(
+        `SELECT i.*, l.* 
+         FROM IDENTIDADE i
+         LEFT JOIN LOCALIZACAO l ON i.n_ficha_paciente = l.n_ficha_paciente
+         WHERE i.n_ficha_paciente = ?`,
+        [n_ficha_paciente],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row);
+        }
+      );
     });
-  }
 
-  db.get(
-    `SELECT i.*, c.* 
-     FROM INFORMACOES i
-     LEFT JOIN CARACTERISTICAS c ON i.n_ficha_paciente = c.n_ficha_paciente
-     WHERE i.n_ficha_paciente = ?`,
-    [n_ficha_paciente],
-    (err, row) => {
-      if (err) {
-        console.error("Erro ao buscar dados:", err.message);
-        return res.status(500).json({ success: false, message: err.message });
-      }
+    const versoPromise = new Promise((resolve, reject) => {
+      db.get(
+        `SELECT i.*, c.* 
+         FROM INFORMACOES i
+         LEFT JOIN CARACTERISTICAS c ON i.n_ficha_paciente = c.n_ficha_paciente
+         WHERE i.n_ficha_paciente = ?`,
+        [n_ficha_paciente],
+        (err, row) => {
+          if (err) return reject(err);
+          resolve(row);
+        }
+      );
+    });
 
-      if (!row) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Paciente não encontrado" });
-      }
+    const [dadosFrente, dadosVerso] = await Promise.all([
+      frentePromise,
+      versoPromise,
+    ]);
 
-      res.json({
-        success: true,
-        data: row,
-      });
+    if (!dadosFrente && !dadosVerso) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Paciente não encontrado" });
     }
-  );
+
+    console.log("Dados verso: ", dadosVerso);
+
+    res.json({
+      success: true,
+      dadosFrente,
+      dadosVerso,
+    });
+  } catch (error) {
+    console.error("Erro ao buscar dados:", error.message);
+    return res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 app.get("/buscar", (req, res) => {
