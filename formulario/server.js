@@ -265,8 +265,6 @@ app.get("/buscarPaciente", async (req, res) => {
         .json({ success: false, message: "Paciente não encontrado" });
     }
 
-    console.log("Dados verso: ", dadosVerso);
-
     res.json({
       success: true,
       dadosFrente,
