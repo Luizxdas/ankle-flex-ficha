@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import useVersoForm from "./Hooks/useVersoForm";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
@@ -9,6 +8,7 @@ import { enviarDados } from "./Utils/versoUtils";
 
 function Verso({ mudarPagina }) {
   const formRef = useRef(null);
+  const operacao = sessionStorage.getItem("operacao");
   const [ficha, setFicha] = useState("");
   const { pagina } = useVersoForm(formRef, setFicha);
 
@@ -143,10 +143,17 @@ function Verso({ mudarPagina }) {
           <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
         </div>
         <div>
-          <Botao
-            conteudo={"Salvar"}
-            onClick={() => enviarDados(formRef, "salvar")}
-          />
+          {operacao === "salvar" ? (
+            <Botao
+              conteudo={"Salvar"}
+              onClick={() => enviarDados(formRef, "salvar")}
+            />
+          ) : (
+            <Botao
+              conteudo={"Atualizar"}
+              onClick={() => enviarDados(formRef, "atualizar")}
+            />
+          )}
         </div>
       </div>
     </div>

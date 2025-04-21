@@ -20,6 +20,7 @@ function Pacientes() {
         "formVerso",
         JSON.stringify(dados.data.dadosVerso)
       );
+      sessionStorage.setItem("operacao", "atualizar");
       navigate("/ficha?lado=frente");
     } else {
       alert("Nenhuma ficha selecionada! Clique para selecionar um ficha.");

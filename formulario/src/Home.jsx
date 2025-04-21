@@ -7,6 +7,7 @@ function Home() {
   const handleCriar = () => {
     sessionStorage.removeItem("formFrente");
     sessionStorage.removeItem("formVerso");
+    sessionStorage.setItem("operacao", "salvar");
     navigate("/ficha?lado=frente");
   };
 

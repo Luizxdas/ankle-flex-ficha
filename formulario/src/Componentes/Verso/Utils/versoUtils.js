@@ -24,14 +24,14 @@ export const enviarDados = async (formRef, operacao) => {
     ...formVerso,
   };
 
-  console.log("Dados sendo enviado para api: ", dados);
-
   try {
     const response = await salvarDados(dados, operacao);
     if (response.success) {
-      alert("Dados salvos com sucesso!");
+      operacao === "salvar"
+        ? alert("Dados salvos com sucesso!")
+        : alert("Dados atualizados com sucesso!");
     } else {
-      alert(`Erro ao salvar: ${response.message || "Erro desconhecido"}`);
+      alert(`Erro ao ${operacao}: ${response.message || "Erro desconhecido"}`);
       console.error("Erro detalhado:", response);
     }
   } catch (error) {
