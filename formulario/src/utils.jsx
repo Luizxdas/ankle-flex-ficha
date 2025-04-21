@@ -10,7 +10,7 @@ export const preencherFormulario = (dados, formRef) => {
     const input = formRef.current.querySelector(`#${key}`);
     if (input) {
       input.value = value;
-    } else {
+    } else if (!key === "produto") {
       console.log("Input não encontrado de id:", key);
     }
   });
