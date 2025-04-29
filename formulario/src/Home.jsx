@@ -1,14 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import Botao from "./Componentes/Compartilhados/Botao";
+import Botao from "./componentes/Compartilhados/Botao";
 
 function Home() {
   const navigate = useNavigate();
 
   const handleCriar = () => {
-    sessionStorage.removeItem("formFrente");
-    sessionStorage.removeItem("formVerso");
     sessionStorage.setItem("operacao", "salvar");
-    navigate("/ficha?lado=frente");
+    navigate("/ficha");
   };
 
   return (
