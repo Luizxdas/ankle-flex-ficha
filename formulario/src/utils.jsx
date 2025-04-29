@@ -18,12 +18,12 @@ export const preencherFormulario = (dados, formRef) => {
 
 export const checarObrigatorio = (lado) => {
   if (lado === "frente") {
-    const n_ficha_paciente = document.getElementById("n_ficha_paciente");
+    const n_ficha = document.getElementById("n_ficha");
     const nome_paciente = document.getElementById("nome_paciente");
     const data_ficha = document.getElementById("data_ficha");
 
     if (
-      !n_ficha_paciente.value.trim() ||
+      !n_ficha.value.trim() ||
       !nome_paciente.value.trim() ||
       !data_ficha.value.trim()
     ) {
@@ -35,8 +35,8 @@ export const checarObrigatorio = (lado) => {
 
     return true;
   } else if (lado === "verso") {
-    const n_ficha_paciente = document.getElementById("n_ficha_paciente");
-    if (!n_ficha_paciente.value.trim()) {
+    const n_ficha = document.getElementById("n_ficha");
+    if (!n_ficha.value.trim()) {
       alert("O campo de número da ficha precisa estar preenchido!");
       return false;
     }
@@ -45,33 +45,58 @@ export const checarObrigatorio = (lado) => {
   }
 };
 
-export const salvarFicha = (formRef, lado) => {
-  if (checarObrigatorio(lado)) {
-    const formData = new FormData(formRef.current);
-    const dados = Object.fromEntries(formData.entries());
-
-    sessionStorage.setItem(
-      `${lado === "frente" ? "formFrente" : "formVerso"}`,
-      JSON.stringify(dados)
-    );
-    return true;
-  } else {
+export const guardarFicha = (formRef, lado) => {
+  if (!formRef?.current || !lado) {
+    console.log("formRef ou lado não recebidos: ", formRef, lado);
     return false;
   }
+
+  const formData = new FormData(formRef.current);
+  const novosDados = Object.fromEntries(formData.entries());
+
+  const dadosSalvos = JSON.parse(sessionStorage.getItem("dados")) || {};
+
+  const dadosAtualizados = {
+    ...dadosSalvos,
+    [lado === "frente" ? "dadosFrente" : "dadosVerso"]: {
+      ...(dadosSalvos[lado === "frente" ? "dadosFrente" : "dadosVerso"] || {}),
+      ...novosDados,
+    },
+  };
+
+  sessionStorage.setItem("dados", JSON.stringify(dadosAtualizados));
+
+  return true;
 };
 
 export const limparFicha = (formRef, lado) => {
   if (!formRef?.current || !lado) {
-    console.error("formRef ou lado não definidos: ");
+    console.error("formRef ou lado não recebidos.");
     return;
   }
 
-  lado === "frente"
-    ? sessionStorage.removeItem("formFrente")
-    : sessionStorage.removeItem("formVerso");
+  const dados = JSON.parse(sessionStorage.getItem("dados")) || {};
 
-  const inputs = formRef.current.querySelectorAll("input");
+  if (lado === "frente") {
+    delete dados.dadosFrente;
+  } else {
+    delete dados.dadosVerso;
+  }
+
+  sessionStorage.setItem("dados", JSON.stringify(dados));
+
+  const inputs = formRef.current.querySelectorAll(
+    "input, textarea, select, checkbox"
+  );
   inputs.forEach((input) => {
-    input.value = "";
+    if (input.type === "checkbox" || input.type === "radio") {
+      input.checked = false;
+    } else {
+      input.value = "";
+    }
   });
+};
+
+export const imprimir = () => {
+  window.print;
 };
