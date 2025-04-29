@@ -1,15 +1,12 @@
-export const salvarDados = async (dados, operacao) => {
+export const enviarDados = async (dados) => {
   try {
-    const resposta = await fetch(
-      `http://localhost:5000/salvar?operacao=${operacao}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dados),
-      }
-    );
+    const resposta = await fetch(`http://localhost:5000/salvar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dados),
+    });
 
     const resultado = await resposta.json();
 
@@ -25,10 +22,13 @@ export const salvarDados = async (dados, operacao) => {
   }
 };
 
-export const buscarDados = async () => {
-  const resposta = await fetch(`http://localhost:5000/buscar`, {
-    method: "GET",
-  });
+export const buscarDadosFicha = async (n_ficha) => {
+  const resposta = await fetch(
+    `http://localhost:5000/buscar/ficha?n_ficha=${n_ficha}`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!resposta.ok) {
     const errorText = await resposta.text();
@@ -38,38 +38,21 @@ export const buscarDados = async () => {
   }
 
   const dados = await resposta.json();
-
   return dados;
 };
 
-export const buscarDadosPaciente = async (n_ficha_paciente) => {
-  if (!n_ficha_paciente) {
-    return { success: false, message: "Número da ficha do paciente inválido!" };
-  }
+export const buscarTodosDados = async () => {
+  const resposta = await fetch(`http://localhost:5000/buscar/todos`, {
+    method: "GET",
+  });
 
-  try {
-    const response = await fetch(
-      `http://localhost:5000/buscarPaciente?n_ficha_paciente=${n_ficha_paciente}`,
-      {
-        method: "GET",
-      }
+  if (!resposta.ok) {
+    const errorText = await resposta.text();
+    throw new Error(
+      `Erro ao buscar as fichas dos pacientes. Status: ${resposta.status} ${resposta.statusText}. Detalhes: ${errorText}`
     );
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        return { success: false, message: "Paciente não encontrado" };
-      }
-
-      const errorText = await response.text();
-      return {
-        success: false,
-        message: `Erro ao buscar os dados do paciente. Status: ${response.status} ${response.statusText}. Detalhes: ${errorText}`,
-      };
-    }
-
-    const dados = await response.json();
-    return { success: true, data: dados };
-  } catch (error) {
-    return { success: false, message: error.message };
   }
+
+  const dados = await resposta.json();
+  return dados;
 };
