@@ -19,7 +19,7 @@ router.post("/atualizar", atualizarFicha);
 router.get("/buscar/ficha", buscarDadosFicha);
 router.get("/buscar/todos", buscarDadosGeral);
 
-export default router;
+app.use("/", router);
 
 app.listen(5000, () => {
   console.log("Servidor rodando na porta 5000");
