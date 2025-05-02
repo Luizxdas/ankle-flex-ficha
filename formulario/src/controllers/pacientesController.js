@@ -42,8 +42,13 @@ export async function checarFichaExistente(n_ficha) {
 
 export async function salvarFicha(req, res) {
   const dados = req.body;
-  const { produtos = [], observacoes = {} } = req.body;
-  const n_ficha = dados?.n_ficha;
+
+  const produtos = dados.produtos;
+  const observacoes = dados.observacoes;
+  const verso = dados.verso;
+  const outros = dados.outros;
+
+  const n_ficha = outros?.n_ficha;
 
   if (!n_ficha) {
     return res.status(400).json({
@@ -67,7 +72,7 @@ export async function salvarFicha(req, res) {
       await runQuery(
         `INSERT INTO IDENTIDADE (N_FICHA, NOME_PACIENTE, DATA_FICHA, TELEFONE)
          VALUES (?, ?, ?, ?)`,
-        [n_ficha, dados.nome_paciente, dados.data_ficha, dados.telefone]
+        [n_ficha, outros.nome_paciente, outros.data_ficha, outros.telefone]
       );
 
       await runQuery(
@@ -75,25 +80,44 @@ export async function salvarFicha(req, res) {
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           n_ficha,
-          dados.endereco,
-          dados.n_endereco,
-          dados.cep,
-          dados.bairro,
-          dados.cidade,
-          dados.estado,
+          outros.endereco,
+          outros.n_endereco,
+          outros.cep,
+          outros.bairro,
+          outros.cidade,
+          outros.estado,
         ]
       );
 
       await runQuery(
         `INSERT INTO CARACTERISTICAS (N_FICHA, IDADE, SEXO, ALTURA, PESO)
          VALUES (?, ?, ?, ?, ?)`,
-        [n_ficha, dados.idade, dados.sexo, dados.altura, dados.peso]
+        [n_ficha, outros.idade, outros.sexo, outros.altura, outros.peso]
       );
 
       await runQuery(
         `INSERT INTO INFORMACOES (N_FICHA, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO)
          VALUES (?, ?, ?, ?, ?)`,
-        [n_ficha, dados.lado, dados.n_pe, dados.causa_amputacao, dados.tempo]
+        [
+          n_ficha,
+          outros.lado,
+          outros.n_pe,
+          outros.causa_amputacao,
+          outros.tempo,
+        ]
+      );
+
+      await runQuery(
+        `INSERT INTO TIPOS (N_FICHA, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          n_ficha,
+          verso.pe,
+          verso.joelho,
+          verso.encaixe,
+          verso.liner,
+          verso.n_liner,
+        ]
       );
 
       await runQuery(
@@ -101,21 +125,23 @@ export async function salvarFicha(req, res) {
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
           n_ficha,
-          observacoes.protese,
-          observacoes.ortese,
-          observacoes.colete,
-          observacoes.palmilha,
-          observacoes.verso,
+          observacoes["obs-protese"],
+          observacoes["obs-ortese"],
+          observacoes["obs-colete"],
+          observacoes["obs-palmilha"],
+          observacoes["obs-verso"],
         ]
       );
 
-      if (Array.isArray(produtos) && produtos.length > 0) {
-        for (const item of produtos) {
-          await runQuery(
-            `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO)
-             VALUES (?, ?, ?)`,
-            [n_ficha, item.produto, item.tipo]
-          );
+      if (produtos && typeof produtos === "object") {
+        for (const [tipo, produto] of Object.entries(produtos)) {
+          console.log("Tipo: ", tipo, ", produto: ", produto);
+          if (tipo) {
+            await runQuery(
+              `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES (?, ?, ?)`,
+              [n_ficha, JSON.stringify(produto), tipo]
+            );
+          }
         }
       }
 
