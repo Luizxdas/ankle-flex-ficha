@@ -55,7 +55,6 @@ export function criarTabelas() {
         N_PE TEXT,
         CAUSA_AMPUTACAO TEXT,
         TEMPO TEXT,
-        PRODUTO TEXT,
         FOREIGN KEY (N_FICHA) REFERENCES IDENTIDADE(N_FICHA)
       )`
     );
@@ -66,6 +65,20 @@ export function criarTabelas() {
         N_FICHA INTEGER NOT NULL,
         PRODUTO TEXT,
         TIPO TEXT,
+        FOREIGN KEY (N_FICHA) REFERENCES IDENTIDADE(N_FICHA)
+      )`
+    );
+
+    db.run(
+      `CREATE TABLE IF NOT EXISTS TIPOS (
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        N_FICHA INTEGER NOT NULL,
+        PE TEXT,
+        JOELHO TEXT,
+        QUADRIL TEXT,
+        ENCAIXE TEXT,
+        LINER TEXT,
+        N_LINER INT,
         FOREIGN KEY (N_FICHA) REFERENCES IDENTIDADE(N_FICHA)
       )`
     );
