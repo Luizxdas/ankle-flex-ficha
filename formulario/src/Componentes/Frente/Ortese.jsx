@@ -9,18 +9,18 @@ function Ortese() {
         <h1 className="text-2xl border-b-[1.5px] border-black p-1">ÓRTESE</h1>
         <h2 className="text-xl p-2 border-b-[1.5px] border-black">Tipo</h2>
         <div className={baseFormStyle}>
-          <Option content={"SMO"} />
-          <Option content={"AFO Fixo"} />
-          <Option content={"SAFO"} />
-          <Option content={"AFO Articulado"} />
-          <Option content={"Brace Joelho"} />
-          <Option content={"KAFO"} />
-          <Option content={"HKAFO"} />
-          <Option content={"Unilateral"} />
-          <Option content={"Bilateral"} />
+          <Option name={"ortese"} content={"SMO"} />
+          <Option name={"ortese"} content={"AFO Fixo"} />
+          <Option name={"ortese"} content={"SAFO"} />
+          <Option name={"ortese"} content={"AFO Articulado"} />
+          <Option name={"ortese"} content={"Brace Joelho"} />
+          <Option name={"ortese"} content={"KAFO"} />
+          <Option name={"ortese"} content={"HKAFO"} />
+          <Option name={"ortese"} content={"Unilateral"} />
+          <Option name={"ortese"} content={"Bilateral"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-ortese"} />
+            <Observacoes id={"obs-ortese"} name={"obs-ortese"} />
           </div>
         </div>
       </div>

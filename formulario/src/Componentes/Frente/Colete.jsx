@@ -9,15 +9,15 @@ function Colete() {
         <h1 className="text-2xl border-b-[1.5px] border-black p-1">COLETE</h1>
         <h2 className="text-xl p-2 border-b-[1.5px] border-black">Tipo</h2>
         <div className={baseFormStyle}>
-          <Option content={"Lombo-sacro"} />
-          <Option content={"Lombar"} />
-          <Option content={"Toraco-lombar"} />
-          <Option content={"Toraco-cervical"} />
-          <Option content={"Cervical"} />
-          <Option content={"Colete 3D (Corretivo)"} />
+          <Option name={"colete"} content={"Lombo-sacro"} />
+          <Option name={"colete"} content={"Lombar"} />
+          <Option name={"colete"} content={"Toraco-lombar"} />
+          <Option name={"colete"} content={"Toraco-cervical"} />
+          <Option name={"colete"} content={"Cervical"} />
+          <Option name={"colete"} content={"Colete 3D (Corretivo)"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-colete"} />
+            <Observacoes id={"obs-colete"} name={"obs-colete"} />
           </div>
         </div>
       </div>

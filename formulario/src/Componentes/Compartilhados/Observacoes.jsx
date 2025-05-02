@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const Observacoes = ({ id }) => {
+const Observacoes = ({ id, name }) => {
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
 
@@ -17,6 +17,7 @@ const Observacoes = ({ id }) => {
         Observações:
       </label>
       <textarea
+        name={name}
         id={id}
         ref={textAreaRef}
         value={text}

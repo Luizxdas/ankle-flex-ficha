@@ -11,19 +11,19 @@ function Protese() {
           Nivel de Amputação
         </h2>
         <div className={baseFormStyle}>
-          <Option content={"Dedos"} />
-          <Option content={"Metatarsiana"} />
-          <Option content={"Lisfranc"} />
-          <Option content={"Chopart"} />
-          <Option content={"Syme"} />
-          <Option content={"Transtibial"} />
-          <Option content={"Desarticulação do Joelho"} />
-          <Option content={"Transfemural"} />
-          <Option content={"Desarticulação do Quadril"} />
-          <Option content={"Hemipelvectomia"} />
+          <Option name={"protese"} content={"Dedos"} />
+          <Option name={"protese"} content={"Metatarsiana"} />
+          <Option name={"protese"} content={"Lisfranc"} />
+          <Option name={"protese"} content={"Chopart"} />
+          <Option name={"protese"} content={"Syme"} />
+          <Option name={"protese"} content={"Transtibial"} />
+          <Option name={"protese"} content={"Desarticulação do Joelho"} />
+          <Option name={"protese"} content={"Transfemural"} />
+          <Option name={"protese"} content={"Desarticulação do Quadril"} />
+          <Option name={"protese"} content={"Hemipelvectomia"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-protese"} />
+            <Observacoes id={"obs-protese"} name={"obs-protese"} />
           </div>
         </div>
       </div>

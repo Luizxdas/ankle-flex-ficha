@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
-import { buscarDados } from "../../api/api";
+import { buscarTodosDados } from "../../api/api";
 
-function ListaPacientes({ setFicha }) {
+function ListaPacientes() {
   const divStyle = "h-full flex flex-row justify-center mt-1";
   const [dados, setDados] = useState([]);
   const [ativo, setAtivo] = useState(null);
 
-  const handleClick = (item, index) => {
+  const handleClick = (index) => {
     if (ativo === index) {
       setAtivo(null);
-      setFicha(null);
     } else {
       setAtivo(index);
-      setFicha(item.n_ficha_paciente);
     }
   };
 
   useEffect(() => {
     const carregarDados = async () => {
       try {
-        const resposta = await buscarDados();
+        const resposta = await buscarTodosDados();
         setDados(resposta.dados);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
