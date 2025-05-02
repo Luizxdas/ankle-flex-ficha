@@ -6,13 +6,28 @@ export const baseFormStyle =
 export const preencherFormulario = (dados, formRef) => {
   if (!formRef?.current || !dados) return;
 
-  Object.entries(dados).forEach(([key, value]) => {
-    const input = formRef.current.querySelector(`#${key}`);
-    if (input) {
-      input.value = value;
-    } else if (!key === "produto") {
-      console.log("Input não encontrado de id:", key);
-    }
+  const form = formRef.current;
+  const produtosMap = ["protese", "ortese", "palmilha", "colete"];
+
+  // eslint-disable-next-line no-unused-vars
+  Object.entries(dados).forEach(([grupo, conteudo]) => {
+    Object.entries(conteudo).forEach(([key, value]) => {
+      const isProduto = produtosMap.some((p) => key.includes(p));
+
+      if (isProduto) {
+        const valores = Array.isArray(value) ? value : [value];
+
+        valores.forEach((val) => {
+          const input = form.querySelector(
+            `input[name="${key}"][value="${val}"]`
+          );
+          if (input) input.checked = true;
+        });
+      } else {
+        const input = form.elements[key];
+        if (input) input.value = value;
+      }
+    });
   });
 };
 
