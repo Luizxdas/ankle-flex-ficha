@@ -1,43 +1,15 @@
-import { useRef, useState } from "react";
-import useVersoForm from "./Hooks/useVersoForm";
+import { inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
-import Botao from "../Compartilhados/Botao";
-import { inputStyle, limparFicha, salvarFicha } from "../../utils";
-import { enviarDados } from "./Utils/versoUtils";
 
-function Verso({ mudarPagina }) {
-  const formRef = useRef(null);
-  const operacao = sessionStorage.getItem("operacao");
-  const [ficha, setFicha] = useState("");
-  const { pagina } = useVersoForm(formRef, setFicha);
-
-  const handleVoltar = () => {
-    if (salvarFicha(formRef, "verso")) {
-      mudarPagina();
-    }
-  };
-
+function Verso({ versoRef }) {
   return (
-    <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
-      {/*  BOTÕES */}
-      <div className="relative bottom-[19em] mr-3 flex flex-col justify-center space-y-4 print:hidden">
-        <div>
-          <Botao conteudo={"Voltar"} onClick={handleVoltar} />
-        </div>
-        <div>
-          <Botao
-            conteudo={"Limpar ficha"}
-            onClick={() => limparFicha(formRef, "verso")}
-          />
-        </div>
-      </div>
-
+    <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
       <div>
         <div className="bg-white shadow-md border border-gray-300 flex flex-row">
-          <div className="w-[297mm] h-[210mm] flex justify-center items-center">
-            <form action="" ref={formRef}>
+          <div className="flex justify-center items-center">
+            <form ref={versoRef}>
               <div className="flex flex-col text-[17px]">
                 <div className="flex flex-row">
                   {/* LOGO */}
@@ -115,8 +87,6 @@ function Verso({ mudarPagina }) {
                         name="n_ficha_paciente"
                         className={`w-[6.5em] ${inputStyle}`}
                         maxLength={16}
-                        value={ficha}
-                        onChange={(e) => setFicha(e.target.value)}
                       />
                     </div>
                   </div>
@@ -135,25 +105,6 @@ function Verso({ mudarPagina }) {
               </div>
             </form>
           </div>
-        </div>
-      </div>
-
-      <div className="relative bottom-[19em] ml-3 flex flex-col justify-center space-y-4 print:hidden">
-        <div>
-          <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
-        </div>
-        <div>
-          {operacao === "salvar" ? (
-            <Botao
-              conteudo={"Salvar"}
-              onClick={() => enviarDados(formRef, "salvar")}
-            />
-          ) : (
-            <Botao
-              conteudo={"Atualizar"}
-              onClick={() => enviarDados(formRef, "atualizar")}
-            />
-          )}
         </div>
       </div>
     </div>

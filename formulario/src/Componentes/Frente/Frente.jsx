@@ -1,44 +1,17 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { inputStyle, limparFicha, salvarFicha } from "../../utils";
-import useFrenteForm from "./Hooks/useFrenteForm";
+import { inputStyle } from "../../utils";
 import Colete from "./Colete";
 import Ortese from "./Ortese";
 import Palmilha from "./Palmilha";
 import Protese from "./Protese";
-import Botao from "../Compartilhados/Botao";
 
-function Frente({ mudarPagina }) {
-  const formRef = useRef(null);
-  const [ficha, setFicha] = useState("");
-  const { pagina } = useFrenteForm(formRef, setFicha);
-
-  const handleProximo = () => {
-    if (salvarFicha(formRef, "frente")) {
-      mudarPagina();
-    }
-  };
-
+function Frente({ frenteRef }) {
   return (
-    <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
-      {/* BOTÕES */}
-      <div className="relative h-[50em] mr-3 space-y-4 print:hidden">
-        <div>
-          <Link to={"/"}>
-            <Botao conteudo={"Voltar"} />
-          </Link>
-        </div>
-        <Botao
-          conteudo={"Limpar ficha"}
-          onClick={() => limparFicha(formRef, "frente")}
-        />
-      </div>
-
+    <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
       <div>
         <div className="bg-white shadow-md border border-gray-300 h-[50em]">
-          <div className="w-[297mm] h-[210mm] flex justify-center">
-            <form id="patient-form" ref={formRef} action="">
+          <div className="flex justify-center">
+            <form ref={frenteRef}>
               <div className="flex flex-col text-[17px]">
                 {/* LOGO DO FORMULÁRIO */}
                 <div className="flex flex-row">
@@ -125,16 +98,14 @@ function Frente({ mudarPagina }) {
                   </div>
                   <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
                     <div className="border-b-[1.5px] border-black py-2">
-                      <label htmlFor="n_ficha_paciente" className="ml-2">
+                      <label htmlFor="n_ficha" className="ml-2">
                         Nº:
                       </label>
                       <input
-                        id="n_ficha_paciente"
-                        name="n_ficha_paciente"
+                        id="n_ficha"
+                        name="n_ficha"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
-                        value={ficha}
-                        onChange={(e) => setFicha(e.target.value)}
                       />
                     </div>
                     <div className="border-b-[1.5px] border-black py-2">
@@ -149,12 +120,12 @@ function Frente({ mudarPagina }) {
                       />
                     </div>
                     <div className="border-black py-2">
-                      <label htmlFor="numero_telefone" className="ml-2">
+                      <label htmlFor="telefone" className="ml-2">
                         FONE:
                       </label>
                       <input
-                        id="numero_telefone"
-                        name="numero_telefone"
+                        id="telefone"
+                        name="telefone"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
                       />
@@ -171,15 +142,6 @@ function Frente({ mudarPagina }) {
               </div>
             </form>
           </div>
-        </div>
-      </div>
-
-      <div className="relative h-[50em] ml-3 flex flex-col space-y-4 print:hidden">
-        <div>
-          <Botao conteudo={"Imprimir"} onClick={pagina.imprimir} />
-        </div>
-        <div>
-          <Botao conteudo={"Próximo"} onClick={handleProximo} />
         </div>
       </div>
     </div>
