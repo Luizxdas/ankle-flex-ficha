@@ -4,7 +4,7 @@ import Ortese from "./Ortese";
 import Palmilha from "./Palmilha";
 import Protese from "./Protese";
 
-function Frente({ frenteRef }) {
+function Frente({ frenteRef, nFicha, setNFicha }) {
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
@@ -99,13 +99,15 @@ function Frente({ frenteRef }) {
                   <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
                     <div className="border-b-[1.5px] border-black py-2">
                       <label htmlFor="n_ficha" className="ml-2">
-                        Nº:
+                        Nº FICHA:
                       </label>
                       <input
                         id="n_ficha"
                         name="n_ficha"
                         className={`w-[9.5em] ${inputStyle}`}
                         maxLength={16}
+                        value={nFicha}
+                        onChange={(e) => setNFicha(e.target.value)}
                       />
                     </div>
                     <div className="border-b-[1.5px] border-black py-2">

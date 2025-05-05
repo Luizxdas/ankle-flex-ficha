@@ -2,7 +2,7 @@ import { inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
 
-function Verso({ versoRef }) {
+function Verso({ versoRef, nFicha, setNFicha }) {
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
@@ -79,14 +79,16 @@ function Verso({ versoRef }) {
                   </div>
                   <div className="w-[8em] h-[5em] mx-6 rounded-md border-[1.5px] border-black mt-5">
                     <div className="flex flex-col items-center p-1">
-                      <label htmlFor="n_ficha_paciente" className="ml-2">
-                        Nº:
+                      <label htmlFor="n_ficha" className="ml-2">
+                        Nº FICHA:
                       </label>
                       <input
-                        id="n_ficha_paciente"
-                        name="n_ficha_paciente"
+                        id="n_ficha"
+                        name="n_ficha"
                         className={`w-[6.5em] ${inputStyle}`}
                         maxLength={16}
+                        value={nFicha}
+                        onChange={(e) => setNFicha(e.target.value)}
                       />
                     </div>
                   </div>
