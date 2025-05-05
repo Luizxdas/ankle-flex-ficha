@@ -34,11 +34,19 @@ const useFicha = (frenteRef, versoRef) => {
     };
 
     const gruposProdutos = ["ortese", "protese", "palmilha", "colete"];
+    const gruposTipos = [
+      "pe",
+      "joelho",
+      "quadril",
+      "encaixe",
+      "liner",
+      "n_liner",
+    ];
 
     for (const [key, value] of formData.entries()) {
       const isProduto = gruposProdutos.includes(key);
+      const isTipo = gruposTipos.includes(key);
       const isObs = key.includes("obs");
-      const isTipo = key.includes("tipo") || key.includes("n-liner");
 
       let destino;
 
@@ -53,6 +61,11 @@ const useFicha = (frenteRef, versoRef) => {
       }
 
       if (destino[key]) {
+        if (key === "n_ficha") {
+          destino[key] = value;
+          continue;
+        }
+
         if (Array.isArray(destino[key])) {
           destino[key].push(value);
         } else {
