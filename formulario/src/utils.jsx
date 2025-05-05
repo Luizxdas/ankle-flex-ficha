@@ -12,7 +12,7 @@ export const preencherFormulario = (dados, formRef) => {
   // eslint-disable-next-line no-unused-vars
   Object.entries(dados).forEach(([grupo, conteudo]) => {
     Object.entries(conteudo).forEach(([key, value]) => {
-      const isProduto = produtosMap.some((p) => key.includes(p));
+      const isProduto = produtosMap.some((p) => key === p);
 
       if (isProduto) {
         const valores = Array.isArray(value) ? value : [value];
@@ -21,7 +21,11 @@ export const preencherFormulario = (dados, formRef) => {
           const input = form.querySelector(
             `input[name="${key}"][value="${val}"]`
           );
-          if (input) input.checked = true;
+          if (input) {
+            input.checked = true;
+          } else {
+            console.log("Não é input: ", key, val);
+          }
         });
       } else {
         const input = form.elements[key];
