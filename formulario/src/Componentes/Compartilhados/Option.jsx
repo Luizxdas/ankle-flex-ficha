@@ -11,6 +11,7 @@ function Option({ name, content }) {
   return (
     <label className="flex items-center justify-between cursor-pointer border-black text-start">
       <input
+        data-testid={content}
         type="checkbox"
         name={name}
         value={content}
