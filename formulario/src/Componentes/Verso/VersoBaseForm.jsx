@@ -8,46 +8,52 @@ function VersoBaseForm() {
       <div className={`${vFormStyle}`}>
         <div className="h-[31em] flex flex-col space-y-2 rounded-md select-none text-center">
           <CampoForm
-            id={"tipo-pe"}
-            name={"tipo-pe"}
+            id={"pe"}
+            name={"pe"}
             content={"TIPO DE PÉ:"}
             width={"10em"}
             border={true}
+            centro={true}
           />
           <CampoForm
-            id={"tipo-joelho"}
-            name={"tipo-joelho"}
+            id={"joelho"}
+            name={"joelho"}
             content={"TIPO DE JOELHO:"}
             width={"10em"}
             border={true}
+            centro={true}
           />
           <CampoForm
-            id={"tipo-quadril"}
-            name={"tipo-quadril"}
+            id={"quadril"}
+            name={"quadril"}
             content={"TIPO DE QUADRIL:"}
             width={"10em"}
             border={true}
+            centro={true}
           />
           <CampoForm
-            id={"tipo-encaixe"}
-            name={"tipo-encaixe"}
+            id={"encaixe"}
+            name={"encaixe"}
             content={"TIPO DE ENCAIXE:"}
             width={"10em"}
             border={true}
+            centro={true}
           />
           <CampoForm
-            id={"tipo-liner"}
-            name={"tipo-liner"}
+            id={"liner"}
+            name={"liner"}
             content={"TIPO DE LINER:"}
             width={"10em"}
             border={true}
+            centro={true}
           />
           <CampoForm
-            id={"n-liner"}
-            name={"n-liner"}
+            id={"n_liner"}
+            name={"n_liner"}
             content={"NÚMERO DO LINER:"}
             width={"10em"}
             border={true}
+            centro={true}
           />
           <div className="flex justify-start text-start ml-2">
             <Observacoes id={"obs-verso"} name={"obs-verso"} />

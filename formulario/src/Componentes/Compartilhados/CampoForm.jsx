@@ -1,17 +1,21 @@
 import { inputStyle } from "../../utils";
 
-function CampoForm({ content, id, name, width, border }) {
+function CampoForm({ content, id, name, width, border, centro }) {
   return (
-    <div className={`${border ? "border-black border-b-[1.5px]" : ""}`}>
-      <label htmlFor={id} className="mx-2">
+    <div
+      className={`mx-2 ${centro ? "" : "flex"} ${
+        border ? "border-black border-b-[1.5px]" : ""
+      }`}
+    >
+      <label htmlFor={id} className="whitespace-nowrap">
         {content}
-        <input
-          id={id}
-          name={name}
-          className={`${inputStyle}`}
-          style={{ width }}
-        />
       </label>
+      <input
+        id={id}
+        name={name}
+        className={`${inputStyle}`}
+        style={{ width }}
+      />
     </div>
   );
 }
