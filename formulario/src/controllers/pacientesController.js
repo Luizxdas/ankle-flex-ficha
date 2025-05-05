@@ -114,6 +114,7 @@ export async function salvarFicha(req, res) {
           n_ficha,
           verso.pe,
           verso.joelho,
+          verso.quadril,
           verso.encaixe,
           verso.liner,
           verso.n_liner,
@@ -135,7 +136,6 @@ export async function salvarFicha(req, res) {
 
       if (produtos && typeof produtos === "object") {
         for (const [tipo, produto] of Object.entries(produtos)) {
-          console.log("Tipo: ", tipo, ", produto: ", produto);
           if (tipo) {
             await runQuery(
               `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES (?, ?, ?)`,

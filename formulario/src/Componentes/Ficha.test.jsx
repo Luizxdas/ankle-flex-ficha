@@ -3,6 +3,9 @@ import Ficha from "./Ficha";
 import { MemoryRouter } from "react-router-dom";
 
 describe("Formulário Ficha", () => {
+  // Banco de dados não pode ter duas fichas com o mesmo número, mude a cada teste ou exlua e recrie o banco de dados
+  const n_ficha = "1";
+
   beforeAll(() => {
     window.alert = (msg) => console.log("Alert chamado:", msg);
   });
@@ -116,7 +119,7 @@ describe("Formulário Ficha", () => {
 
   it("deve preencher todos os campos e salvar corretamente", () => {
     // Dados pessoais (frente)
-    preencherCampo(/^Nº FICHA:$/i, "123456");
+    preencherCampo(/^Nº FICHA:$/i, n_ficha);
     preencherCampo(/^PACIENTE:$/i, "João da Silva");
     preencherCampo(/^ENDEREÇO:$/i, "Rua Exemplo");
     preencherCampo(/^N:$/i, "123");
@@ -138,12 +141,12 @@ describe("Formulário Ficha", () => {
     preencherCampo(/^TEMPO:$/i, "6 MESES");
 
     // Dados clínicos (base do verso)
-    preencherCampo(/^TIPO DE PÉ:$/i, "6 MESES");
-    preencherCampo(/^TIPO DE JOELHO:$/i, "6 MESES");
-    preencherCampo(/^TIPO DE QUADRIL:$/i, "6 MESES");
-    preencherCampo(/^TIPO DE ENCAIXE:$/i, "6 MESES");
-    preencherCampo(/^TIPO DE LINER:$/i, "6 MESES");
-    preencherCampo(/^NÚMERO DO LINER:$/i, "6 MESES");
+    preencherCampo(/^TIPO DE PÉ:$/i, "Tipo pé");
+    preencherCampo(/^TIPO DE JOELHO:$/i, "Tipo joelho");
+    preencherCampo(/^TIPO DE QUADRIL:$/i, "Tipo quadril");
+    preencherCampo(/^TIPO DE ENCAIXE:$/i, "Tipo encaixe");
+    preencherCampo(/^TIPO DE LINER:$/i, "Tipo liner");
+    preencherCampo(/^NÚMERO DO LINER:$/i, 12);
 
     // Marcar uma opção por seção
     checkOptionByName("Dedos");
