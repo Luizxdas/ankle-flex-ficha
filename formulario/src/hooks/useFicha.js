@@ -1,28 +1,25 @@
 import { useEffect, useState } from "react";
-import { preencherFormulario } from "../utils";
+import { checarObrigatorio, preencherFormulario } from "../utils";
+import { enviarDados } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
 const useFicha = (frenteRef, versoRef) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const guardarDados = () => {
-    if (frenteRef.current && versoRef.current) {
-      const formData = new FormData();
-      const frenteData = new FormData(frenteRef.current);
-      const versoData = new FormData(versoRef.current);
-
-      for (let [key, value] of frenteData.entries()) {
-        formData.append(key, value);
-      }
-
-      for (let [key, value] of versoData.entries()) {
-        formData.append(key, value);
-      }
-
-      const dados = formatarDados(formData);
-
-      sessionStorage.setItem("dados", JSON.stringify(dados));
+  const handleSalvar = (setAlerta) => {
+    salvarLocalmente();
+    if (checarObrigatorio()) {
+      enviarParaServidor();
+    } else {
+      setAlerta(true);
     }
+  };
+
+  const handleVoltar = () => {
+    salvarLocalmente();
+    navigate("/");
   };
 
   function formatarDados(formData) {
@@ -79,6 +76,31 @@ const useFicha = (frenteRef, versoRef) => {
     return dados;
   }
 
+  const salvarLocalmente = () => {
+    if (frenteRef.current && versoRef.current) {
+      const formData = new FormData();
+      const frenteData = new FormData(frenteRef.current);
+      const versoData = new FormData(versoRef.current);
+
+      for (let [key, value] of frenteData.entries()) {
+        formData.append(key, value);
+      }
+
+      for (let [key, value] of versoData.entries()) {
+        formData.append(key, value);
+      }
+
+      const dados = formatarDados(formData);
+
+      sessionStorage.setItem("dados", JSON.stringify(dados));
+    }
+  };
+
+  const enviarParaServidor = () => {
+    const dados = JSON.parse(sessionStorage.getItem("dados"));
+    enviarDados(dados);
+  };
+
   useEffect(() => {
     const dados = JSON.parse(sessionStorage.getItem("dados")) || "";
     if (dados) {
@@ -89,7 +111,9 @@ const useFicha = (frenteRef, versoRef) => {
 
   return {
     pagina: {
-      guardarDados,
+      handleSalvar,
+      handleVoltar,
+      enviarParaServidor,
       isLoading,
       error,
     },
