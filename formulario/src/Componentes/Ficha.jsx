@@ -1,42 +1,31 @@
+import { useRef, useState } from "react";
 import Frente from "./Frente/Frente";
 import Verso from "./Verso/Verso";
 import Botao from "./Compartilhados/Botao";
-import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
 import useFicha from "../hooks/useFicha";
-import { enviarDados } from "../api/api";
+import Alerta from "./Alerta";
 
 function Ficha() {
-  const navigate = useNavigate();
   const frenteRef = useRef();
   const versoRef = useRef();
-  const [nFicha, setNFicha] = useState("");
   const { pagina } = useFicha(frenteRef, versoRef);
-
-  const handleSalvar = () => {
-    let dados = JSON.parse(sessionStorage.getItem("dados")) || "";
-    if (dados) {
-      enviarDados(dados);
-      alert("Dados enviados!");
-    } else {
-      pagina.guardarDados();
-      dados = JSON.parse(sessionStorage.getItem("dados"));
-      enviarDados(dados);
-      alert("Dados enviado!");
-    }
-  };
-
-  const handleVoltar = () => {
-    pagina.guardarDados();
-    navigate("/");
-  };
+  const [nFicha, setNFicha] = useState("");
+  const [alerta, setAlerta] = useState(false);
 
   return (
     <div className=" bg-slate-400 flex flex-row items-center justify-center">
+      {alerta ? (
+        <Alerta
+          setAlerta={setAlerta}
+          onConfirmar={() => pagina.enviarParaServidor()}
+        />
+      ) : (
+        ""
+      )}
       <div className="print:hidden relative right-44">
         <div className="fixed top-10">
           <div className="flex flex-col space-y-4">
-            <Botao conteudo={"Voltar"} onClick={handleVoltar} />
+            <Botao conteudo={"Voltar"} onClick={pagina.handleVoltar} />
           </div>
         </div>
       </div>
@@ -56,7 +45,10 @@ function Ficha() {
       <div className="print:hidden relative">
         <div className="ml-8 fixed top-10">
           <div className="flex flex-col space-y-4">
-            <Botao conteudo={"Salvar"} onClick={handleSalvar} />
+            <Botao
+              conteudo={"Salvar"}
+              onClick={() => pagina.handleSalvar(setAlerta)}
+            />
             <Botao conteudo={"Imprimir"} onClick={() => window.print()} />
           </div>
         </div>
