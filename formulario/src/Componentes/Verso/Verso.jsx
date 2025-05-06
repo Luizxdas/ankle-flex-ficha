@@ -52,7 +52,7 @@ function Verso({ versoRef, nFicha, setNFicha }) {
                           id={"lado"}
                           name={"lado"}
                           content={"LADO:"}
-                          width={"5em"}
+                          width={"3em"}
                         />
                       </div>
                     </div>

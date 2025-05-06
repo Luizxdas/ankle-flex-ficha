@@ -9,7 +9,7 @@ function Frente({ frenteRef, nFicha, setNFicha }) {
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
       <div>
-        <div className="bg-white shadow-md border border-gray-300 h-[50em]">
+        <div className="bg-white shadow-md h-[50em]">
           <div className="flex justify-center">
             <form ref={frenteRef}>
               <div className="flex flex-col text-[17px]">
