@@ -20,7 +20,7 @@ function Ortese() {
           <Option name={"ortese"} content={"Bilateral"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-ortese"} name={"obs-ortese"} />
+            <Observacoes id={"obs_ortese"} name={"obs_ortese"} />
           </div>
         </div>
       </div>

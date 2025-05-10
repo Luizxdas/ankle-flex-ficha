@@ -22,7 +22,7 @@ function Palmilha() {
           <Option name={"palmilha"} content={"Apoio 1/4 esféra"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-palmilha"} name={"obs-palmilha"} />
+            <Observacoes id={"obs_palmilha"} name={"obs_palmilha"} />
           </div>
         </div>
       </div>

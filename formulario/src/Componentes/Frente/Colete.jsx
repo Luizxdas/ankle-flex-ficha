@@ -17,7 +17,7 @@ function Colete() {
           <Option name={"colete"} content={"Colete 3D (Corretivo)"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-colete"} name={"obs-colete"} />
+            <Observacoes id={"obs_colete"} name={"obs_colete"} />
           </div>
         </div>
       </div>

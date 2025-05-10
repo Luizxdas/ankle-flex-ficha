@@ -23,7 +23,7 @@ function Protese() {
           <Option name={"protese"} content={"Hemipelvectomia"} />
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs-protese"} name={"obs-protese"} />
+            <Observacoes id={"obs_protese"} name={"obs_protese"} />
           </div>
         </div>
       </div>

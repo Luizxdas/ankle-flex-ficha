@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Botao from "./componentes/Compartilhados/Botao";
 
 function Home() {
@@ -7,6 +7,11 @@ function Home() {
   const handleCriar = () => {
     sessionStorage.setItem("operacao", "salvar");
     navigate("/ficha");
+  };
+
+  const handleBuscar = () => {
+    sessionStorage.setItem("operacao", "atualizar");
+    navigate("/pacientes");
   };
 
   return (
@@ -19,9 +24,7 @@ function Home() {
             className="w-[185px] h-[140px]"
           />
         </div>
-        <Link to={"/pacientes"}>
-          <Botao conteudo={"Buscar ficha"} />
-        </Link>
+        <Botao conteudo={"Buscar ficha"} onClick={handleBuscar} />
 
         <Botao conteudo={"Criar ficha"} onClick={handleCriar} />
       </div>

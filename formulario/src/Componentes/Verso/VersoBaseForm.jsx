@@ -56,7 +56,7 @@ function VersoBaseForm() {
             centro={true}
           />
           <div className="flex justify-start text-start ml-2">
-            <Observacoes id={"obs-verso"} name={"obs-verso"} />
+            <Observacoes id={"obs_verso"} name={"obs_verso"} />
           </div>
         </div>
       </div>
