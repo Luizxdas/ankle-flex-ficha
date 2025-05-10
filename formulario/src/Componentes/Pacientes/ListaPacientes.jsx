@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { buscarTodosDados } from "../../api/api";
+import DadosLista from "./DadosLista";
+import CabecalhoLista from "./CabecalhoLista";
 
-function ListaPacientes() {
-  const divStyle = "h-full flex flex-row justify-center mt-1";
+function ListaPacientes({ setNFicha }) {
   const [dados, setDados] = useState([]);
   const [ativo, setAtivo] = useState(null);
 
-  const handleClick = (index) => {
-    if (ativo === index) {
+  const handleClick = (item) => {
+    if (ativo === item) {
       setAtivo(null);
+      setNFicha(null);
     } else {
-      setAtivo(index);
+      setAtivo(item);
+      setNFicha(item.N_FICHA);
     }
   };
 
@@ -29,34 +32,16 @@ function ListaPacientes() {
 
   return (
     <div className="w-[60em] h-[45em] flex flex-col p-[6px] bg-gray-100">
-      <div className="flex flex-row justify-between bg-slate-300 h-[2em]">
-        <div className={`${divStyle} w-[6em]`}>
-          <h1>Nº FICHA</h1>
-        </div>
-        <div className={`${divStyle} w-[30em]`}>
-          <h1>NOME</h1>
-        </div>
-        <div className={`${divStyle} w-[12em]`}>
-          <h1>PRODUTO</h1>
-        </div>
-        <div className={`${divStyle} w-[10em]`}>
-          <h1>DATA DA FICHA</h1>
-        </div>
-      </div>
+      <CabecalhoLista />
       <div className="flex flex-col gap-2 mt-2">
         {dados.map((item, index) => (
-          <button
-            onClick={() => handleClick(item, index)}
-            key={index}
-            className={`flex justify-between h-[2em] pt-1 ${
-              index % 2 === 0 ? "bg-slate-400" : "bg-slate-300"
-            } ${ativo === index ? "bg-blue-400" : ""}`}
-          >
-            <span className="w-[6em] text-center">{item.n_ficha_paciente}</span>
-            <span className="w-[30em] text-center">{item.nome_paciente}</span>
-            <span className="w-[12em] text-center">{item.produto}</span>
-            <span className="w-[10em] text-center">{item.data_ficha}</span>
-          </button>
+          <DadosLista
+            key={item.N_FICHA}
+            handleClick={handleClick}
+            item={item}
+            ativo={ativo}
+            index={index}
+          />
         ))}
       </div>
     </div>

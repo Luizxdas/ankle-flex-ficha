@@ -3,65 +3,104 @@ export const vFormStyle = "w-[15em] border-[1.5px] border-black rounded-md";
 export const baseFormStyle =
   "h-[31em] rounded-md select-none text-start divide-y";
 
-export const preencherFormulario = (dados, formRef) => {
-  if (!formRef?.current || !dados) return;
+export const preencherFormulario = (dados, frenteRef, versoRef) => {
+  if (!dados || !frenteRef?.current || !versoRef?.current) {
+    console.warn(
+      "Dados ou referências inválidas para preenchimento do formulário"
+    );
+    return;
+  }
 
-  const form = formRef.current;
-  const produtosMap = ["protese", "ortese", "palmilha", "colete"];
+  const getInput = (selector) =>
+    frenteRef.current?.querySelector(selector) ||
+    versoRef.current?.querySelector(selector);
 
-  // eslint-disable-next-line no-unused-vars
+  const preencherValor = (elemento, valor) => {
+    if (!elemento) {
+      console.warn(`Elemento não encontrado para o valor: ${valor}`);
+      return false;
+    }
+
+    if (elemento.type === "checkbox") {
+      elemento.checked = true;
+    } else {
+      elemento.value = valor;
+    }
+    return true;
+  };
+
+  const preencherProdutos = (valor) => {
+    let produtos = valor.PRODUTO;
+
+    if (typeof produtos === "string") {
+      produtos = produtos
+        .replace(/^\[\s*|\s*\]$/g, "")
+        .split(",")
+        .map((p) => p.trim().replace(/^"|"$/g, ""));
+    }
+
+    produtos.forEach((p) => {
+      const input = getInput(`input[value="${p}"]`);
+      preencherValor(input);
+    });
+  };
+
+  const preencherTipos = (valor) => {
+    Object.entries(valor).forEach(([chave, descricao]) => {
+      const nome = chave.toLowerCase();
+      const input = getInput(`input[name="${nome}"]`);
+      preencherValor(input, descricao);
+    });
+  };
+
+  const preencherObservacoes = (conteudo) => {
+    Object.entries(conteudo).forEach(([chave, descricao]) => {
+      if (descricao) {
+        const nome = `obs_${chave.toLowerCase()}`;
+        const input = getInput(`textarea[name="${nome}"]`);
+        preencherValor(input, descricao);
+      }
+    });
+  };
+
+  const preencherOutros = (item, valor) => {
+    const nome = item.toLowerCase();
+    const input = getInput(`input[name="${nome}"]`);
+    preencherValor(input, valor);
+  };
+
   Object.entries(dados).forEach(([grupo, conteudo]) => {
-    Object.entries(conteudo).forEach(([key, value]) => {
-      const isProduto = produtosMap.some((p) => key === p);
-
-      if (isProduto) {
-        const valores = Array.isArray(value) ? value : [value];
-
-        valores.forEach((val) => {
-          const input = form.querySelector(
-            `input[name="${key}"][value="${val}"]`
-          );
-          if (input) {
-            input.checked = true;
-          } else {
-            console.log("Não é input: ", key, val);
-          }
-        });
-      } else {
-        const input = form.elements[key];
-        if (input) input.value = value;
+    Object.entries(conteudo).forEach(([item, valor]) => {
+      switch (grupo) {
+        case "produtos":
+          preencherProdutos(valor);
+          break;
+        case "tipos":
+          preencherTipos(valor);
+          break;
+        case "observacoes":
+          preencherObservacoes(conteudo);
+          break;
+        default:
+          preencherOutros(item, valor);
       }
     });
   });
 };
 
-export const checarObrigatorio = (lado) => {
-  if (lado === "frente") {
-    const n_ficha = document.getElementById("n_ficha");
-    const nome_paciente = document.getElementById("nome_paciente");
-    const data_ficha = document.getElementById("data_ficha");
+export const checarObrigatorio = () => {
+  const n_ficha = document.getElementById("n_ficha").value.trim();
+  const nome_paciente = document.getElementById("nome_paciente").value.trim();
+  const data_ficha = document.getElementById("data_ficha").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
 
-    if (
-      !n_ficha.value.trim() ||
-      !nome_paciente.value.trim() ||
-      !data_ficha.value.trim()
-    ) {
-      alert(
-        "Os campos de número da ficha, nome do paciente e data da ficha precisam estar todos preenchidos!"
-      );
-      return false;
-    }
-
-    return true;
-  } else if (lado === "verso") {
-    const n_ficha = document.getElementById("n_ficha");
-    if (!n_ficha.value.trim()) {
-      alert("O campo de número da ficha precisa estar preenchido!");
-      return false;
-    }
-
-    return true;
+  if (!n_ficha) {
+    return "n_ficha";
+  } else if (!nome_paciente || !data_ficha || !telefone) {
+    return false;
   }
+
+  return true;
 };
 
 export const guardarFicha = (formRef, lado) => {
