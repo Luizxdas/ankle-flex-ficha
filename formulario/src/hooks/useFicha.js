@@ -10,7 +10,9 @@ const useFicha = (frenteRef, versoRef) => {
 
   const handleSalvar = (setAlerta) => {
     salvarLocalmente();
-    if (checarObrigatorio()) {
+    if (checarObrigatorio() === "n_ficha") {
+      alert("Preencha o campo Nº FICHA!");
+    } else if (checarObrigatorio() === true) {
       enviarParaServidor();
     } else {
       setAlerta(true);
@@ -58,6 +60,7 @@ const useFicha = (frenteRef, versoRef) => {
       }
 
       if (destino[key]) {
+        // Para que não duplique n_ficha ao usar do verso e da frente
         if (key === "n_ficha") {
           destino[key] = value;
           continue;
@@ -104,8 +107,7 @@ const useFicha = (frenteRef, versoRef) => {
   useEffect(() => {
     const dados = JSON.parse(sessionStorage.getItem("dados")) || "";
     if (dados) {
-      preencherFormulario(dados, frenteRef);
-      preencherFormulario(dados, versoRef);
+      preencherFormulario(dados, frenteRef, versoRef);
     }
   }, [frenteRef, versoRef]);
 

@@ -136,10 +136,14 @@ export async function salvarFicha(req, res) {
 
       if (produtos && typeof produtos === "object") {
         for (const [tipo, produto] of Object.entries(produtos)) {
+          const valorProduto = Array.isArray(produto)
+            ? JSON.stringify(produto)
+            : produto;
+
           if (tipo) {
             await runQuery(
               `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES (?, ?, ?)`,
-              [n_ficha, JSON.stringify(produto), tipo]
+              [n_ficha, valorProduto, tipo]
             );
           }
         }
@@ -287,52 +291,58 @@ export async function buscarDadosFicha(req, res) {
   }
 
   try {
-    const dadosIdentidade = await getQuery(
+    const identidade = await getQuery(
       `SELECT * FROM IDENTIDADE WHERE N_FICHA = ?`,
       [n_ficha]
     );
 
-    if (!dadosIdentidade) {
+    if (!identidade) {
       return res.status(404).json({
         success: false,
         message: "Paciente não encontrado",
       });
     }
 
-    const dadosLocalizacao = await getQuery(
-      `SELECT * FROM LOCALIZACAO WHERE N_FICHA = ?`,
+    const caracteristicas = await getQuery(
+      `SELECT IDADE, SEXO, ALTURA, PESO FROM CARACTERISTICAS WHERE N_FICHA = ?`,
       [n_ficha]
     );
 
-    const dadosCaracteristicas = await getQuery(
-      `SELECT * FROM CARACTERISTICAS WHERE N_FICHA = ?`,
+    const informacoes = await getQuery(
+      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO FROM INFORMACOES WHERE N_FICHA = ?`,
       [n_ficha]
     );
 
-    const dadosInformacoes = await getQuery(
-      `SELECT * FROM INFORMACOES WHERE N_FICHA = ?`,
+    const localizacao = await getQuery(
+      `SELECT ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO FROM LOCALIZACAO WHERE N_FICHA = ?`,
       [n_ficha]
     );
 
-    const dadosObservacoes = await getQuery(
-      `SELECT * FROM OBSERVACOES WHERE N_FICHA = ?`,
+    const observacoes = await getQuery(
+      `SELECT PROTESE, ORTESE, COLETE, PALMILHA, VERSO FROM OBSERVACOES WHERE N_FICHA = ?`,
       [n_ficha]
     );
 
     const produtos = await allQuery(
-      `SELECT * FROM PRODUTOS WHERE N_FICHA = ?`,
+      `SELECT PRODUTO, TIPO FROM PRODUTOS WHERE N_FICHA = ?`,
+      [n_ficha]
+    );
+
+    const tipos = await allQuery(
+      `SELECT PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER FROM TIPOS WHERE N_FICHA = ?`,
       [n_ficha]
     );
 
     res.json({
       success: true,
       dados: {
-        identidade: dadosIdentidade,
-        localizacao: dadosLocalizacao,
-        caracteristicas: dadosCaracteristicas,
-        informacoes: dadosInformacoes,
-        observacoes: dadosObservacoes,
-        produtos: produtos,
+        identidade,
+        localizacao,
+        caracteristicas,
+        informacoes,
+        observacoes,
+        produtos,
+        tipos,
       },
     });
   } catch (error) {
@@ -343,30 +353,24 @@ export async function buscarDadosFicha(req, res) {
 
 export async function buscarDadosGeral(req, res) {
   try {
-    const dadosIdentidade = await allQuery(`SELECT * FROM IDENTIDADE`);
-
-    const dadosLocalizacao = await allQuery(`SELECT * FROM LOCALIZACAO`);
-
-    const dadosCaracteristicas = await allQuery(
-      `SELECT * FROM CARACTERISTICAS`
-    );
-
-    const dadosInformacoes = await allQuery(`SELECT * FROM INFORMACOES`);
-
-    const dadosObservacoes = await allQuery(`SELECT * FROM OBSERVACOES`);
-
+    const pacientes = await allQuery(`SELECT * FROM IDENTIDADE`);
     const produtos = await allQuery(`SELECT * FROM PRODUTOS`);
+
+    const produtosPorFicha = produtos.reduce((acc, produto) => {
+      const ficha = produto.N_FICHA;
+      if (!acc[ficha]) acc[ficha] = [];
+      acc[ficha].push(produto);
+      return acc;
+    }, {});
+
+    const pacientesComProdutos = pacientes.map((paciente) => ({
+      ...paciente,
+      produtos: produtosPorFicha[paciente.N_FICHA] || [],
+    }));
 
     res.json({
       success: true,
-      dados: {
-        identidade: dadosIdentidade,
-        localizacao: dadosLocalizacao,
-        caracteristicas: dadosCaracteristicas,
-        informacoes: dadosInformacoes,
-        observacoes: dadosObservacoes,
-        produtos: produtos,
-      },
+      dados: pacientesComProdutos,
     });
   } catch (error) {
     console.error("Erro ao buscar todos os dados:", error.message);
