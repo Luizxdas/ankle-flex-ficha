@@ -165,8 +165,13 @@ export async function salvarFicha(req, res) {
 
 export async function atualizarFicha(req, res) {
   const dados = req.body;
-  const { produtos = [], observacoes = {} } = req.body;
-  const n_ficha = dados?.n_ficha;
+
+  const produtos = dados.produtos;
+  const observacoes = dados.observacoes;
+  const verso = dados.verso;
+  const outros = dados.outros;
+
+  const n_ficha = outros?.n_ficha;
 
   if (!n_ficha) {
     return res.status(400).json({
@@ -193,7 +198,7 @@ export async function atualizarFicha(req, res) {
           DATA_FICHA = ?,
           TELEFONE = ?
          WHERE N_FICHA = ?`,
-        [dados.nome_paciente, dados.data_ficha, dados.telefone, n_ficha]
+        [outros.nome_paciente, outros.data_ficha, outros.telefone, n_ficha]
       );
 
       await runQuery(
@@ -206,12 +211,12 @@ export async function atualizarFicha(req, res) {
           ESTADO = ?
          WHERE N_FICHA = ?`,
         [
-          dados.endereco,
-          dados.n_endereco,
-          dados.cep,
-          dados.bairro,
-          dados.cidade,
-          dados.estado,
+          outros.endereco,
+          outros.n_endereco,
+          outros.cep,
+          outros.bairro,
+          outros.cidade,
+          outros.estado,
           n_ficha,
         ]
       );
@@ -223,7 +228,7 @@ export async function atualizarFicha(req, res) {
           ALTURA = ?,
           PESO = ?
          WHERE N_FICHA = ?`,
-        [dados.idade, dados.sexo, dados.altura, dados.peso, n_ficha]
+        [outros.idade, outros.sexo, outros.altura, outros.peso, n_ficha]
       );
 
       await runQuery(
@@ -233,7 +238,13 @@ export async function atualizarFicha(req, res) {
           CAUSA_AMPUTACAO = ?,
           TEMPO = ?
          WHERE N_FICHA = ?`,
-        [dados.lado, dados.n_pe, dados.causa_amputacao, dados.tempo, n_ficha]
+        [
+          outros.lado,
+          outros.n_pe,
+          outros.causa_amputacao,
+          outros.tempo,
+          n_ficha,
+        ]
       );
 
       await runQuery(
@@ -256,15 +267,47 @@ export async function atualizarFicha(req, res) {
 
       await runQuery(`DELETE FROM PRODUTOS WHERE N_FICHA = ?`, [n_ficha]);
 
-      if (Array.isArray(produtos) && produtos.length > 0) {
-        for (const item of produtos) {
-          await runQuery(
-            `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO)
-             VALUES (?, ?, ?)`,
-            [n_ficha, item.produto, item.tipo]
-          );
+      if (produtos && typeof produtos === "object") {
+        for (const [tipo, produto] of Object.entries(produtos)) {
+          const valorProduto = Array.isArray(produto)
+            ? JSON.stringify(produto)
+            : produto;
+
+          if (tipo) {
+            await runQuery(
+              `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES (?, ?, ?)`,
+              [n_ficha, valorProduto, tipo]
+            );
+          }
         }
       }
+
+      await runQuery(
+        `INSERT INTO TIPOS (N_FICHA, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          n_ficha,
+          verso.pe,
+          verso.joelho,
+          verso.quadril,
+          verso.encaixe,
+          verso.liner,
+          verso.n_liner,
+        ]
+      );
+
+      await runQuery(
+        `INSERT INTO OBSERVACOES (N_FICHA, PROTESE, ORTESE, COLETE, PALMILHA, VERSO)
+           VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          n_ficha,
+          observacoes.obs_protese,
+          observacoes.obs_ortese,
+          observacoes.obs_colete,
+          observacoes.obs_palmilha,
+          observacoes.obs_verso,
+        ]
+      );
 
       await runQuery("COMMIT");
       console.log("Ficha atualizada com sucesso!");
