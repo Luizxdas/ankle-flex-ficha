@@ -8,6 +8,7 @@ import Alerta from "./Alerta";
 function Ficha() {
   const frenteRef = useRef();
   const versoRef = useRef();
+  const operacao = sessionStorage.getItem("operacao");
   const { pagina } = useFicha(frenteRef, versoRef);
   const [nFicha, setNFicha] = useState("");
   const [alerta, setAlerta] = useState(false);
@@ -46,8 +47,12 @@ function Ficha() {
         <div className="ml-8 fixed top-10">
           <div className="flex flex-col space-y-4">
             <Botao
-              conteudo={"Salvar"}
-              onClick={() => pagina.handleSalvar(setAlerta)}
+              conteudo={operacao === "atualizar" ? "Atualizar" : "Salvar"}
+              onClick={() =>
+                operacao === "atualizar"
+                  ? pagina.handleAtualizar(setAlerta)
+                  : pagina.handleSalvar(setAlerta)
+              }
             />
             <Botao conteudo={"Imprimir"} onClick={() => window.print()} />
           </div>

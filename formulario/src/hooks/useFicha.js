@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { checarObrigatorio, preencherFormulario } from "../utils";
-import { enviarDados } from "../api/api";
+import { atualizarDados, enviarDados } from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 const useFicha = (frenteRef, versoRef) => {
@@ -13,14 +13,24 @@ const useFicha = (frenteRef, versoRef) => {
     if (checarObrigatorio() === "n_ficha") {
       alert("Preencha o campo Nº FICHA!");
     } else if (checarObrigatorio() === true) {
-      enviarParaServidor();
+      enviarParaServidor("salvar");
+    } else {
+      setAlerta(true);
+    }
+  };
+
+  const handleAtualizar = (setAlerta) => {
+    salvarLocalmente();
+    if (checarObrigatorio() === "n_ficha") {
+      alert("Preencha o campo Nº FICHA!");
+    } else if (checarObrigatorio() === true) {
+      enviarParaServidor("atualizar");
     } else {
       setAlerta(true);
     }
   };
 
   const handleVoltar = () => {
-    salvarLocalmente();
     navigate("/");
   };
 
@@ -94,14 +104,18 @@ const useFicha = (frenteRef, versoRef) => {
       }
 
       const dados = formatarDados(formData);
-
       sessionStorage.setItem("dados", JSON.stringify(dados));
     }
   };
 
-  const enviarParaServidor = () => {
+  const enviarParaServidor = (operacao) => {
     const dados = JSON.parse(sessionStorage.getItem("dados"));
-    enviarDados(dados);
+
+    if (operacao === "salvar") {
+      enviarDados(dados);
+    } else if (operacao === "atualizar") {
+      atualizarDados(dados);
+    }
   };
 
   useEffect(() => {
@@ -114,6 +128,7 @@ const useFicha = (frenteRef, versoRef) => {
   return {
     pagina: {
       handleSalvar,
+      handleAtualizar,
       handleVoltar,
       enviarParaServidor,
       isLoading,
