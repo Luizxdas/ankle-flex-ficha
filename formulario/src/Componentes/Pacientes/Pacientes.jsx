@@ -12,7 +12,7 @@ function Pacientes() {
   const handleBuscar = async () => {
     const resposta = await buscarDadosFicha(nFicha);
     sessionStorage.setItem("dados", JSON.stringify(resposta.dados));
-    navigate("/ficha?operacao=atualizar");
+    navigate("/ficha");
   };
 
   return (

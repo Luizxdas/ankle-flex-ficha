@@ -6,11 +6,13 @@ function Home() {
 
   const handleCriar = () => {
     sessionStorage.setItem("operacao", "salvar");
+    sessionStorage.removeItem("dados");
     navigate("/ficha");
   };
 
   const handleBuscar = () => {
     sessionStorage.setItem("operacao", "atualizar");
+    sessionStorage.removeItem("dados");
     navigate("/pacientes");
   };
 
