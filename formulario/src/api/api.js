@@ -14,6 +14,30 @@ export const enviarDados = async (dados) => {
       throw new Error(resultado.message || "Erro ao salvar os dados.");
     }
 
+    console.log("Resposta do backend: ", resultado);
+    return resultado;
+  } catch (error) {
+    console.error("Erro ao enviar:", error.message);
+    return { success: false, message: error.message };
+  }
+};
+
+export const atualizarDados = async (dados) => {
+  try {
+    const resposta = await fetch(`http://localhost:5000/atualizar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dados),
+    });
+
+    const resultado = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(resultado.message || "Erro ao salvar os dados.");
+    }
+
     console.log("Resposta do backend:", resultado);
     return resultado;
   } catch (error) {
