@@ -65,6 +65,13 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
 
   const preencherOutros = (item, valor) => {
     const nome = item.toLowerCase();
+    if (nome === "n_ficha") {
+      let input = frenteRef.current?.querySelector(`input[name="${nome}"]`);
+      input.value = valor;
+      input = versoRef.current?.querySelector(`input[name="${nome}"]`);
+      input.value = valor;
+      return;
+    }
     const input = getInput(`input[name="${nome}"]`);
     preencherValor(input, valor);
   };
