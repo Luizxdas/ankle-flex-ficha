@@ -18,7 +18,7 @@ export const enviarDados = async (dados) => {
     return resultado;
   } catch (error) {
     console.error("Erro ao enviar:", error.message);
-    return { success: false, message: error.message };
+    throw error;
   }
 };
 
