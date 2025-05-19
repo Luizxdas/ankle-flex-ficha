@@ -3,6 +3,19 @@ import Option from "../Compartilhados/Option";
 import { baseFormStyle, vFormStyle } from "../../utils";
 
 function Protese() {
+  const proteseOptions = [
+    "Dedos",
+    "Metatarsiana",
+    "Lisfranc",
+    "Chopart",
+    "Syme",
+    "Transtibial",
+    "Desarticulação do Joelho",
+    "Transfemural",
+    "Desarticulação do Quadril",
+    "Hemipelvectomia",
+  ];
+
   return (
     <div>
       <div className={`${vFormStyle} text-center`}>
@@ -11,16 +24,9 @@ function Protese() {
           Nivel de Amputação
         </h2>
         <div className={baseFormStyle}>
-          <Option name={"protese"} content={"Dedos"} />
-          <Option name={"protese"} content={"Metatarsiana"} />
-          <Option name={"protese"} content={"Lisfranc"} />
-          <Option name={"protese"} content={"Chopart"} />
-          <Option name={"protese"} content={"Syme"} />
-          <Option name={"protese"} content={"Transtibial"} />
-          <Option name={"protese"} content={"Desarticulação do Joelho"} />
-          <Option name={"protese"} content={"Transfemural"} />
-          <Option name={"protese"} content={"Desarticulação do Quadril"} />
-          <Option name={"protese"} content={"Hemipelvectomia"} />
+          {proteseOptions.map((option) => (
+            <Option key={option} name="protese" content={option} />
+          ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
             <Observacoes id={"obs_protese"} name={"obs_protese"} />
