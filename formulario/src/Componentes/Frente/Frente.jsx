@@ -1,4 +1,5 @@
 import { inputStyle } from "../../utils";
+import CampoForm from "../Compartilhados/CampoForm";
 import Colete from "./Colete";
 import Ortese from "./Ortese";
 import Palmilha from "./Palmilha";
@@ -7,7 +8,7 @@ import Protese from "./Protese";
 function Frente({ frenteRef, nFicha, setNFicha }) {
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
-      {/*  FORMULÁRIO */}
+      {/* FORMULÁRIO */}
       <div>
         <div className="bg-white shadow-md h-[50em]">
           <div className="flex justify-center">
@@ -25,117 +26,99 @@ function Frente({ frenteRef, nFicha, setNFicha }) {
                   {/* TOPO DO FORMULÁRIO */}
                   <div className="flex flex-col justify-center mt-5 mr-5 w-[40em] h-[7em] rounded-md border-[1.5px] border-black">
                     <div className="border-b-[1.5px] border-black py-2">
-                      <label htmlFor="nome_paciente" className="ml-2">
-                        PACIENTE:
-                      </label>
-                      <input
+                      <CampoForm
                         id="nome_paciente"
                         name="nome_paciente"
-                        className={`w-[34em] ${inputStyle}`}
-                        maxLength={78}
+                        content="PACIENTE:"
+                        width="34em"
                       />
                     </div>
+
                     <div className="border-b-[1.5px] border-black py-2">
-                      <div>
-                        <label htmlFor="endereco" className="ml-2">
-                          ENDEREÇO:
-                        </label>
-                        <input
+                      <div className="flex justify-between">
+                        <CampoForm
                           id="endereco"
                           name="endereco"
-                          className={`w-[20em] ${inputStyle}`}
-                          maxLength={35}
+                          content="ENDEREÇO:"
+                          width="20em"
                         />
-                        <label htmlFor="n_endereco" className="ml-4">
-                          N:
-                        </label>
-                        <input
+                        <CampoForm
                           id="n_endereco"
                           name="n_endereco"
-                          className={`w-[3.5em] ${inputStyle}`}
+                          content="N:"
+                          width="3.5em"
                           maxLength={6}
                         />
-                        <label htmlFor="cep" className="ml-3">
-                          CEP:
-                        </label>
-                        <input
+                        <CampoForm
                           id="cep"
                           name="cep"
-                          className={`w-[5em] ${inputStyle}`}
+                          content="CEP:"
+                          width="5em"
                           maxLength={9}
                         />
                       </div>
                     </div>
-                    <div className="py-2">
-                      <label htmlFor="bairro" className="ml-2">
-                        BAIRRO:
-                      </label>
-                      <input
+
+                    <div className="flex justify-between py-2">
+                      <CampoForm
                         id="bairro"
                         name="bairro"
-                        className={`w-[16em] ${inputStyle}`}
+                        content="BAIRRO:"
+                        width="16em"
                         maxLength={41}
                       />
-                      <label htmlFor="cidade" className="ml-4">
-                        CIDADE:
-                      </label>
-                      <input
+                      <CampoForm
                         id="cidade"
                         name="cidade"
-                        className={`w-[8em] ${inputStyle}`}
+                        content="CIDADE:"
+                        width="8em"
                         maxLength={13}
                       />
-                      <label htmlFor="estado" className="ml-3">
-                        ESTADO:
-                      </label>
-                      <input
+                      <CampoForm
                         id="estado"
                         name="estado"
-                        className={`w-[1.5em] ${inputStyle}`}
+                        content="ESTADO:"
+                        width="1.5em"
                         maxLength={2}
                       />
                     </div>
                   </div>
                   <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
-                    <div className="border-b-[1.5px] border-black py-2">
+                    <div className="border-b-[1.5px] border-black py-2 pl-2">
                       <label htmlFor="n_ficha" className="ml-2">
                         Nº FICHA:
                       </label>
                       <input
                         id="n_ficha"
                         name="n_ficha"
-                        className={`w-[9.5em] ${inputStyle}`}
+                        className={`w-[6.5em] ${inputStyle}`}
                         maxLength={16}
                         value={nFicha}
                         onChange={(e) => setNFicha(e.target.value)}
                       />
                     </div>
-                    <div className="border-b-[1.5px] border-black py-2">
-                      <label htmlFor="data_ficha" className="ml-2">
-                        DATA:
-                      </label>
-                      <input
+                    <div className="border-b-[1.5px] border-black py-2 pl-2">
+                      <CampoForm
                         id="data_ficha"
                         name="data_ficha"
-                        className={`w-[9.5em] ${inputStyle}`}
+                        content="DATA:"
+                        width="9.5em"
                         maxLength={10}
                       />
                     </div>
-                    <div className="border-black py-2">
-                      <label htmlFor="telefone" className="ml-2">
-                        FONE:
-                      </label>
-                      <input
+                    <div className="py-2 pl-2">
+                      <CampoForm
                         id="telefone"
                         name="telefone"
-                        className={`w-[9.5em] ${inputStyle}`}
+                        content="FONE:"
+                        width="9.5em"
                         maxLength={16}
                       />
                     </div>
                   </div>
                 </div>
                 {/* BASE DO FORMULÁRIO */}
-                <div className="flex flex-row w-[66em] h-[38em]  justify-between p-2">
+                <div className="flex flex-row w-[66em] h-[38em] justify-between p-2">
                   <Protese />
                   <Ortese />
                   <Colete />
