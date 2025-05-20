@@ -7,7 +7,7 @@ function ListaPacientes({ setNFicha }) {
   const [dados, setDados] = useState([]);
   const [ativo, setAtivo] = useState(null);
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
 
   const handleClick = (item) => {
     if (ativo === item) {
@@ -29,7 +29,7 @@ function ListaPacientes({ setNFicha }) {
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
         setLoading(false);
-        setError(true);
+        setError(error);
       }
     };
 
@@ -50,8 +50,14 @@ function ListaPacientes({ setNFicha }) {
       )}
       {error && (
         <div className="w-full h-full flex justify-center items-center bg-slate-900/55">
-          <div className="text-3xl bg-slate-400 w-[15em] h-[8em] flex justify-center rounded-md shadow-lg">
-            <span className="mt-12">Erro ao carregar os dados!</span>
+          <div className="flex justify-center items-center rounded-md w-[27rem] h-[15rem] bg-slate-200">
+            <div className="flex flex-col justify-center items-center gap-2 p-6">
+              <span className="w-10 h-10 flex items-center justify-center rounded-full bg-red-600 text-white text-2xl font-bold">
+                ✕
+              </span>
+              <span className="">Erro ao buscar pacientes!</span>
+              <span className="text-xl mt-1 mb-2">{error.message}</span>
+            </div>
           </div>
         </div>
       )}
