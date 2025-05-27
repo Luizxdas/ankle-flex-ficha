@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Botao from "./componentes/Compartilhados/Botao";
+import LogoHd from "/blank-logo-hd.png";
 
 function Home() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Home() {
       <div className="bg-slate-300 p-4 rounded-lg flex flex-col justify-center items-center space-y-4 mb-24">
         <div>
           <img
-            src="/blank-logo-hd.png"
+            src={LogoHd}
             alt="Logo da Ankle Flex"
             className="w-[185px] h-[140px]"
           />

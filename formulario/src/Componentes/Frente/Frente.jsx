@@ -4,6 +4,7 @@ import Colete from "./Colete";
 import Ortese from "./Ortese";
 import Palmilha from "./Palmilha";
 import Protese from "./Protese";
+import Logo from "/Logo.png";
 
 function Frente({ frenteRef, nFicha, setNFicha }) {
   return (
@@ -18,7 +19,7 @@ function Frente({ frenteRef, nFicha, setNFicha }) {
                 <div className="flex flex-row">
                   <div>
                     <img
-                      src="/Logo.png"
+                      src={Logo}
                       alt="Logo da Ankle Flex"
                       className="w-36 h-36 mr-2"
                     />

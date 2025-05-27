@@ -1,6 +1,8 @@
 import { inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
+import Logo from "/Logo.png";
+import Perna from "/Perna.png";
 
 function Verso({ versoRef, nFicha, setNFicha }) {
   return (
@@ -15,7 +17,7 @@ function Verso({ versoRef, nFicha, setNFicha }) {
                   {/* LOGO */}
                   <div>
                     <img
-                      src="/Logo.png"
+                      src={Logo}
                       alt="Logo da Ankle Flex"
                       className="w-36 h-36 mr-12"
                     />
@@ -98,7 +100,7 @@ function Verso({ versoRef, nFicha, setNFicha }) {
                   <VersoBaseForm />
                   <div className="relative right-52">
                     <img
-                      src="/Perna.png"
+                      src={Perna}
                       alt="Desenho de uma perna com medidas"
                       className="w-[27em] h-[37em]"
                     />
