@@ -1,11 +1,31 @@
+import { fileURLToPath } from "url";
+import { app } from "electron";
 import sqlite3Pkg from "sqlite3";
+import path from "path";
+import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const isDev = !app || !app.isPackaged;
+const isPackaged = app.isPackaged;
+
+const dbPath = isPackaged
+  ? path.join(app.getPath("userData"), "banco.sqlite")
+  : path.join(__dirname, "..", "..", "banco.sqlite");
+
+console.log("Usando banco de dados em:", dbPath);
+
+if (!fs.existsSync(dbPath)) {
+  console.warn("⚠️ Arquivo banco.sqlite não encontrado!");
+}
 
 const sqlite3 = sqlite3Pkg.verbose();
-export const db = new sqlite3.Database("./banco.sqlite", (err) => {
+export const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Erro ao conectar ao banco de dados:", err.message);
-  } else {
-    console.log("Conectado ao banco de dados SQLite.");
+  } else if (isDev) {
+    console.log("Criando banco de dados SQLite.");
     criarTabelas();
   }
 });
