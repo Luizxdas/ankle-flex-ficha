@@ -11,13 +11,14 @@ const isDev = !app || !app.isPackaged;
 const isPackaged = app.isPackaged;
 
 const dbPath = isPackaged
-  ? path.join(app.getPath("userData"), "banco.sqlite")
+  ? // eslint-disable-next-line no-undef
+    path.join(process.resourcesPath, "banco.sqlite")
   : path.join(__dirname, "..", "..", "banco.sqlite");
 
 console.log("Usando banco de dados em:", dbPath);
 
 if (!fs.existsSync(dbPath)) {
-  console.warn("⚠️ Arquivo banco.sqlite não encontrado!");
+  console.error("⚠️ Arquivo banco.sqlite não encontrado!");
 }
 
 const sqlite3 = sqlite3Pkg.verbose();
