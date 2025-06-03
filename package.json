@@ -55,10 +55,12 @@
     "appId": "com.ankleflex.ficha",
     "productName": "Ficha AF",
     "files": [
-      "dist/**/*",
       "main.js",
-      "server.js",
       "src/**/*",
+      "dist/**/*",
+      "backend/server.js",
+      "backend/config/database.js",
+      "backend/controllers/pacientesController.js",
       "package.json"
     ],
     "extraResources": [

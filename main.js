@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { app, BrowserWindow } from "electron";
 import { fileURLToPath } from "url";
-import { createServer } from "./server.js";
+import { createServer } from "./backend/server.js";
 import path from "path";
 
 const __filename = fileURLToPath(import.meta.url);

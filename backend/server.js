@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import "./src/config/database.js";
+import "./config/database.js";
 import {
   atualizarFicha,
   buscarDadosFicha,
   buscarDadosGeral,
   salvarFicha,
-} from "./src/controllers/pacientesController.js";
+} from "./controllers/pacientesController.js";
 
 export function createServer() {
   const app = express();
