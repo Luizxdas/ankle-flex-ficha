@@ -1,10 +1,10 @@
 {
-  "name": "ficha",
+  "name": "ankle-flex-ficha",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "main": "main.js",
-  "description": "Aplicação de ficha em Electron",
+  "description": "Aplicação de ficha em Electron para empresa Ankle Flex",
   "author": "Luiz Augusto Fernandes de Medeiros Nunes <luizxdas@outlook.com>",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -52,8 +52,8 @@
     "vitest": "^3.1.2"
   },
   "build": {
-    "appId": "com.seuapp.formulario",
-    "productName": "FormularioApp",
+    "appId": "com.ankleflex.ficha",
+    "productName": "Ficha AF",
     "files": [
       "dist/**/*",
       "main.js",
