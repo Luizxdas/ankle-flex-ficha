@@ -56,7 +56,6 @@
     "productName": "Ficha AF",
     "files": [
       "main.js",
-      "src/**/*",
       "dist/**/*",
       "backend/server.js",
       "backend/config/database.js",
@@ -74,7 +73,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "public/icon.ico"
+      "icon": "public/AF-Icone.png"
     }
   }
 }
