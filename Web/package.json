@@ -1,0 +1,77 @@
+{
+  "name": "ankle-flex-ficha",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "main.js",
+  "description": "Aplicação de ficha em Electron para empresa Ankle Flex",
+  "author": "Luiz Augusto Fernandes de Medeiros Nunes <luizxdas@outlook.com>",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server.js",
+    "client": "vite",
+    "build": "vite build",
+    "start": "vite build && electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest",
+    "electron": "electron main.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "glob": "^11.0.1",
+    "pg": "^8.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.4.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "jsdom": "^26.1.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.2.0",
+    "vitest": "^3.1.2"
+  },
+  "build": {
+    "appId": "com.ankleflex.ficha",
+    "productName": "Ficha AF",
+    "files": [
+      "main.js",
+      "dist/**/*",
+      "backend/server.js",
+      "backend/config/database.js",
+      "backend/controllers/pacientesController.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "banco.sqlite",
+        "to": "banco.sqlite"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/AF-Icone.png"
+    }
+  }
+}
