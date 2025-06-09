@@ -7,7 +7,6 @@ import {
   buscarDadosGeral,
   salvarFicha,
 } from "./controllers/pacientesController.js";
-import { criarTabelas } from "./config/database.js";
 
 const app = express();
 const router = express.Router();
@@ -24,6 +23,4 @@ app.use("/", router);
 
 app.listen(5000, () => {
   console.log("Servidor rodando na porta 5000");
-  console.log("Chamando função de criar tabelas no db...");
-  criarTabelas();
 });
