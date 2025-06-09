@@ -3,7 +3,7 @@ import { buscarTodosDados } from "../../api/api";
 import DadosLista from "./DadosLista";
 import CabecalhoLista from "./CabecalhoLista";
 
-function ListaPacientes({ setNFicha }) {
+function ListaPacientes({ setNFicha, pesquisa, produtos }) {
   const [dados, setDados] = useState([]);
   const [ativo, setAtivo] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ function ListaPacientes({ setNFicha }) {
       setNFicha(null);
     } else {
       setAtivo(item);
-      setNFicha(item.N_FICHA);
+      setNFicha(item.n_ficha);
     }
   };
 
@@ -62,15 +62,37 @@ function ListaPacientes({ setNFicha }) {
         </div>
       )}
       <div className="flex flex-col gap-2 mt-2">
-        {dados.map((item, index) => (
-          <DadosLista
-            key={item.N_FICHA}
-            handleClick={handleClick}
-            item={item}
-            ativo={ativo}
-            index={index}
-          />
-        ))}
+        {dados
+          .filter((item) => {
+            const matchesPesquisa =
+              pesquisa === "" ||
+              item.nome_paciente
+                .toLowerCase()
+                .includes(pesquisa.toLowerCase()) ||
+              String(item.n_ficha).includes(pesquisa);
+
+            const prodMap =
+              item.produtos.map((p) => p.tipo).join(", ") || "Sem produtos";
+
+            const tiposMap = prodMap
+              .split(",")
+              .map((t) => t.trim().toLowerCase());
+
+            const matchesProdutos =
+              produtos.length === 0 ||
+              produtos.some((tipo) => tiposMap.includes(tipo.toLowerCase()));
+
+            return matchesPesquisa && matchesProdutos;
+          })
+          .map((item, index) => (
+            <DadosLista
+              key={item.n_ficha}
+              handleClick={handleClick}
+              item={item}
+              ativo={ativo}
+              index={index}
+            />
+          ))}
       </div>
     </div>
   );

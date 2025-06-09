@@ -4,10 +4,13 @@ import { buscarDadosFicha } from "../../api/api";
 import Pesquisa from "./Pesquisa";
 import ListaPacientes from "./ListaPacientes";
 import Botao from "../Compartilhados/Botao";
+import Produtos from "./Produtos";
 
 function Pacientes() {
   const navigate = useNavigate();
   const [nFicha, setNFicha] = useState(null);
+  const [pesquisa, setPesquisa] = useState("");
+  const [produtos, setProdutos] = useState([]);
 
   const handleBuscar = async () => {
     const resposta = await buscarDadosFicha(nFicha);
@@ -24,8 +27,13 @@ function Pacientes() {
       </div>
 
       <div className=" h-[50em] w-[70em] flex flex-col items-center p-2 space-y-4">
-        <Pesquisa />
-        <ListaPacientes setNFicha={setNFicha} />
+        <Pesquisa setPesquisa={setPesquisa} pesquisa={pesquisa} />
+        <Produtos produtos={produtos} setProdutos={setProdutos} />
+        <ListaPacientes
+          setNFicha={setNFicha}
+          pesquisa={pesquisa}
+          produtos={produtos}
+        />
       </div>
 
       <div className="relative bottom-[17em] flex flex-col justify-center space-y-4 right-16">

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Pesquisa() {
+function Pesquisa({ setPesquisa, pesquisa }) {
   const pacienteRef = useRef(null);
   const navigate = useNavigate();
 
@@ -53,6 +53,8 @@ function Pesquisa() {
         </div>
         <input
           ref={pacienteRef}
+          value={pesquisa}
+          onChange={(e) => setPesquisa(e.target.value)}
           type="search"
           id="barra-pesquisa"
           className="block w-full h-full p-4 ps-10 text-gray-900 border border-slate-400 rounded-lg bg-slate-50 outline-none"
