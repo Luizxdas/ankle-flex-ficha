@@ -30,7 +30,7 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
   };
 
   const preencherProdutos = (valor) => {
-    let produtos = valor.PRODUTO;
+    let produtos = valor.produto;
 
     if (typeof produtos === "string") {
       produtos = produtos

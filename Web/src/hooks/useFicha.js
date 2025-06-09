@@ -41,13 +41,35 @@ const useFicha = (frenteRef, versoRef, setModal, setNFicha) => {
       "n_liner",
     ];
 
+    const camposNumericos = [
+      "n_ficha",
+      "idade",
+      "peso",
+      "altura",
+      "n_endereco",
+      "n_liner",
+      "n_pe",
+    ];
+
+    function formatarValor(key, value) {
+      if (!value || value.trim() === "") {
+        return null;
+      }
+
+      if (camposNumericos.includes(key)) {
+        const num = parseFloat(value);
+        return isNaN(num) ? null : num;
+      }
+
+      return value;
+    }
+
     for (const [key, value] of formData.entries()) {
       const isProduto = gruposProdutos.includes(key);
       const isTipo = gruposTipos.includes(key);
       const isObs = key.includes("obs");
 
       let destino;
-
       if (isObs) {
         destino = dados.observacoes;
       } else if (isProduto) {
@@ -58,20 +80,20 @@ const useFicha = (frenteRef, versoRef, setModal, setNFicha) => {
         destino = dados.outros;
       }
 
+      const valorFormatado = formatarValor(key, value);
+
       if (destino[key]) {
-        // Para que não duplique n_ficha ao usar do verso e da frente
         if (key === "n_ficha") {
-          destino[key] = value;
+          destino[key] = valorFormatado;
           continue;
         }
-
         if (Array.isArray(destino[key])) {
-          destino[key].push(value);
+          destino[key].push(valorFormatado);
         } else {
-          destino[key] = [destino[key], value];
+          destino[key] = [destino[key], valorFormatado];
         }
       } else {
-        destino[key] = value;
+        destino[key] = valorFormatado;
       }
     }
 

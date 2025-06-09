@@ -3,7 +3,6 @@ import Ficha from "./Ficha";
 import { MemoryRouter } from "react-router-dom";
 
 describe("Formulário Ficha", () => {
-  // Banco de dados não pode ter duas fichas com o mesmo número, mude a cada teste ou exlua e recrie o banco de dados
   const n_ficha = "1";
 
   beforeAll(() => {
