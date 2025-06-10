@@ -72,6 +72,12 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
       input.value = valor;
       return;
     }
+    if (nome === "data_ficha") {
+      const data = new Date(valor).toLocaleDateString();
+      const input = getInput(`input[name="${nome}"]`);
+      preencherValor(input, data);
+      return;
+    }
     const input = getInput(`input[name="${nome}"]`);
     preencherValor(input, valor);
   };
@@ -165,3 +171,13 @@ export const limparFicha = (formRef, lado) => {
 export const imprimir = () => {
   window.print;
 };
+
+export function formatarData(e) {
+  let valor = e.target.value.replace(/\D/g, "");
+
+  if (valor.length > 2) valor = valor.slice(0, 2) + "/" + valor.slice(2);
+  if (valor.length > 5) valor = valor.slice(0, 5) + "/" + valor.slice(5);
+  if (valor.length > 10) valor = valor.slice(0, 10);
+
+  e.target.value = valor;
+}
