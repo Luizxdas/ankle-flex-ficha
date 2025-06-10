@@ -1,6 +1,15 @@
 import { inputStyle } from "../../utils";
 
-function CampoForm({ content, id, name, width, border, centro }) {
+function CampoForm({
+  content,
+  id,
+  name,
+  width,
+  border,
+  onChange,
+  defaultValue,
+  centro,
+}) {
   return (
     <div
       className={`mx-2 ${centro ? "" : "flex"} ${
@@ -15,6 +24,8 @@ function CampoForm({ content, id, name, width, border, centro }) {
         name={name}
         className={`${inputStyle}`}
         style={{ width }}
+        onChange={onChange}
+        defaultValue={defaultValue}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { inputStyle } from "../../utils";
+import { formatarData, inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import Colete from "./Colete";
 import Ortese from "./Ortese";
@@ -7,6 +7,8 @@ import Protese from "./Protese";
 import Logo from "/Logo.png";
 
 function Frente({ frenteRef, nFicha, setNFicha }) {
+  const data = new Date().toLocaleDateString();
+
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/* FORMULÁRIO */}
@@ -105,6 +107,8 @@ function Frente({ frenteRef, nFicha, setNFicha }) {
                         content="DATA:"
                         width="9.5em"
                         maxLength={10}
+                        onChange={formatarData}
+                        defaultValue={data}
                       />
                     </div>
                     <div className="py-2 pl-2">
