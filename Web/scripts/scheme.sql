@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS informacoes (
     n_pe TEXT,
     causa_amputacao TEXT,
     tempo TEXT,
+    preco NUMERIC(15, 2),
+    data_entrega DATE,
     FOREIGN KEY (n_ficha) REFERENCES identidade(n_ficha) ON DELETE CASCADE
 );
 

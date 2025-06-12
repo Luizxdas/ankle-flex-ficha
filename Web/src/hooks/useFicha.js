@@ -56,6 +56,14 @@ const useFicha = (frenteRef, versoRef, setModal, setNFicha) => {
         return null;
       }
 
+      if (key === "preco") {
+        const preco = value.replace(/\D/g, "");
+        const valorNumerico = parseFloat(preco) / 100;
+
+        console.log(valorNumerico);
+        return valorNumerico;
+      }
+
       if (camposNumericos.includes(key)) {
         const num = parseFloat(value);
         return isNaN(num) ? null : num;
@@ -70,6 +78,7 @@ const useFicha = (frenteRef, versoRef, setModal, setNFicha) => {
       const isObs = key.includes("obs");
 
       let destino;
+
       if (isObs) {
         destino = dados.observacoes;
       } else if (isProduto) {

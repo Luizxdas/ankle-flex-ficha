@@ -1,4 +1,4 @@
-import { inputStyle } from "../../utils";
+import { formatarData, formatarValor, inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
 import Logo from "/Logo.png";
@@ -96,14 +96,38 @@ function Verso({ versoRef, nFicha, setNFicha }) {
                   </div>
                 </div>
                 {/* BASE DO FORMULÁRIO */}
-                <div className="flex flex-row w-[66em] h-[38em] justify-between p-2">
-                  <VersoBaseForm />
-                  <div className="relative right-52">
-                    <img
-                      src={Perna}
-                      alt="Desenho de uma perna com medidas"
-                      className="w-[27em] h-[37em]"
-                    />
+                <div className="flex flex-row">
+                  <div className="flex flex-row w-[66em] h-[37.5em] justify-between pl-2 mt-2">
+                    <VersoBaseForm />
+                    <div>
+                      <img
+                        src={Perna}
+                        alt="Desenho de uma perna com medidas"
+                        className="w-[27em] h-[37em]"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-y-3">
+                      <div className="flex flex-col items-center text-center w-[8em] h-[5em] mr-5 rounded-md border-[1.5px] border-black p-1">
+                        <CampoForm
+                          id={"preco"}
+                          name={"preco"}
+                          content={"ORÇAMENTO:"}
+                          width={"7em"}
+                          centro={true}
+                          onChange={formatarValor}
+                        />
+                      </div>
+                      <div className="flex flex-col items-center text-center w-[8em] h-[5em] mr-5 rounded-md border-[1.5px] border-black p-1">
+                        <CampoForm
+                          id={"data_entrega"}
+                          name={"data_entrega"}
+                          content={"ENTREGA:"}
+                          width={"6em"}
+                          centro={true}
+                          onChange={formatarData}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

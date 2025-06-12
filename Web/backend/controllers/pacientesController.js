@@ -89,14 +89,16 @@ export async function salvarFicha(req, res) {
       );
 
       await client.query(
-        `INSERT INTO INFORMACOES (N_FICHA, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO)
-         VALUES ($1, $2, $3, $4, $5)`,
+        `INSERT INTO INFORMACOES (N_FICHA, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO, PRECO, DATA_ENTREGA)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           n_ficha,
           outros.lado,
           outros.n_pe,
           outros.causa_amputacao,
           outros.tempo,
+          outros.preco,
+          outros.data_entrega,
         ]
       );
 
@@ -231,13 +233,17 @@ export async function atualizarFicha(req, res) {
           LADO = $1,
           N_PE = $2,
           CAUSA_AMPUTACAO = $3,
-          TEMPO = $4
-         WHERE N_FICHA = $5`,
+          TEMPO = $4,
+          PRECO = $5,
+          DATA_ENTREGA = $6
+         WHERE N_FICHA = $7`,
         [
           outros.lado,
           outros.n_pe,
           outros.causa_amputacao,
           outros.tempo,
+          outros.preco,
+          outros.data_entrega,
           n_ficha,
         ]
       );
@@ -337,7 +343,7 @@ export async function buscarDadosFicha(req, res) {
     );
 
     const informacoes = await getQuery(
-      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO FROM INFORMACOES WHERE N_FICHA = $1`,
+      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO, PRECO, DATA_ENTREGA FROM INFORMACOES WHERE N_FICHA = $1`,
       [n_ficha]
     );
 
