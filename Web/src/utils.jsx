@@ -30,6 +30,10 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
   };
 
   const preencherProdutos = (valor) => {
+    if (!valor) {
+      return;
+    }
+
     let produtos = valor.produto;
 
     if (typeof produtos === "string") {
@@ -46,6 +50,10 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
   };
 
   const preencherTipos = (valor) => {
+    if (!valor) {
+      return;
+    }
+
     Object.entries(valor).forEach(([chave, descricao]) => {
       const nome = chave.toLowerCase();
       const input = getInput(`input[name="${nome}"]`);
@@ -54,6 +62,10 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
   };
 
   const preencherObservacoes = (conteudo) => {
+    if (!conteudo) {
+      return;
+    }
+
     Object.entries(conteudo).forEach(([chave, descricao]) => {
       if (descricao) {
         const nome = `obs_${chave.toLowerCase()}`;
@@ -64,20 +76,47 @@ export const preencherFormulario = (dados, frenteRef, versoRef) => {
   };
 
   const preencherOutros = (item, valor) => {
+    if (!item || !valor) {
+      return;
+    }
+
     const nome = item.toLowerCase();
+
     if (nome === "n_ficha") {
       let input = frenteRef.current?.querySelector(`input[name="${nome}"]`);
       input.value = valor;
       input = versoRef.current?.querySelector(`input[name="${nome}"]`);
       input.value = valor;
       return;
-    }
-    if (nome === "data_ficha") {
+    } else if (nome === "data_ficha") {
       const data = new Date(valor).toLocaleDateString();
       const input = getInput(`input[name="${nome}"]`);
       preencherValor(input, data);
       return;
+    } else if (nome === "preco") {
+      const input = getInput(`input[name="${nome}"]`);
+      const preco = valor.replace(/\D/g, "");
+
+      const valorNumerico = parseFloat(preco) / 100;
+
+      const valorFormatado = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(valorNumerico);
+
+      preencherValor(input, valorFormatado);
+      return;
+    } else if (nome === "data_entrega") {
+      const input = getInput(`input[name="${nome}"]`);
+
+      let data = new Date(valor).toLocaleDateString();
+
+      console.log(data);
+
+      preencherValor(input, data);
+      return;
     }
+
     const input = getInput(`input[name="${nome}"]`);
     preencherValor(input, valor);
   };
@@ -180,4 +219,22 @@ export function formatarData(e) {
   if (valor.length > 10) valor = valor.slice(0, 10);
 
   e.target.value = valor;
+}
+
+export function formatarValor(e) {
+  let valor = e.target.value.replace(/\D/g, "");
+
+  if (valor === "") {
+    e.target.value = "";
+    return;
+  }
+
+  const valorNumerico = parseFloat(valor) / 100;
+
+  const valorFormatado = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(valorNumerico);
+
+  e.target.value = valorFormatado;
 }
