@@ -22,7 +22,7 @@ function CampoForm({
       <input
         id={id}
         name={name}
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${centro ? "text-center" : ""}`}
         style={{ width }}
         onChange={onChange}
         defaultValue={defaultValue}
