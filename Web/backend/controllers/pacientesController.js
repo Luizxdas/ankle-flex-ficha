@@ -35,11 +35,8 @@ export async function checarFichaExistente(n_ficha) {
 
 export async function salvarFicha(req, res) {
   const dados = req.body;
-  const produtos = dados.produtos;
-  const observacoes = dados.observacoes;
-  const verso = dados.verso;
-  const outros = dados.outros;
-  const n_ficha = outros?.n_ficha;
+  const n_ficha =
+    dados.identidade.n_ficha_frente || dados.identidade.n_ficha_verso;
 
   if (!n_ficha) {
     return res.status(400).json({
@@ -65,7 +62,12 @@ export async function salvarFicha(req, res) {
       await client.query(
         `INSERT INTO IDENTIDADE (N_FICHA, NOME_PACIENTE, DATA_FICHA, TELEFONE)
          VALUES ($1, $2, $3, $4)`,
-        [n_ficha, outros.nome_paciente, outros.data_ficha, outros.telefone]
+        [
+          n_ficha,
+          dados.identidade.nome_paciente,
+          dados.identidade.data_ficha,
+          dados.identidade.telefone,
+        ]
       );
 
       await client.query(
@@ -73,19 +75,25 @@ export async function salvarFicha(req, res) {
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           n_ficha,
-          outros.endereco,
-          outros.n_endereco,
-          outros.cep,
-          outros.bairro,
-          outros.cidade,
-          outros.estado,
+          dados.localizacao.endereco,
+          dados.localizacao.n_endereco,
+          dados.localizacao.cep,
+          dados.localizacao.bairro,
+          dados.localizacao.cidade,
+          dados.localizacao.estado,
         ]
       );
 
       await client.query(
         `INSERT INTO CARACTERISTICAS (N_FICHA, IDADE, SEXO, ALTURA, PESO)
          VALUES ($1, $2, $3, $4, $5)`,
-        [n_ficha, outros.idade, outros.sexo, outros.altura, outros.peso]
+        [
+          n_ficha,
+          dados.caracteristicas.idade,
+          dados.caracteristicas.sexo,
+          dados.caracteristicas.altura,
+          dados.caracteristicas.peso,
+        ]
       );
 
       await client.query(
@@ -93,12 +101,12 @@ export async function salvarFicha(req, res) {
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           n_ficha,
-          outros.lado,
-          outros.n_pe,
-          outros.causa_amputacao,
-          outros.tempo,
-          outros.preco,
-          outros.data_entrega,
+          dados.informacoes.lado,
+          dados.informacoes.n_pe,
+          dados.informacoes.causa_amputacao,
+          dados.informacoes.tempo,
+          dados.informacoes.preco,
+          dados.informacoes.data_entrega,
         ]
       );
 
@@ -107,12 +115,12 @@ export async function salvarFicha(req, res) {
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           n_ficha,
-          verso.pe,
-          verso.joelho,
-          verso.quadril,
-          verso.encaixe,
-          verso.liner,
-          verso.n_liner,
+          dados.tipos.pe,
+          dados.tipos.joelho,
+          dados.tipos.quadril,
+          dados.tipos.encaixe,
+          dados.tipos.liner,
+          dados.tipos.n_liner,
         ]
       );
 
@@ -121,16 +129,16 @@ export async function salvarFicha(req, res) {
          VALUES ($1, $2, $3, $4, $5, $6)`,
         [
           n_ficha,
-          observacoes["obs-protese"],
-          observacoes["obs-ortese"],
-          observacoes["obs-colete"],
-          observacoes["obs-palmilha"],
-          observacoes["obs-verso"],
+          dados.observacoes.protese,
+          dados.observacoes.ortese,
+          dados.observacoes.colete,
+          dados.observacoes.palmilha,
+          dados.observacoes.verso,
         ]
       );
 
-      if (produtos && typeof produtos === "object") {
-        for (const [tipo, produto] of Object.entries(produtos)) {
+      if (dados.produtos && typeof dados.produtos === "object") {
+        for (const [tipo, produto] of Object.entries(dados.produtos)) {
           const valorProduto = Array.isArray(produto)
             ? JSON.stringify(produto)
             : produto;
@@ -162,11 +170,8 @@ export async function salvarFicha(req, res) {
 
 export async function atualizarFicha(req, res) {
   const dados = req.body;
-  const produtos = dados.produtos;
-  const observacoes = dados.observacoes;
-  const verso = dados.verso;
-  const outros = dados.outros;
-  const n_ficha = outros?.n_ficha;
+  const n_ficha =
+    dados.identidade.n_ficha_frente || dados.identidade.n_ficha_verso;
 
   if (!n_ficha) {
     return res.status(400).json({
@@ -195,7 +200,12 @@ export async function atualizarFicha(req, res) {
           DATA_FICHA = $2,
           TELEFONE = $3
          WHERE N_FICHA = $4`,
-        [outros.nome_paciente, outros.data_ficha, outros.telefone, n_ficha]
+        [
+          dados.identidade.nome_paciente,
+          dados.identidade.data_ficha,
+          dados.identidade.telefone,
+          n_ficha,
+        ]
       );
 
       await client.query(
@@ -208,12 +218,12 @@ export async function atualizarFicha(req, res) {
           ESTADO = $6
          WHERE N_FICHA = $7`,
         [
-          outros.endereco,
-          outros.n_endereco,
-          outros.cep,
-          outros.bairro,
-          outros.cidade,
-          outros.estado,
+          dados.localizacao.endereco,
+          dados.localizacao.n_endereco,
+          dados.localizacao.cep,
+          dados.localizacao.bairro,
+          dados.localizacao.cidade,
+          dados.localizacao.estado,
           n_ficha,
         ]
       );
@@ -225,7 +235,13 @@ export async function atualizarFicha(req, res) {
           ALTURA = $3,
           PESO = $4
          WHERE N_FICHA = $5`,
-        [outros.idade, outros.sexo, outros.altura, outros.peso, n_ficha]
+        [
+          dados.caracteristicas.idade,
+          dados.caracteristicas.sexo,
+          dados.caracteristicas.altura,
+          dados.caracteristicas.peso,
+          n_ficha,
+        ]
       );
 
       await client.query(
@@ -238,20 +254,20 @@ export async function atualizarFicha(req, res) {
           DATA_ENTREGA = $6
          WHERE N_FICHA = $7`,
         [
-          outros.lado,
-          outros.n_pe,
-          outros.causa_amputacao,
-          outros.tempo,
-          outros.preco,
-          outros.data_entrega,
+          dados.informacoes.lado,
+          dados.informacoes.n_pe,
+          dados.informacoes.causa_amputacao,
+          dados.informacoes.tempo,
+          dados.informacoes.preco,
+          dados.informacoes.data_entrega,
           n_ficha,
         ]
       );
 
       await client.query(`DELETE FROM PRODUTOS WHERE N_FICHA = $1`, [n_ficha]);
 
-      if (produtos && typeof produtos === "object") {
-        for (const [tipo, produto] of Object.entries(produtos)) {
+      if (dados.produtos && typeof dados.produtos === "object") {
+        for (const [tipo, produto] of Object.entries(dados.produtos)) {
           const valorProduto = Array.isArray(produto)
             ? JSON.stringify(produto)
             : produto;
@@ -271,12 +287,12 @@ export async function atualizarFicha(req, res) {
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           n_ficha,
-          verso.pe,
-          verso.joelho,
-          verso.quadril,
-          verso.encaixe,
-          verso.liner,
-          verso.n_liner,
+          dados.tipos.pe,
+          dados.tipos.joelho,
+          dados.tipos.quadril,
+          dados.tipos.encaixe,
+          dados.tipos.liner,
+          dados.tipos.n_liner,
         ]
       );
 
@@ -289,11 +305,11 @@ export async function atualizarFicha(req, res) {
           VERSO = $5
          WHERE N_FICHA = $6`,
         [
-          observacoes.protese,
-          observacoes.ortese,
-          observacoes.colete,
-          observacoes.palmilha,
-          observacoes.verso,
+          dados.observacoes.protese,
+          dados.observacoes.ortese,
+          dados.observacoes.colete,
+          dados.observacoes.palmilha,
+          dados.observacoes.verso,
           n_ficha,
         ]
       );
