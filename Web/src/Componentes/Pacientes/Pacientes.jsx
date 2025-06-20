@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { buscarDadosFicha } from "../../api/api";
 import Pesquisa from "./Pesquisa";
 import ListaPacientes from "./ListaPacientes";
 import Botao from "../Compartilhados/Botao";
@@ -13,8 +12,7 @@ function Pacientes() {
   const [produtos, setProdutos] = useState([]);
 
   const handleBuscar = async () => {
-    const resposta = await buscarDadosFicha(nFicha);
-    sessionStorage.setItem("dados", JSON.stringify(resposta.dados));
+    sessionStorage.setItem("n_ficha", nFicha);
     navigate("/ficha");
   };
 

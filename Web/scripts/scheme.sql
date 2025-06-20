@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS caracteristicas (
     n_ficha INTEGER NOT NULL,
     idade INTEGER,
     sexo CHAR(1),
-    altura DECIMAL(5,2),
+    altura INTEGER,
     peso INTEGER,
     FOREIGN KEY (n_ficha) REFERENCES identidade(n_ficha) ON DELETE CASCADE
 );
