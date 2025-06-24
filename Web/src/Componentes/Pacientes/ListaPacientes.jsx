@@ -15,7 +15,7 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
       setNFicha(null);
     } else {
       setAtivo(item);
-      setNFicha(item.n_ficha);
+      setNFicha(item.ficha_id);
     }
   };
 
@@ -69,7 +69,7 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
               item.nome_paciente
                 .toLowerCase()
                 .includes(pesquisa.toLowerCase()) ||
-              String(item.n_ficha).includes(pesquisa);
+              String(item.ficha_id).includes(pesquisa);
 
             const prodMap =
               item.produtos.map((p) => p.tipo).join(", ") || "Sem produtos";
@@ -86,7 +86,7 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
           })
           .map((item, index) => (
             <DadosLista
-              key={item.n_ficha}
+              key={item.ficha_id}
               handleClick={handleClick}
               item={item}
               ativo={ativo}

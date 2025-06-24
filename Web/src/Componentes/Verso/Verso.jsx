@@ -80,12 +80,12 @@ function Verso({ nFicha, setNFicha }) {
                 </div>
                 <div className="w-[8em] h-[5em] mx-6 rounded-md border-[1.5px] border-black mt-5">
                   <div className="flex flex-col items-center p-1">
-                    <label htmlFor="identidade_n_ficha" className="ml-2">
+                    <label htmlFor="identidade_ficha_id" className="ml-2">
                       Nº FICHA:
                     </label>
                     <input
-                      id="identidade_n_ficha_verso"
-                      name="identidade_n_ficha_verso"
+                      id="identidade_ficha_id_verso"
+                      name="identidade_ficha_id_verso"
                       className={`w-[6.5em] ${inputStyle} text-center`}
                       maxLength={16}
                       value={nFicha}

@@ -45,9 +45,9 @@ export const atualizarDados = async (dados) => {
   }
 };
 
-export const buscarDadosFicha = async (n_ficha) => {
+export const buscarDadosFicha = async (ficha_id) => {
   const resposta = await fetch(
-    `http://localhost:5000/buscar/ficha?n_ficha=${n_ficha}`,
+    `http://localhost:5000/buscar/ficha?ficha_id=${ficha_id}`,
     {
       method: "GET",
     }

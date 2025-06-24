@@ -87,12 +87,12 @@ function Frente({ nFicha, setNFicha }) {
                 </div>
                 <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
                   <div className="border-b-[1.5px] border-black py-2 pl-2">
-                    <label htmlFor="n_ficha" className="ml-2">
+                    <label htmlFor="ficha_id" className="ml-2">
                       Nº FICHA:
                     </label>
                     <input
-                      id="identidade_n_ficha_frente"
-                      name="identidade_n_ficha_frente"
+                      id="identidade_ficha_id_frente"
+                      name="identidade_ficha_id_frente"
                       className={`w-[6.5em] ${inputStyle}`}
                       maxLength={16}
                       value={nFicha}

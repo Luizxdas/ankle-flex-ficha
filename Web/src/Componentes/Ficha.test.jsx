@@ -3,7 +3,7 @@ import Ficha from "./Ficha";
 import { MemoryRouter } from "react-router-dom";
 
 describe("Formulário Ficha", () => {
-  const n_ficha = "1";
+  const ficha_id = "1";
 
   beforeAll(() => {
     window.alert = (msg) => console.log("Alert chamado:", msg);
@@ -118,7 +118,7 @@ describe("Formulário Ficha", () => {
 
   it("deve preencher todos os campos e salvar corretamente", () => {
     // Dados pessoais (frente)
-    preencherCampo(/^Nº FICHA:$/i, n_ficha);
+    preencherCampo(/^Nº FICHA:$/i, ficha_id);
     preencherCampo(/^PACIENTE:$/i, "João da Silva");
     preencherCampo(/^ENDEREÇO:$/i, "Rua Exemplo");
     preencherCampo(/^N:$/i, "123");

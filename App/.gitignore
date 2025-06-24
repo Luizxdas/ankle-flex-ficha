@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Banco de dados
-formulario/banco.sqlite
+banco.sqlite

@@ -20,11 +20,11 @@ async function allQuery(query, params = []) {
   return result.rows;
 }
 
-export async function checarFichaExistente(n_ficha) {
+export async function checarFichaExistente(ficha_id) {
   try {
     const row = await getQuery(
-      `SELECT N_FICHA FROM IDENTIDADE WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT FICHA_ID FROM IDENTIDADE WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
     return !!row;
   } catch (err) {
@@ -35,10 +35,11 @@ export async function checarFichaExistente(n_ficha) {
 
 export async function salvarFicha(req, res) {
   const dados = req.body;
-  const n_ficha =
-    dados.identidade.n_ficha_frente || dados.identidade.n_ficha_verso;
 
-  if (!n_ficha) {
+  const ficha_id =
+    dados.identidade.ficha_id_frente || dados.identidade.ficha_id_verso;
+
+  if (!ficha_id) {
     return res.status(400).json({
       success: false,
       message: "Número da ficha não fornecido.",
@@ -48,7 +49,7 @@ export async function salvarFicha(req, res) {
   const client = await db.connect();
 
   try {
-    const fichaExiste = await checarFichaExistente(n_ficha);
+    const fichaExiste = await checarFichaExistente(ficha_id);
     if (fichaExiste) {
       return res.status(409).json({
         success: false,
@@ -60,10 +61,16 @@ export async function salvarFicha(req, res) {
 
     try {
       await client.query(
-        `INSERT INTO IDENTIDADE (N_FICHA, NOME_PACIENTE, DATA_FICHA, TELEFONE)
+        `INSERT INTO FICHAS (ID)
+         VALUES ($1)`,
+        [ficha_id]
+      );
+
+      await client.query(
+        `INSERT INTO IDENTIDADE (FICHA_ID, NOME_PACIENTE, DATA_FICHA, TELEFONE)
          VALUES ($1, $2, $3, $4)`,
         [
-          n_ficha,
+          ficha_id,
           dados.identidade.nome_paciente,
           dados.identidade.data_ficha,
           dados.identidade.telefone,
@@ -71,10 +78,10 @@ export async function salvarFicha(req, res) {
       );
 
       await client.query(
-        `INSERT INTO LOCALIZACAO (N_FICHA, ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO)
+        `INSERT INTO LOCALIZACAO (FICHA_ID, ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
-          n_ficha,
+          ficha_id,
           dados.localizacao.endereco,
           dados.localizacao.n_endereco,
           dados.localizacao.cep,
@@ -85,10 +92,10 @@ export async function salvarFicha(req, res) {
       );
 
       await client.query(
-        `INSERT INTO CARACTERISTICAS (N_FICHA, IDADE, SEXO, ALTURA, PESO)
+        `INSERT INTO CARACTERISTICAS (FICHA_ID, IDADE, SEXO, ALTURA, PESO)
          VALUES ($1, $2, $3, $4, $5)`,
         [
-          n_ficha,
+          ficha_id,
           dados.caracteristicas.idade,
           dados.caracteristicas.sexo,
           dados.caracteristicas.altura,
@@ -97,10 +104,10 @@ export async function salvarFicha(req, res) {
       );
 
       await client.query(
-        `INSERT INTO INFORMACOES (N_FICHA, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO, PRECO, DATA_ENTREGA)
+        `INSERT INTO INFORMACOES (FICHA_ID, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO, PRECO, DATA_ENTREGA)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
-          n_ficha,
+          ficha_id,
           dados.informacoes.lado,
           dados.informacoes.n_pe,
           dados.informacoes.causa_amputacao,
@@ -111,10 +118,10 @@ export async function salvarFicha(req, res) {
       );
 
       await client.query(
-        `INSERT INTO TIPOS (N_FICHA, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
+        `INSERT INTO TIPOS (FICHA_ID, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
-          n_ficha,
+          ficha_id,
           dados.tipos.pe,
           dados.tipos.joelho,
           dados.tipos.quadril,
@@ -125,10 +132,10 @@ export async function salvarFicha(req, res) {
       );
 
       await client.query(
-        `INSERT INTO OBSERVACOES (N_FICHA, PROTESE, ORTESE, COLETE, PALMILHA, VERSO)
+        `INSERT INTO OBSERVACOES (FICHA_ID, PROTESE, ORTESE, COLETE, PALMILHA, VERSO)
          VALUES ($1, $2, $3, $4, $5, $6)`,
         [
-          n_ficha,
+          ficha_id,
           dados.observacoes.protese,
           dados.observacoes.ortese,
           dados.observacoes.colete,
@@ -145,8 +152,8 @@ export async function salvarFicha(req, res) {
 
           if (tipo) {
             await client.query(
-              `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES ($1, $2, $3)`,
-              [n_ficha, valorProduto, tipo]
+              `INSERT INTO PRODUTOS (FICHA_ID, PRODUTO, TIPO) VALUES ($1, $2, $3)`,
+              [ficha_id, valorProduto, tipo]
             );
           }
         }
@@ -154,7 +161,7 @@ export async function salvarFicha(req, res) {
 
       await client.query("COMMIT");
       console.log("Dados salvos com sucesso!");
-      return res.json({ success: true, id: n_ficha });
+      return res.json({ success: true, id: ficha_id });
     } catch (error) {
       await client.query("ROLLBACK");
       console.error("Erro durante as operações:", error.message);
@@ -170,10 +177,10 @@ export async function salvarFicha(req, res) {
 
 export async function atualizarFicha(req, res) {
   const dados = req.body;
-  const n_ficha =
-    dados.identidade.n_ficha_frente || dados.identidade.n_ficha_verso;
+  const ficha_id =
+    dados.identidade.ficha_id_frente || dados.identidade.ficha_id_verso;
 
-  if (!n_ficha) {
+  if (!ficha_id) {
     return res.status(400).json({
       success: false,
       message: "Número da ficha não fornecido.",
@@ -183,7 +190,7 @@ export async function atualizarFicha(req, res) {
   const client = await db.connect();
 
   try {
-    const fichaExiste = await checarFichaExistente(n_ficha);
+    const fichaExiste = await checarFichaExistente(ficha_id);
     if (!fichaExiste) {
       return res.status(404).json({
         success: false,
@@ -199,12 +206,12 @@ export async function atualizarFicha(req, res) {
           NOME_PACIENTE = $1,
           DATA_FICHA = $2,
           TELEFONE = $3
-         WHERE N_FICHA = $4`,
+         WHERE FICHA_ID = $4`,
         [
           dados.identidade.nome_paciente,
           dados.identidade.data_ficha,
           dados.identidade.telefone,
-          n_ficha,
+          ficha_id,
         ]
       );
 
@@ -216,7 +223,7 @@ export async function atualizarFicha(req, res) {
           BAIRRO = $4,
           CIDADE = $5,
           ESTADO = $6
-         WHERE N_FICHA = $7`,
+         WHERE FICHA_ID = $7`,
         [
           dados.localizacao.endereco,
           dados.localizacao.n_endereco,
@@ -224,7 +231,7 @@ export async function atualizarFicha(req, res) {
           dados.localizacao.bairro,
           dados.localizacao.cidade,
           dados.localizacao.estado,
-          n_ficha,
+          ficha_id,
         ]
       );
 
@@ -234,13 +241,13 @@ export async function atualizarFicha(req, res) {
           SEXO = $2,
           ALTURA = $3,
           PESO = $4
-         WHERE N_FICHA = $5`,
+         WHERE FICHA_ID = $5`,
         [
           dados.caracteristicas.idade,
           dados.caracteristicas.sexo,
           dados.caracteristicas.altura,
           dados.caracteristicas.peso,
-          n_ficha,
+          ficha_id,
         ]
       );
 
@@ -252,7 +259,7 @@ export async function atualizarFicha(req, res) {
           TEMPO = $4,
           PRECO = $5,
           DATA_ENTREGA = $6
-         WHERE N_FICHA = $7`,
+         WHERE FICHA_ID = $7`,
         [
           dados.informacoes.lado,
           dados.informacoes.n_pe,
@@ -260,11 +267,13 @@ export async function atualizarFicha(req, res) {
           dados.informacoes.tempo,
           dados.informacoes.preco,
           dados.informacoes.data_entrega,
-          n_ficha,
+          ficha_id,
         ]
       );
 
-      await client.query(`DELETE FROM PRODUTOS WHERE N_FICHA = $1`, [n_ficha]);
+      await client.query(`DELETE FROM PRODUTOS WHERE FICHA_ID = $1`, [
+        ficha_id,
+      ]);
 
       if (dados.produtos && typeof dados.produtos === "object") {
         for (const [tipo, produto] of Object.entries(dados.produtos)) {
@@ -274,19 +283,19 @@ export async function atualizarFicha(req, res) {
 
           if (tipo) {
             await client.query(
-              `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES ($1, $2, $3)`,
-              [n_ficha, valorProduto, tipo]
+              `INSERT INTO PRODUTOS (FICHA_ID, PRODUTO, TIPO) VALUES ($1, $2, $3)`,
+              [ficha_id, valorProduto, tipo]
             );
           }
         }
       }
 
-      await client.query(`DELETE FROM TIPOS WHERE N_FICHA = $1`, [n_ficha]);
+      await client.query(`DELETE FROM TIPOS WHERE FICHA_ID = $1`, [ficha_id]);
       await client.query(
-        `INSERT INTO TIPOS (N_FICHA, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
+        `INSERT INTO TIPOS (FICHA_ID, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
-          n_ficha,
+          ficha_id,
           dados.tipos.pe,
           dados.tipos.joelho,
           dados.tipos.quadril,
@@ -303,20 +312,20 @@ export async function atualizarFicha(req, res) {
           COLETE = $3,
           PALMILHA = $4,
           VERSO = $5
-         WHERE N_FICHA = $6`,
+         WHERE FICHA_ID = $6`,
         [
           dados.observacoes.protese,
           dados.observacoes.ortese,
           dados.observacoes.colete,
           dados.observacoes.palmilha,
           dados.observacoes.verso,
-          n_ficha,
+          ficha_id,
         ]
       );
 
       await client.query("COMMIT");
       console.log("Ficha atualizada com sucesso!");
-      return res.json({ success: true, id: n_ficha });
+      return res.json({ success: true, id: ficha_id });
     } catch (error) {
       await client.query("ROLLBACK");
       console.error("Erro durante a atualização:", error.message);
@@ -331,9 +340,9 @@ export async function atualizarFicha(req, res) {
 }
 
 export async function buscarDadosFicha(req, res) {
-  const n_ficha = req.query.n_ficha;
+  const ficha_id = req.query.ficha_id;
 
-  if (!n_ficha) {
+  if (!ficha_id) {
     return res.status(400).json({
       success: false,
       message: "Número da ficha do paciente é obrigatório.",
@@ -342,8 +351,8 @@ export async function buscarDadosFicha(req, res) {
 
   try {
     const identidade = await getQuery(
-      `SELECT * FROM IDENTIDADE WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT * FROM IDENTIDADE WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     if (!identidade) {
@@ -354,33 +363,33 @@ export async function buscarDadosFicha(req, res) {
     }
 
     const caracteristicas = await getQuery(
-      `SELECT IDADE, SEXO, ALTURA, PESO FROM CARACTERISTICAS WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT IDADE, SEXO, ALTURA, PESO FROM CARACTERISTICAS WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     const informacoes = await getQuery(
-      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO, PRECO, DATA_ENTREGA FROM INFORMACOES WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO, PRECO, DATA_ENTREGA FROM INFORMACOES WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     const localizacao = await getQuery(
-      `SELECT ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO FROM LOCALIZACAO WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO FROM LOCALIZACAO WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     const observacoes = await getQuery(
-      `SELECT PROTESE, ORTESE, COLETE, PALMILHA, VERSO FROM OBSERVACOES WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT PROTESE, ORTESE, COLETE, PALMILHA, VERSO FROM OBSERVACOES WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     const produtos = await allQuery(
-      `SELECT PRODUTO, TIPO FROM PRODUTOS WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT PRODUTO, TIPO FROM PRODUTOS WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     const tipos = await allQuery(
-      `SELECT PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER FROM TIPOS WHERE N_FICHA = $1`,
-      [n_ficha]
+      `SELECT PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER FROM TIPOS WHERE FICHA_ID = $1`,
+      [ficha_id]
     );
 
     res.json({
@@ -407,7 +416,7 @@ export async function buscarDadosGeral(req, res) {
     const produtos = await allQuery(`SELECT * FROM PRODUTOS`);
 
     const produtosPorFicha = produtos.reduce((acc, produto) => {
-      const ficha = produto.n_ficha;
+      const ficha = produto.ficha_id;
       if (!acc[ficha]) acc[ficha] = [];
       acc[ficha].push(produto);
       return acc;
@@ -415,7 +424,7 @@ export async function buscarDadosGeral(req, res) {
 
     const pacientesComProdutos = pacientes.map((paciente) => ({
       ...paciente,
-      produtos: produtosPorFicha[paciente.n_ficha] || [],
+      produtos: produtosPorFicha[paciente.ficha_id] || [],
     }));
 
     res.json({

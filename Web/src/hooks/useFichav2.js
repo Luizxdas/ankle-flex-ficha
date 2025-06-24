@@ -3,12 +3,14 @@ import { atualizarDados, enviarDados } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { buscarDadosFicha } from "../api/api";
 
-const useFichav2 = (formRef, setModal, setNFicha) => {
+const useFichav2 = (formRef, setModal, setFichaId) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSalvar = () => {
+  const handleSalvar = async () => {
+    setIsLoading(true);
+    setModal(true);
     const formData = new FormData(formRef.current);
     const dados = Object.fromEntries(formData.entries());
 
@@ -16,10 +18,17 @@ const useFichav2 = (formRef, setModal, setNFicha) => {
 
     const operacao = sessionStorage.getItem("operacao");
 
-    if (operacao === "salvar") {
-      enviarDados(dadosFormatados);
-    } else if (operacao === "atualizar") {
-      atualizarDados(dadosFormatados);
+    try {
+      if (operacao === "salvar") {
+        await enviarDados(dadosFormatados);
+      } else if (operacao === "atualizar") {
+        await atualizarDados(dadosFormatados);
+      }
+    } catch (error) {
+      console.error("Erro durante a operação:", error.message);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,7 +56,7 @@ const useFichav2 = (formRef, setModal, setNFicha) => {
       tipos: {},
     };
     const camposNumericos = [
-      "n_ficha",
+      "ficha_id",
       "idade",
       "altura",
       "peso",
@@ -85,9 +94,9 @@ const useFichav2 = (formRef, setModal, setNFicha) => {
   }
 
   useEffect(() => {
-    async function preencherFicha(n_ficha) {
+    async function preencherFicha(ficha_id) {
       setIsLoading(true);
-      const resultado = await buscarDadosFicha(n_ficha);
+      const resultado = await buscarDadosFicha(ficha_id);
       const dados = resultado.dados;
 
       if (!dados) {
@@ -140,8 +149,8 @@ const useFichav2 = (formRef, setModal, setNFicha) => {
               preencherValor(input, descricao);
             });
           } else {
-            if (id === "n_ficha") {
-              setNFicha(valor);
+            if (id === "ficha_id") {
+              setFichaId(valor);
               return;
             }
 
@@ -152,12 +161,12 @@ const useFichav2 = (formRef, setModal, setNFicha) => {
       });
     }
 
-    const n_ficha = sessionStorage.getItem("n_ficha");
+    const ficha_id = sessionStorage.getItem("ficha_id");
 
-    if (n_ficha) {
-      preencherFicha(n_ficha);
+    if (ficha_id) {
+      preencherFicha(ficha_id);
     }
-  }, [formRef, setNFicha]);
+  }, [formRef, setFichaId]);
 
   return {
     pagina: {
