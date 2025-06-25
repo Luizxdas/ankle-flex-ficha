@@ -22,11 +22,14 @@ function Ortese() {
         <h2 className="text-xl p-2 border-b-[1.5px] border-black">Tipo</h2>
         <div className={baseFormStyle}>
           {orteseOptions.map((option) => (
-            <Option key={option} name="ortese" content={option} />
+            <Option key={option} name="produtos_ortese" content={option} />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs_ortese"} name={"obs_ortese"} />
+            <Observacoes
+              id={"observacoes_ortese"}
+              name={"observacoes_ortese"}
+            />
           </div>
         </div>
       </div>

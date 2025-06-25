@@ -47,7 +47,7 @@ function Modal({ tipo, onClose, onConfirm, isLoading, erro }) {
             </button>
           </div>
         </div>
-      ) : tipo === "n_ficha" ? (
+      ) : tipo === "ficha_id" ? (
         <div className="flex flex-col justify-center items-center gap-2 p-6">
           <span className="w-10 h-10 flex items-center justify-center rounded-full bg-red-600 text-white text-2xl font-bold">
             ✕

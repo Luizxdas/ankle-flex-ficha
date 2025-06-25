@@ -38,7 +38,6 @@ export const atualizarDados = async (dados) => {
       throw new Error(resultado.message || "Erro ao salvar os dados.");
     }
 
-    console.log("Resposta do backend:", resultado);
     return resultado;
   } catch (error) {
     console.error("Erro ao enviar:", error.message);
@@ -46,9 +45,9 @@ export const atualizarDados = async (dados) => {
   }
 };
 
-export const buscarDadosFicha = async (n_ficha) => {
+export const buscarDadosFicha = async (ficha_id) => {
   const resposta = await fetch(
-    `http://localhost:5000/buscar/ficha?n_ficha=${n_ficha}`,
+    `http://localhost:5000/buscar/ficha?fichaId=${ficha_id}`,
     {
       method: "GET",
     }

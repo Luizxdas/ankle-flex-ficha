@@ -27,11 +27,11 @@ function allQuery(query, params = []) {
   });
 }
 
-export async function checarFichaExistente(n_ficha) {
+export async function checarFichaExistente(ficha_id) {
   try {
     const row = await getQuery(
-      `SELECT N_FICHA FROM IDENTIDADE WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT FICHA_ID FROM IDENTIDADE WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
     return !!row;
   } catch (err) {
@@ -43,14 +43,10 @@ export async function checarFichaExistente(n_ficha) {
 export async function salvarFicha(req, res) {
   const dados = req.body;
 
-  const produtos = dados.produtos;
-  const observacoes = dados.observacoes;
-  const verso = dados.verso;
-  const outros = dados.outros;
+  const ficha_id =
+    dados.identidade.ficha_id_frente || dados.identidade.ficha_id_verso;
 
-  const n_ficha = outros?.n_ficha;
-
-  if (!n_ficha) {
+  if (!ficha_id) {
     return res.status(400).json({
       success: false,
       message: "Número da ficha não fornecido.",
@@ -58,7 +54,7 @@ export async function salvarFicha(req, res) {
   }
 
   try {
-    const fichaExiste = await checarFichaExistente(n_ficha);
+    const fichaExiste = await checarFichaExistente(ficha_id);
     if (fichaExiste) {
       return res.status(409).json({
         success: false,
@@ -70,80 +66,97 @@ export async function salvarFicha(req, res) {
 
     try {
       await runQuery(
-        `INSERT INTO IDENTIDADE (N_FICHA, NOME_PACIENTE, DATA_FICHA, TELEFONE)
+        `INSERT INTO FICHAS (ID)
+        VALUES (?)`,
+        [ficha_id]
+      );
+
+      await runQuery(
+        `INSERT INTO IDENTIDADE (FICHA_ID, NOME_PACIENTE, DATA_FICHA, TELEFONE)
          VALUES (?, ?, ?, ?)`,
-        [n_ficha, outros.nome_paciente, outros.data_ficha, outros.telefone]
+        [
+          ficha_id,
+          dados.identidade.nome_paciente,
+          dados.identidade.data_ficha,
+          dados.identidade.telefone,
+        ]
       );
 
       await runQuery(
-        `INSERT INTO LOCALIZACAO (N_FICHA, ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO)
+        `INSERT INTO LOCALIZACAO (FICHA_ID, ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          n_ficha,
-          outros.endereco,
-          outros.n_endereco,
-          outros.cep,
-          outros.bairro,
-          outros.cidade,
-          outros.estado,
+          ficha_id,
+          dados.localizacao.endereco,
+          dados.localizacao.n_endereco,
+          dados.localizacao.cep,
+          dados.localizacao.bairro,
+          dados.localizacao.cidade,
+          dados.localizacao.estado,
         ]
       );
 
       await runQuery(
-        `INSERT INTO CARACTERISTICAS (N_FICHA, IDADE, SEXO, ALTURA, PESO)
-         VALUES (?, ?, ?, ?, ?)`,
-        [n_ficha, outros.idade, outros.sexo, outros.altura, outros.peso]
-      );
-
-      await runQuery(
-        `INSERT INTO INFORMACOES (N_FICHA, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO)
+        `INSERT INTO CARACTERISTICAS (FICHA_ID, IDADE, SEXO, ALTURA, PESO)
          VALUES (?, ?, ?, ?, ?)`,
         [
-          n_ficha,
-          outros.lado,
-          outros.n_pe,
-          outros.causa_amputacao,
-          outros.tempo,
+          ficha_id,
+          dados.caracteristicas.idade,
+          dados.caracteristicas.sexo,
+          dados.caracteristicas.altura,
+          dados.caracteristicas.peso,
         ]
       );
 
       await runQuery(
-        `INSERT INTO TIPOS (N_FICHA, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
+        `INSERT INTO INFORMACOES (FICHA_ID, LADO, N_PE, CAUSA_AMPUTACAO, TEMPO)
+         VALUES (?, ?, ?, ?, ?)`,
+        [
+          ficha_id,
+          dados.informacoes.lado,
+          dados.informacoes.n_pe,
+          dados.informacoes.causa_amputacao,
+          dados.informacoes.tempo,
+        ]
+      );
+
+      await runQuery(
+        `INSERT INTO TIPOS (FICHA_ID, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          n_ficha,
-          verso.pe,
-          verso.joelho,
-          verso.quadril,
-          verso.encaixe,
-          verso.liner,
-          verso.n_liner,
+          ficha_id,
+          dados.tipos.pe,
+          dados.tipos.joelho,
+          dados.tipos.quadril,
+          dados.tipos.encaixe,
+          dados.tipos.liner,
+          dados.tipos.n_liner,
         ]
       );
 
       await runQuery(
-        `INSERT INTO OBSERVACOES (N_FICHA, PROTESE, ORTESE, COLETE, PALMILHA, VERSO)
+        `INSERT INTO OBSERVACOES (FICHA_ID, PROTESE, ORTESE, COLETE, PALMILHA, VERSO)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
-          n_ficha,
-          observacoes["obs-protese"],
-          observacoes["obs-ortese"],
-          observacoes["obs-colete"],
-          observacoes["obs-palmilha"],
-          observacoes["obs-verso"],
+          ficha_id,
+          dados.observacoes.protese,
+          dados.observacoes.ortese,
+          dados.observacoes.colete,
+          dados.observacoes.palmilha,
+          dados.observacoes.verso,
         ]
       );
 
-      if (produtos && typeof produtos === "object") {
-        for (const [tipo, produto] of Object.entries(produtos)) {
+      if (dados.produtos && typeof dados.produtos === "object") {
+        for (const [tipo, produto] of Object.entries(dados.produtos)) {
           const valorProduto = Array.isArray(produto)
             ? JSON.stringify(produto)
             : produto;
 
           if (tipo) {
             await runQuery(
-              `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES (?, ?, ?)`,
-              [n_ficha, valorProduto, tipo]
+              `INSERT INTO PRODUTOS (FICHA_ID, PRODUTO, TIPO) VALUES (?, ?, ?)`,
+              [ficha_id, valorProduto, tipo]
             );
           }
         }
@@ -151,7 +164,7 @@ export async function salvarFicha(req, res) {
 
       await runQuery("COMMIT");
       console.log("Dados salvos com sucesso!");
-      return res.json({ success: true, id: n_ficha });
+      return res.json({ success: true, id: ficha_id });
     } catch (error) {
       await runQuery("ROLLBACK");
       console.error("Erro durante as operações:", error.message);
@@ -165,15 +178,10 @@ export async function salvarFicha(req, res) {
 
 export async function atualizarFicha(req, res) {
   const dados = req.body;
+  const ficha_id =
+    dados.identidade.ficha_id_frente || dados.identidade.ficha_id_verso;
 
-  const produtos = dados.produtos;
-  const observacoes = dados.observacoes;
-  const verso = dados.verso;
-  const outros = dados.outros;
-
-  const n_ficha = outros?.n_ficha;
-
-  if (!n_ficha) {
+  if (!ficha_id) {
     return res.status(400).json({
       success: false,
       message: "Número da ficha não fornecido.",
@@ -181,7 +189,7 @@ export async function atualizarFicha(req, res) {
   }
 
   try {
-    const fichaExiste = await checarFichaExistente(n_ficha);
+    const fichaExiste = await checarFichaExistente(ficha_id);
     if (!fichaExiste) {
       return res.status(404).json({
         success: false,
@@ -197,8 +205,13 @@ export async function atualizarFicha(req, res) {
           NOME_PACIENTE = ?,
           DATA_FICHA = ?,
           TELEFONE = ?
-         WHERE N_FICHA = ?`,
-        [outros.nome_paciente, outros.data_ficha, outros.telefone, n_ficha]
+         WHERE FICHA_ID = ?`,
+        [
+          dados.identidade.nome_paciente,
+          dados.identidade.data_ficha,
+          dados.identidade.telefone,
+          ficha_id,
+        ]
       );
 
       await runQuery(
@@ -209,15 +222,15 @@ export async function atualizarFicha(req, res) {
           BAIRRO = ?,
           CIDADE = ?,
           ESTADO = ?
-         WHERE N_FICHA = ?`,
+         WHERE FICHA_ID = ?`,
         [
-          outros.endereco,
-          outros.n_endereco,
-          outros.cep,
-          outros.bairro,
-          outros.cidade,
-          outros.estado,
-          n_ficha,
+          dados.localizacao.endereco,
+          dados.localizacao.n_endereco,
+          dados.localizacao.cep,
+          dados.localizacao.bairro,
+          dados.localizacao.cidade,
+          dados.localizacao.estado,
+          ficha_id,
         ]
       );
 
@@ -227,8 +240,14 @@ export async function atualizarFicha(req, res) {
           SEXO = ?,
           ALTURA = ?,
           PESO = ?
-         WHERE N_FICHA = ?`,
-        [outros.idade, outros.sexo, outros.altura, outros.peso, n_ficha]
+         WHERE FICHA_ID = ?`,
+        [
+          dados.caracteristicas.idade,
+          dados.caracteristicas.sexo,
+          dados.caracteristicas.altura,
+          dados.caracteristicas.peso,
+          ficha_id,
+        ]
       );
 
       await runQuery(
@@ -236,14 +255,18 @@ export async function atualizarFicha(req, res) {
           LADO = ?,
           N_PE = ?,
           CAUSA_AMPUTACAO = ?,
-          TEMPO = ?
-         WHERE N_FICHA = ?`,
+          TEMPO = ?,
+          PRECO = ?,
+          DATA_ENTREGA = ?
+         WHERE FICHA_ID = ?`,
         [
-          outros.lado,
-          outros.n_pe,
-          outros.causa_amputacao,
-          outros.tempo,
-          n_ficha,
+          dados.informacoes.lado,
+          dados.informacoes.n_pe,
+          dados.informacoes.causa_amputacao,
+          dados.informacoes.tempo,
+          dados.informacoes.preco,
+          dados.informacoes.data_entrega,
+          ficha_id,
         ]
       );
 
@@ -254,64 +277,75 @@ export async function atualizarFicha(req, res) {
           COLETE = ?,
           PALMILHA = ?,
           VERSO = ?
-         WHERE N_FICHA = ?`,
+         WHERE FICHA_ID = ?`,
         [
-          observacoes.protese,
-          observacoes.ortese,
-          observacoes.colete,
-          observacoes.palmilha,
-          observacoes.verso,
-          n_ficha,
+          dados.observacoes.protese,
+          dados.observacoes.ortese,
+          dados.observacoes.colete,
+          dados.observacoes.palmilha,
+          dados.observacoes.verso,
+          ficha_id,
         ]
       );
 
-      await runQuery(`DELETE FROM PRODUTOS WHERE N_FICHA = ?`, [n_ficha]);
+      await runQuery(`DELETE FROM PRODUTOS WHERE FICHA_ID = ?`, [ficha_id]);
 
-      if (produtos && typeof produtos === "object") {
-        for (const [tipo, produto] of Object.entries(produtos)) {
+      if (dados.produtos && typeof dados.produtos === "object") {
+        for (const [tipo, produto] of Object.entries(dados.produtos)) {
           const valorProduto = Array.isArray(produto)
             ? JSON.stringify(produto)
             : produto;
 
           if (tipo) {
             await runQuery(
-              `INSERT INTO PRODUTOS (N_FICHA, PRODUTO, TIPO) VALUES (?, ?, ?)`,
-              [n_ficha, valorProduto, tipo]
+              `INSERT INTO PRODUTOS (FICHA_ID, PRODUTO, TIPO) VALUES (?, ?, ?)`,
+              [ficha_id, valorProduto, tipo]
             );
           }
         }
       }
 
       await runQuery(
-        `INSERT INTO TIPOS (N_FICHA, PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `UPDATE TIPOS SET 
+           PE = ?, 
+           JOELHO = ?, 
+           QUADRIL = ?, 
+           ENCAIXE = ?, 
+           LINER = ?, 
+           N_LINER = ?
+          WHERE FICHA_ID = ?`,
         [
-          n_ficha,
-          verso.pe,
-          verso.joelho,
-          verso.quadril,
-          verso.encaixe,
-          verso.liner,
-          verso.n_liner,
+          dados.tipos.pe,
+          dados.tipos.joelho,
+          dados.tipos.quadril,
+          dados.tipos.encaixe,
+          dados.tipos.liner,
+          dados.tipos.n_liner,
+          ficha_id,
         ]
       );
 
       await runQuery(
-        `INSERT INTO OBSERVACOES (N_FICHA, PROTESE, ORTESE, COLETE, PALMILHA, VERSO)
-           VALUES (?, ?, ?, ?, ?, ?)`,
+        `UPDATE OBSERVACOES SET 
+           PROTESE = ?, 
+           ORTESE = ?, 
+           COLETE = ?, 
+           PALMILHA = ?, 
+           VERSO = ?,
+          WHERE FICHA_ID = ?`,
         [
-          n_ficha,
-          observacoes.obs_protese,
-          observacoes.obs_ortese,
-          observacoes.obs_colete,
-          observacoes.obs_palmilha,
-          observacoes.obs_verso,
+          dados.observacoes.protese,
+          dados.observacoes.ortese,
+          dados.observacoes.colete,
+          dados.observacoes.palmilha,
+          dados.observacoes.verso,
+          ficha_id,
         ]
       );
 
       await runQuery("COMMIT");
       console.log("Ficha atualizada com sucesso!");
-      return res.json({ success: true, id: n_ficha });
+      return res.json({ success: true, id: ficha_id });
     } catch (error) {
       await runQuery("ROLLBACK");
       console.error("Erro durante a atualização:", error.message);
@@ -324,9 +358,9 @@ export async function atualizarFicha(req, res) {
 }
 
 export async function buscarDadosFicha(req, res) {
-  const n_ficha = req.query.n_ficha;
+  const ficha_id = req.query.ficha_id;
 
-  if (!n_ficha) {
+  if (!ficha_id) {
     return res.status(400).json({
       success: false,
       message: "Número da ficha do paciente é obrigatório.",
@@ -335,8 +369,8 @@ export async function buscarDadosFicha(req, res) {
 
   try {
     const identidade = await getQuery(
-      `SELECT * FROM IDENTIDADE WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT * FROM IDENTIDADE WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     if (!identidade) {
@@ -347,33 +381,33 @@ export async function buscarDadosFicha(req, res) {
     }
 
     const caracteristicas = await getQuery(
-      `SELECT IDADE, SEXO, ALTURA, PESO FROM CARACTERISTICAS WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT IDADE, SEXO, ALTURA, PESO FROM CARACTERISTICAS WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     const informacoes = await getQuery(
-      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO FROM INFORMACOES WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT LADO, N_PE, CAUSA_AMPUTACAO, TEMPO FROM INFORMACOES WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     const localizacao = await getQuery(
-      `SELECT ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO FROM LOCALIZACAO WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT ENDERECO, N_ENDERECO, CEP, BAIRRO, CIDADE, ESTADO FROM LOCALIZACAO WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     const observacoes = await getQuery(
-      `SELECT PROTESE, ORTESE, COLETE, PALMILHA, VERSO FROM OBSERVACOES WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT PROTESE, ORTESE, COLETE, PALMILHA, VERSO FROM OBSERVACOES WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     const produtos = await allQuery(
-      `SELECT PRODUTO, TIPO FROM PRODUTOS WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT PRODUTO, TIPO FROM PRODUTOS WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     const tipos = await allQuery(
-      `SELECT PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER FROM TIPOS WHERE N_FICHA = ?`,
-      [n_ficha]
+      `SELECT PE, JOELHO, QUADRIL, ENCAIXE, LINER, N_LINER FROM TIPOS WHERE FICHA_ID = ?`,
+      [ficha_id]
     );
 
     res.json({
@@ -400,7 +434,7 @@ export async function buscarDadosGeral(req, res) {
     const produtos = await allQuery(`SELECT * FROM PRODUTOS`);
 
     const produtosPorFicha = produtos.reduce((acc, produto) => {
-      const ficha = produto.N_FICHA;
+      const ficha = produto.ficha_id;
       if (!acc[ficha]) acc[ficha] = [];
       acc[ficha].push(produto);
       return acc;
@@ -408,7 +442,7 @@ export async function buscarDadosGeral(req, res) {
 
     const pacientesComProdutos = pacientes.map((paciente) => ({
       ...paciente,
-      produtos: produtosPorFicha[paciente.N_FICHA] || [],
+      produtos: produtosPorFicha[paciente.ficha_id] || [],
     }));
 
     res.json({

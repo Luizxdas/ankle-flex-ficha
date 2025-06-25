@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { buscarDadosFicha } from "../../api/api";
 import Pesquisa from "./Pesquisa";
 import ListaPacientes from "./ListaPacientes";
 import Botao from "../Compartilhados/Botao";
@@ -8,19 +7,18 @@ import Produtos from "./Produtos";
 
 function Pacientes() {
   const navigate = useNavigate();
-  const [nFicha, setNFicha] = useState(null);
+  const [fichaId, setFichaId] = useState(null);
   const [pesquisa, setPesquisa] = useState("");
   const [produtos, setProdutos] = useState([]);
 
   const handleBuscar = async () => {
-    const resposta = await buscarDadosFicha(nFicha);
-    sessionStorage.setItem("dados", JSON.stringify(resposta.dados));
+    sessionStorage.setItem("ficha_id", fichaId);
     navigate("/ficha");
   };
 
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
-      <div className="relative bottom-[17em] left-16 flex flex-col justify-center space-y-4">
+      <div className="relative bottom-[14em] left-16 flex flex-col justify-center space-y-4">
         <Link to={"/"}>
           <Botao conteudo={"Voltar"} />
         </Link>
@@ -30,13 +28,13 @@ function Pacientes() {
         <Pesquisa setPesquisa={setPesquisa} pesquisa={pesquisa} />
         <Produtos produtos={produtos} setProdutos={setProdutos} />
         <ListaPacientes
-          setNFicha={setNFicha}
+          setNFicha={setFichaId}
           pesquisa={pesquisa}
           produtos={produtos}
         />
       </div>
 
-      <div className="relative bottom-[17em] flex flex-col justify-center space-y-4 right-16">
+      <div className="relative bottom-[14em] flex flex-col justify-center space-y-4 right-16">
         <Botao conteudo={"Ver ou \nAtualizar ficha"} onClick={handleBuscar} />
       </div>
     </div>

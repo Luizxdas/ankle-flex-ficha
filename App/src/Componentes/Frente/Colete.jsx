@@ -18,11 +18,14 @@ function Colete() {
         <h2 className="text-xl p-2 border-b-[1.5px] border-black">Tipo</h2>
         <div className={baseFormStyle}>
           {coleteOptions.map((option) => (
-            <Option key={option} name="colete" content={option} />
+            <Option key={option} name="produtos_colete" content={option} />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs_colete"} name={"obs_colete"} />
+            <Observacoes
+              id={"observacoes_colete"}
+              name={"observacoes_colete"}
+            />
           </div>
         </div>
       </div>

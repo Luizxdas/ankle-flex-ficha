@@ -25,11 +25,14 @@ function Protese() {
         </h2>
         <div className={baseFormStyle}>
           {proteseOptions.map((option) => (
-            <Option key={option} name="protese" content={option} />
+            <Option key={option} name="produtos_protese" content={option} />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
-            <Observacoes id={"obs_protese"} name={"obs_protese"} />
+            <Observacoes
+              id={"observacoes_protese"}
+              name={"observacoes_protese"}
+            />
           </div>
         </div>
       </div>

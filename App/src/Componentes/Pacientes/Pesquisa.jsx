@@ -15,10 +15,10 @@ function Pesquisa({ setPesquisa, pesquisa }) {
       return;
     }
 
-    const n_ficha = Number(valor);
+    const ficha_id = Number(valor);
 
-    if (!isNaN(n_ficha)) {
-      sessionStorage.setItem("n_ficha", valor);
+    if (!isNaN(ficha_id)) {
+      sessionStorage.setItem("ficha_id", valor);
       navigate("/");
     } else {
       console.log("É um texto:", valor);

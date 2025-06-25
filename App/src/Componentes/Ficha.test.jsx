@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 
 describe("Formulário Ficha", () => {
   // Banco de dados não pode ter duas fichas com o mesmo número, mude a cada teste ou exlua e recrie o banco de dados
-  const n_ficha = "1";
+  const ficha_id = "1";
 
   beforeAll(() => {
     window.alert = (msg) => console.log("Alert chamado:", msg);
@@ -119,7 +119,7 @@ describe("Formulário Ficha", () => {
 
   it("deve preencher todos os campos e salvar corretamente", () => {
     // Dados pessoais (frente)
-    preencherCampo(/^Nº FICHA:$/i, n_ficha);
+    preencherCampo(/^Nº FICHA:$/i, ficha_id);
     preencherCampo(/^PACIENTE:$/i, "João da Silva");
     preencherCampo(/^ENDEREÇO:$/i, "Rua Exemplo");
     preencherCampo(/^N:$/i, "123");

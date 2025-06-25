@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import Botao from "./componentes/Compartilhados/Botao";
 import LogoHd from "/blank-logo-hd.png";
+import Botao from "./Componentes/Compartilhados/Botao";
 
 function Home() {
   const navigate = useNavigate();
 
   const handleCriar = () => {
     sessionStorage.setItem("operacao", "salvar");
-    sessionStorage.removeItem("dados");
+    sessionStorage.removeItem("ficha_id");
     navigate("/ficha");
   };
 
   const handleBuscar = () => {
     sessionStorage.setItem("operacao", "atualizar");
-    sessionStorage.removeItem("dados");
+    sessionStorage.removeItem("ficha_id");
     navigate("/pacientes");
   };
 

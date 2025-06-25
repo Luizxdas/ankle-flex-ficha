@@ -17,17 +17,19 @@ function DadosLista({ handleClick, item, ativo, index }) {
   return (
     <button
       onClick={() => handleClick(item)}
-      key={item.N_FICHA}
+      key={item.ficha_id}
       className={`flex justify-between h-[2em] pt-1 ${bgColor}`}
     >
-      <span className="w-[6em] text-center">{item.N_FICHA}</span>
-      <span className="w-[30em] text-center">{item.NOME_PACIENTE}</span>
+      <span className="w-[6em] text-center">{item.ficha_id}</span>
+      <span className="w-[30em] text-center">{item.nome_paciente}</span>
       <span className="w-[14em] text-center overflow-hidden whitespace-nowrap text-ellipsis">
         {item.produtos
-          .map((p) => mapa[p.TIPO.toLowerCase()] || p.TIPO)
+          .map((p) => mapa[p.tipo.toLowerCase()] || p.tipo)
           .join(", ") || "Sem produtos"}
       </span>
-      <span className="w-[10em] text-center">{item.DATA_FICHA}</span>
+      <span className="w-[10em] text-center">
+        {new Date(item.data_ficha).toLocaleDateString("pt-BR")}
+      </span>
     </button>
   );
 }

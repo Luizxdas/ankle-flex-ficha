@@ -15,7 +15,7 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
       setNFicha(null);
     } else {
       setAtivo(item);
-      setNFicha(item.N_FICHA);
+      setNFicha(item.ficha_id);
     }
   };
 
@@ -66,13 +66,13 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
           .filter((item) => {
             const matchesPesquisa =
               pesquisa === "" ||
-              item.NOME_PACIENTE.toLowerCase().includes(
-                pesquisa.toLowerCase()
-              ) ||
-              String(item.N_FICHA).includes(pesquisa);
+              item.nome_paciente
+                .toLowerCase()
+                .includes(pesquisa.toLowerCase()) ||
+              String(item.ficha_id).includes(pesquisa);
 
             const prodMap =
-              item.produtos.map((p) => p.TIPO).join(", ") || "Sem produtos";
+              item.produtos.map((p) => p.tipo).join(", ") || "Sem produtos";
 
             const tiposMap = prodMap
               .split(",")
@@ -86,7 +86,7 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
           })
           .map((item, index) => (
             <DadosLista
-              key={item.N_FICHA}
+              key={item.ficha_id}
               handleClick={handleClick}
               item={item}
               ativo={ativo}
