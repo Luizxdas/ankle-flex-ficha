@@ -1,10 +1,18 @@
+const getBasicAuthHeaders = () => {
+  const username = "user";
+  const password = "1234";
+  const auth = btoa(`${username}:${password}`);
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${auth}`,
+  };
+};
+
 export const enviarDados = async (dados) => {
   try {
-    const resposta = await fetch(`http://localhost:5000/salvar`, {
+    const resposta = await fetch(`http://localhost:8080/fichas`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getBasicAuthHeaders(),
       body: JSON.stringify(dados),
     });
 
@@ -14,7 +22,6 @@ export const enviarDados = async (dados) => {
       throw new Error(resultado.message || "Erro ao salvar os dados.");
     }
 
-    console.log("Resposta do backend: ", resultado);
     return resultado;
   } catch (error) {
     console.error("Erro ao enviar:", error.message);
@@ -24,11 +31,9 @@ export const enviarDados = async (dados) => {
 
 export const atualizarDados = async (dados) => {
   try {
-    const resposta = await fetch(`http://localhost:5000/atualizar`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const resposta = await fetch(`http://localhost:8080/fichas`, {
+      method: "PUT",
+      headers: getBasicAuthHeaders(),
       body: JSON.stringify(dados),
     });
 
@@ -45,13 +50,19 @@ export const atualizarDados = async (dados) => {
   }
 };
 
-export const buscarDadosFicha = async (ficha_id) => {
-  const resposta = await fetch(
-    `http://localhost:5000/buscar/ficha?ficha_id=${ficha_id}`,
-    {
-      method: "GET",
-    }
-  );
+export const buscarDadosFicha = async (ficha_link) => {
+  const username = "user";
+  const password = "1234";
+
+  const auth = btoa(`${username}:${password}`);
+
+  const resposta = await fetch(ficha_link, {
+    method: "GET",
+    headers: {
+      Authorization: `Basic ${auth}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!resposta.ok) {
     const errorText = await resposta.text();
@@ -66,8 +77,9 @@ export const buscarDadosFicha = async (ficha_id) => {
 };
 
 export const buscarTodosDados = async () => {
-  const resposta = await fetch(`http://localhost:5000/buscar/todos`, {
+  const resposta = await fetch(`http://localhost:8080/fichas`, {
     method: "GET",
+    headers: getBasicAuthHeaders(),
   });
 
   if (!resposta.ok) {
@@ -77,6 +89,7 @@ export const buscarTodosDados = async () => {
     );
   }
 
-  const dados = await resposta.json();
-  return dados;
+  const data = await resposta.json();
+
+  return data._embedded.lista_ficha_dtolist;
 };
