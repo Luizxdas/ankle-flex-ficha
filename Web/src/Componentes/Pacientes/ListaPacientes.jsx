@@ -3,7 +3,7 @@ import { buscarTodosDados } from "../../api/api";
 import DadosLista from "./DadosLista";
 import CabecalhoLista from "./CabecalhoLista";
 
-function ListaPacientes({ setNFicha, pesquisa, produtos }) {
+function ListaPacientes() {
   const [dados, setDados] = useState([]);
   const [ativo, setAtivo] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -12,10 +12,10 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
   const handleClick = (item) => {
     if (ativo === item) {
       setAtivo(null);
-      setNFicha(null);
+      sessionStorage.removeItemo("ficha_link");
     } else {
       setAtivo(item);
-      setNFicha(item.ficha_id);
+      sessionStorage.setItem("ficha_link", item._links.self.href);
     }
   };
 
@@ -24,7 +24,7 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
       try {
         setLoading(true);
         const resposta = await buscarTodosDados();
-        setDados(resposta.dados);
+        setDados(resposta);
         setLoading(false);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
@@ -62,37 +62,15 @@ function ListaPacientes({ setNFicha, pesquisa, produtos }) {
         </div>
       )}
       <div className="flex flex-col gap-2 mt-2">
-        {dados
-          .filter((item) => {
-            const matchesPesquisa =
-              pesquisa === "" ||
-              item.nome_paciente
-                .toLowerCase()
-                .includes(pesquisa.toLowerCase()) ||
-              String(item.ficha_id).includes(pesquisa);
-
-            const prodMap =
-              item.produtos.map((p) => p.tipo).join(", ") || "Sem produtos";
-
-            const tiposMap = prodMap
-              .split(",")
-              .map((t) => t.trim().toLowerCase());
-
-            const matchesProdutos =
-              produtos.length === 0 ||
-              produtos.some((tipo) => tiposMap.includes(tipo.toLowerCase()));
-
-            return matchesPesquisa && matchesProdutos;
-          })
-          .map((item, index) => (
-            <DadosLista
-              key={item.ficha_id}
-              handleClick={handleClick}
-              item={item}
-              ativo={ativo}
-              index={index}
-            />
-          ))}
+        {dados.map((item, index) => (
+          <DadosLista
+            key={index}
+            handleClick={handleClick}
+            item={item}
+            ativo={ativo}
+            index={index}
+          />
+        ))}
       </div>
     </div>
   );

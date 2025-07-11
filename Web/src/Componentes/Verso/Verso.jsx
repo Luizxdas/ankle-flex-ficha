@@ -1,10 +1,9 @@
-import { formatarData, formatarPreco, inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import VersoBaseForm from "./VersoBaseForm";
 import Logo from "/Logo.png";
 import Perna from "/Perna.png";
 
-function Verso({ nFicha, setNFicha }) {
+function Verso({ formData, handleChange }) {
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
@@ -27,69 +26,84 @@ function Verso({ nFicha, setNFicha }) {
                     <div className="flex justify-between">
                       <CampoForm
                         id={"caracteristicas_idade"}
-                        name={"caracteristicas_idade"}
+                        name={"idade"}
                         content={"IDADE:"}
                         width={"5em"}
+                        value={formData.idade?.valor || ""}
+                        handleChange={handleChange}
                       />
                       <CampoForm
                         id={"caracteristicas_sexo"}
-                        name={"caracteristicas_sexo"}
+                        name={"sexo"}
                         content={"SEXO:"}
                         width={"5em"}
+                        value={formData.sexo?.valor || ""}
+                        handleChange={handleChange}
                       />
                       <CampoForm
                         id={"caracteristicas_altura"}
-                        name={"caracteristicas_altura"}
+                        name={"altura"}
                         content={"ALTURA:"}
                         width={"5em"}
+                        value={formData.altura?.valor || ""}
+                        handleChange={handleChange}
                       />
                       <CampoForm
                         id={"caracteristicas_peso"}
-                        name={"caracteristicas_peso"}
+                        name={"peso"}
                         content={"PESO:"}
                         width={"5em"}
+                        value={formData.peso?.valor || ""}
+                        handleChange={handleChange}
                       />
                       <CampoForm
                         id={"informacoes_lado"}
-                        name={"informacoes_lado"}
+                        name={"lado"}
                         content={"LADO:"}
                         width={"3em"}
+                        value={formData.lado?.valor || ""}
+                        handleChange={handleChange}
                       />
                     </div>
                   </div>
                   <div className="py-2 flex justify-between">
                     <CampoForm
                       id={"informacoes_n_pe"}
-                      name={"informacoes_n_pe"}
+                      name={"n_pe"}
                       content={"Nº PÉ:"}
                       width={"3em"}
+                      value={formData.n_pe?.valor || ""}
+                      handleChange={handleChange}
                     />
                     <CampoForm
                       id={"informacoes_causa_amputacao"}
-                      name={"informacoes_causa_amputacao"}
+                      name={"causa_amputacao"}
                       content={"CAUSA DA AMPUTAÇÃO:"}
                       width={"15em"}
+                      value={formData.causa_amputacao?.valor || ""}
+                      handleChange={handleChange}
                     />
                     <CampoForm
                       id={"informacoes_tempo"}
-                      name={"informacoes_tempo"}
+                      name={"tempo"}
                       content={"TEMPO:"}
                       width={"6em"}
+                      value={formData.tempo?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
                 </div>
                 <div className="w-[8em] h-[5em] mx-6 rounded-md border-[1.5px] border-black mt-5">
-                  <div className="flex flex-col items-center p-1">
-                    <label htmlFor="identidade_ficha_id" className="ml-2">
-                      Nº FICHA:
-                    </label>
-                    <input
+                  <div className="flex flex-col items-center text-center p-1">
+                    <CampoForm
                       id="identidade_ficha_id_verso"
-                      name="identidade_ficha_id_verso"
-                      className={`w-[6.5em] ${inputStyle} text-center`}
+                      name="ficha_id"
+                      content="Nº FICHA:"
+                      width="6.5em"
+                      centro={true}
                       maxLength={16}
-                      value={nFicha}
-                      onChange={(e) => setNFicha(e.target.value)}
+                      value={formData.ficha_id?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
                 </div>
@@ -97,7 +111,10 @@ function Verso({ nFicha, setNFicha }) {
               {/* BASE DO FORMULÁRIO */}
               <div className="flex flex-row">
                 <div className="flex flex-row w-[66em] h-[37.5em] justify-between pl-2 mt-2">
-                  <VersoBaseForm />
+                  <VersoBaseForm
+                    formData={formData}
+                    handleChange={handleChange}
+                  />
                   <div>
                     <img
                       src={Perna}
@@ -109,21 +126,23 @@ function Verso({ nFicha, setNFicha }) {
                     <div className="flex flex-col items-center text-center w-[8em] h-[5em] mr-5 rounded-md border-[1.5px] border-black p-1">
                       <CampoForm
                         id={"informacoes_preco"}
-                        name={"informacoes_preco"}
+                        name={"preco"}
                         content={"ORÇAMENTO:"}
                         width={"7em"}
                         centro={true}
-                        onChange={formatarPreco}
+                        value={formData.preco?.valor || ""}
+                        handleChange={handleChange}
                       />
                     </div>
                     <div className="flex flex-col items-center text-center w-[8em] h-[5em] mr-5 rounded-md border-[1.5px] border-black p-1">
                       <CampoForm
                         id={"informacoes_data_entrega"}
-                        name={"informacoes_data_entrega"}
+                        name={"data_entrega"}
                         content={"ENTREGA:"}
                         width={"6em"}
                         centro={true}
-                        onChange={formatarData}
+                        value={formData.data_entrega?.valor || ""}
+                        handleChange={handleChange}
                       />
                     </div>
                   </div>

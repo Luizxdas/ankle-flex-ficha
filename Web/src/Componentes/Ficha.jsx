@@ -4,14 +4,30 @@ import Verso from "./Verso/Verso";
 import Botao from "./Compartilhados/Botao";
 import useFichav2 from "../hooks/useFichav2";
 import Modal from "./Compartilhados/Modal";
-import { limparFicha } from "../utils";
+import { formatarCampo, limparFicha } from "../Utils/utils";
+import dadosForm from "../Utils/dadosForm";
 
 function Ficha() {
   const operacao = sessionStorage.getItem("operacao");
   const formRef = useRef();
   const [modal, setModal] = useState("");
-  const [nFicha, setNFicha] = useState("");
-  const { pagina } = useFichav2(formRef, setModal, setNFicha);
+  const [formData, setFormData] = useState(dadosForm);
+  const { pagina } = useFichav2(formRef, setModal, formData);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    const formattedValue =
+      type === "checkbox" ? checked : formatarCampo(name, value);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: {
+        ...prevData[name],
+        valor: formattedValue,
+      },
+    }));
+  };
 
   return (
     <div>
@@ -43,11 +59,11 @@ function Ficha() {
           <div className="flex flex-col">
             <div className="print:hidden mt-8"></div>
             <div className="w-[297mm] h-[200mm]">
-              <Frente nFicha={nFicha} setNFicha={setNFicha} />
+              <Frente formData={formData} handleChange={handleChange} />
             </div>
             <div className="print:hidden my-12"></div>
             <div className="page-break w-[297mm] h-[200mm]">
-              <Verso nFicha={nFicha} setNFicha={setNFicha} />
+              <Verso formData={formData} handleChange={handleChange} />
             </div>
             <div className="print:hidden mb-12"></div>
           </div>

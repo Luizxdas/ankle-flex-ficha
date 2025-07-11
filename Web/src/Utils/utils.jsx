@@ -28,27 +28,27 @@ export const imprimir = () => {
   window.print;
 };
 
-export function formatarPreco(e) {
-  if (!e.target.value) {
-    return null;
+export const formatarCampo = (nome, valor) => {
+  switch (nome) {
+    case "cep":
+      return valor.replace(/\D/g, "").replace(/(\d{5})(\d)/, "$1-$2");
+    case "telefone":
+      return valor
+        .replace(/\D/g, "")
+        .replace(/^(\d{2})(\d)/g, "($1) $2")
+        .replace(/(\d{5})(\d{4})$/, "$1-$2");
+    case "data_ficha":
+    case "data_entrega":
+      return valor
+        .replace(/\D/g, "")
+        .replace(/(\d{2})(\d)/, "$1/$2")
+        .replace(/(\d{2})(\d{2})$/, "$1/$2");
+    case "preco":
+      return parseFloat(valor.replace(/\D/g, "") / 100).toLocaleString(
+        "pt-BR",
+        { style: "currency", currency: "BRL" }
+      );
+    default:
+      return valor;
   }
-
-  let valor = e.target.value.replace(/\D/g, "");
-
-  const valorNumerico = parseFloat(valor) / 100;
-
-  e.target.value = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(valorNumerico);
-}
-
-export function formatarData(e) {
-  let valor = e.target.value.replace(/\D/g, "");
-
-  if (valor.length > 2) valor = valor.slice(0, 2) + "/" + valor.slice(2);
-  if (valor.length > 5) valor = valor.slice(0, 5) + "/" + valor.slice(5);
-  if (valor.length > 10) valor = valor.slice(0, 10);
-
-  e.target.value = valor;
-}
+};

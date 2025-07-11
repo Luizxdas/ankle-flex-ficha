@@ -7,12 +7,10 @@ import Produtos from "./Produtos";
 
 function Pacientes() {
   const navigate = useNavigate();
-  const [fichaId, setFichaId] = useState(null);
   const [pesquisa, setPesquisa] = useState("");
   const [produtos, setProdutos] = useState([]);
 
   const handleBuscar = async () => {
-    sessionStorage.setItem("ficha_id", fichaId);
     navigate("/ficha");
   };
 
@@ -27,11 +25,7 @@ function Pacientes() {
       <div className=" h-[50em] w-[70em] flex flex-col items-center p-2 space-y-4">
         <Pesquisa setPesquisa={setPesquisa} pesquisa={pesquisa} />
         <Produtos produtos={produtos} setProdutos={setProdutos} />
-        <ListaPacientes
-          setNFicha={setFichaId}
-          pesquisa={pesquisa}
-          produtos={produtos}
-        />
+        <ListaPacientes pesquisa={pesquisa} produtos={produtos} />
       </div>
 
       <div className="relative bottom-[14em] flex flex-col justify-center space-y-4 right-16">

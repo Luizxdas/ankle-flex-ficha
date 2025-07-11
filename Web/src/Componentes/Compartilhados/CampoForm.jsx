@@ -1,4 +1,4 @@
-import { inputStyle } from "../../utils";
+import { inputStyle } from "../../Utils/utils";
 
 function CampoForm({
   content,
@@ -6,9 +6,14 @@ function CampoForm({
   name,
   width,
   border,
-  onChange,
-  defaultValue,
-  centro,
+  handleChange,
+  value,
+  maxLength,
+  type = "text",
+  readOnly = false,
+  centro = false,
+
+  ...rest
 }) {
   return (
     <div
@@ -24,8 +29,12 @@ function CampoForm({
         name={name}
         className={`${inputStyle} ${centro ? "text-center" : ""}`}
         style={{ width }}
-        onChange={onChange}
-        defaultValue={defaultValue}
+        onChange={handleChange}
+        value={value}
+        maxLength={maxLength}
+        type={type}
+        readOnly={readOnly}
+        {...rest}
       />
     </div>
   );

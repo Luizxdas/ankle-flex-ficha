@@ -7,13 +7,13 @@ function Home() {
 
   const handleCriar = () => {
     sessionStorage.setItem("operacao", "salvar");
-    sessionStorage.removeItem("ficha_id");
+    sessionStorage.removeItem("ficha_link");
     navigate("/ficha");
   };
 
   const handleBuscar = () => {
     sessionStorage.setItem("operacao", "atualizar");
-    sessionStorage.removeItem("ficha_id");
+    sessionStorage.removeItem("ficha_link");
     navigate("/pacientes");
   };
 

@@ -1,4 +1,3 @@
-import { formatarData, inputStyle } from "../../utils";
 import CampoForm from "../Compartilhados/CampoForm";
 import Colete from "./Colete";
 import Ortese from "./Ortese";
@@ -6,9 +5,7 @@ import Palmilha from "./Palmilha";
 import Protese from "./Protese";
 import Logo from "/Logo.png";
 
-function Frente({ nFicha, setNFicha }) {
-  const data = new Date().toLocaleDateString();
-
+function Frente({ formData, handleChange }) {
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/* FORMULÁRIO */}
@@ -30,9 +27,11 @@ function Frente({ nFicha, setNFicha }) {
                   <div className="border-b-[1.5px] border-black py-2">
                     <CampoForm
                       id="identidade_nome_paciente"
-                      name="identidade_nome_paciente"
+                      name="nome_paciente"
                       content="PACIENTE:"
                       width="34em"
+                      value={formData.nome_paciente?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
 
@@ -40,23 +39,29 @@ function Frente({ nFicha, setNFicha }) {
                     <div className="flex justify-between">
                       <CampoForm
                         id="localizacao_endereco"
-                        name="localizacao_endereco"
+                        name="endereco"
                         content="ENDEREÇO:"
                         width="20em"
+                        value={formData.localizacao?.valor || ""}
+                        handleChange={handleChange}
                       />
                       <CampoForm
                         id="localizacao_n_endereco"
-                        name="localizacao_n_endereco"
+                        name="n_endereco"
                         content="N:"
                         width="3.5em"
                         maxLength={6}
+                        value={formData.n_endereco?.valor || ""}
+                        handleChange={handleChange}
                       />
                       <CampoForm
                         id="localizacao_cep"
-                        name="localizacao_cep"
+                        name="cep"
                         content="CEP:"
                         width="5em"
                         maxLength={9}
+                        value={formData.cep?.valor || ""}
+                        handleChange={handleChange}
                       />
                     </div>
                   </div>
@@ -64,69 +69,75 @@ function Frente({ nFicha, setNFicha }) {
                   <div className="flex justify-between py-2">
                     <CampoForm
                       id="localizacao_bairro"
-                      name="localizacao_bairro"
+                      name="bairro"
                       content="BAIRRO:"
                       width="16em"
                       maxLength={41}
+                      value={formData.bairro?.valor || ""}
+                      handleChange={handleChange}
                     />
                     <CampoForm
                       id="localizacao_cidade"
-                      name="localizacao_cidade"
+                      name="cidade"
                       content="CIDADE:"
                       width="8em"
                       maxLength={13}
+                      value={formData.cidade?.valor || ""}
+                      handleChange={handleChange}
                     />
                     <CampoForm
                       id="localizacao_estado"
-                      name="localizacao_estado"
+                      name="estado"
                       content="ESTADO:"
                       width="1.5em"
                       maxLength={2}
+                      value={formData.estado?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
                 </div>
                 <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
                   <div className="border-b-[1.5px] border-black py-2 pl-2">
-                    <label htmlFor="ficha_id" className="ml-2">
-                      Nº FICHA:
-                    </label>
-                    <input
+                    <CampoForm
                       id="identidade_ficha_id_frente"
-                      name="identidade_ficha_id_frente"
-                      className={`w-[6.5em] ${inputStyle}`}
+                      name="ficha_id"
+                      content="Nº FICHA:"
+                      width="6.5em"
                       maxLength={16}
-                      value={nFicha}
-                      onChange={(e) => setNFicha(e.target.value)}
+                      value={formData.ficha_id?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
                   <div className="border-b-[1.5px] border-black py-2 pl-2">
                     <CampoForm
                       id="identidade_data_ficha"
-                      name="identidade_data_ficha"
+                      name="data_ficha"
                       content="DATA:"
                       width="9.5em"
                       maxLength={10}
-                      onChange={formatarData}
-                      defaultValue={data}
+                      value={formData.data_ficha?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
                   <div className="py-2 pl-2">
                     <CampoForm
                       id="identidade_telefone"
-                      name="identidade_telefone"
+                      name="telefone"
                       content="FONE:"
                       width="9.5em"
                       maxLength={16}
+                      value={formData.telefone?.valor || ""}
+                      handleChange={handleChange}
                     />
                   </div>
                 </div>
               </div>
               {/* BASE DO FORMULÁRIO */}
               <div className="flex flex-row w-[66em] h-[38em] justify-between p-2">
-                <Protese />
-                <Ortese />
-                <Colete />
-                <Palmilha />
+                <Protese formData={formData} handleChange={handleChange} />
+                <Ortese formData={formData} handleChange={handleChange} />
+                <Colete formData={formData} handleChange={handleChange} />
+                <Palmilha formData={formData} handleChange={handleChange} />
               </div>
             </div>
           </div>

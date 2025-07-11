@@ -3,26 +3,28 @@ import { atualizarDados, enviarDados } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { buscarDadosFicha } from "../api/api";
 
-const useFichav2 = (formRef, setModal, setFichaId) => {
+const useFichav2 = (formRef, setModal, formData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [listaId, setListaId] = useState({});
+  const [dadosForm, setDadosForm] = useState({});
   const navigate = useNavigate();
 
   const handleSalvar = async () => {
     setIsLoading(true);
     setModal(true);
-    const formData = new FormData(formRef.current);
-    const dados = Object.fromEntries(formData.entries());
 
-    const dadosFormatados = formatarDados(dados);
-
+    const dadosFormatados = formatarDados(formData);
     const operacao = sessionStorage.getItem("operacao");
 
     try {
       if (operacao === "salvar") {
+        console.log(dadosFormatados);
         await enviarDados(dadosFormatados);
       } else if (operacao === "atualizar") {
-        await atualizarDados(dadosFormatados);
+        console.log(dadosFormatados);
+
+        // await atualizarDados(dadosFormatados);
       }
     } catch (error) {
       console.error("Erro durante a operação:", error.message);
@@ -46,46 +48,25 @@ const useFichav2 = (formRef, setModal, setFichaId) => {
   };
 
   function formatarDados(dados) {
-    const tabelas = {
-      caracteristicas: {},
-      identidade: {},
-      informacoes: {},
-      localizacao: {},
-      observacoes: {},
-      produtos: {},
-      tipos: {},
-    };
-    const camposNumericos = [
-      "ficha_id",
-      "idade",
-      "altura",
-      "peso",
-      "preco",
-      "n_endereco",
-      "n_liner",
-    ];
+    const tabelas = { ...dadosForm };
+    tabelas["produtos"] = [];
 
-    for (const [name, valor] of Object.entries(dados)) {
-      const [tabela, ...resto] = name.split("_");
-      const campo = resto.join("_");
+    for (const [id, obj] of Object.entries(dados)) {
+      console.log(id, obj.valor, obj.tabela);
 
-      if (Object.hasOwn(tabelas, tabela) && campo) {
-        if (valor === "") {
-          tabelas[tabela][campo] = null;
-        } else if (campo === "preco") {
-          let valorLimpo = valor.replace(/[^\d,]/g, "");
-          valorLimpo = valorLimpo.replace(/,/g, ".");
-          const preco = parseFloat(valorLimpo);
-          tabelas[tabela][campo] = preco.toFixed(2);
-        } else if (camposNumericos.includes(campo)) {
-          const numeros = valor.replace(/\D/g, "");
-          tabelas[tabela][campo] = Number(numeros);
+      if (obj.valor && obj.tabela) {
+        if (obj.tabela === "produtos") {
+          const item = { produto: id, tipo: obj.tipo };
+          tabelas["produtos"].push(item);
         } else {
-          tabelas[tabela][campo] = valor;
+          if (!tabelas[obj.tabela]) {
+            tabelas[obj.tabela] = {};
+          }
+          tabelas[obj.tabela][id] = obj.valor;
         }
       } else {
         console.warn(
-          `Campo '${name}' não pôde ser atribuído a uma tabela válida.`
+          `Campo '${id}' não pôde ser atribuído a uma tabela válida.`
         );
       }
     }
@@ -94,43 +75,38 @@ const useFichav2 = (formRef, setModal, setFichaId) => {
   }
 
   useEffect(() => {
-    async function preencherFicha(ficha_id) {
+    async function preencherFicha(ficha_link) {
       setIsLoading(true);
-      const resultado = await buscarDadosFicha(ficha_id);
-      const dados = resultado.dados;
+      const dados = await buscarDadosFicha(ficha_link);
 
-      if (!dados) {
+      if (dados) {
+        setDadosForm(dados);
+      } else {
         console.warn("Dados inválidos para preenchimento do formulário");
         return;
       }
 
+      console.log("Dados recebidos para preenchimento: ", dados);
+
+      const tabelasId = {};
+
       const getInput = (id) => formRef.current?.querySelector(`#${id}`);
-      const getProduto = (nome) =>
+      const getProdutoInput = (nome) =>
         formRef.current?.querySelector(`input[value="${nome}"]`);
 
       const preencherValor = (input, valor) => {
         if (!input) {
-          console.warn(
-            `Input (${input}) não encontrado para o valor: ${valor}`
-          );
+          console.warn("Input ", input, " não encontrado para o valor:", valor);
           return false;
         }
 
         if (input.type === "checkbox") {
           input.checked = true;
-        } else if (
-          input.id === "identidade_data_ficha" ||
-          input.id === "informacoes_data_entrega"
-        ) {
-          const data_formatada = new Date(valor).toLocaleDateString();
-          input.value = data_formatada;
-        } else if (input.id === "informacoes_preco" && valor) {
-          let preco = valor.replace(/\D/g, "");
-          const valorNumerico = parseFloat(preco) / 100;
+        } else if (input.id === "informacoes_preco") {
           input.value = new Intl.NumberFormat("pt-BR", {
             style: "currency",
             currency: "BRL",
-          }).format(valorNumerico);
+          }).format(valor);
         } else {
           input.value = valor;
         }
@@ -139,34 +115,33 @@ const useFichav2 = (formRef, setModal, setFichaId) => {
       };
 
       Object.entries(dados).forEach(([tabela, campo]) => {
-        Object.entries(campo).forEach(([id, valor]) => {
+        Object.entries(campo).forEach(([nome, valor]) => {
           if (tabela === "produtos") {
-            const input = getProduto(valor.produto);
-            preencherValor(input);
-          } else if (tabela === "tipos") {
-            Object.entries(valor).forEach(([tipo, descricao]) => {
-              const input = getInput(`${tabela}_${tipo}`);
-              preencherValor(input, descricao);
-            });
+            const id = { id: valor.id };
+            const produto = { [nome]: id };
+            const input = getProdutoInput(valor.produto);
+            tabelasId[tabela] = { ...tabelasId[tabela], ...produto };
+            preencherValor(input, valor);
+          } else if (nome === "id") {
+            const id = { id: valor };
+            tabelasId[tabela] = id;
           } else {
-            if (id === "ficha_id") {
-              setFichaId(valor);
-              return;
-            }
-
-            const input = getInput(`${tabela}_${id}`);
+            const input = getInput(`${tabela}_${nome}`);
             preencherValor(input, valor);
           }
         });
       });
+
+      console.log("Tabelas após preenchimento: ", tabelasId);
+      setListaId(tabelasId);
     }
 
-    const ficha_id = sessionStorage.getItem("ficha_id");
+    const ficha_link = sessionStorage.getItem("ficha_link");
 
-    if (ficha_id) {
-      preencherFicha(ficha_id);
+    if (ficha_link) {
+      preencherFicha(ficha_link);
     }
-  }, [formRef, setFichaId]);
+  }, [formRef]);
 
   return {
     pagina: {

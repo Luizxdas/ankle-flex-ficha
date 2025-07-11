@@ -1,19 +1,19 @@
 import Observacoes from "../Compartilhados/Observacoes";
 import Option from "../Compartilhados/Option";
-import { baseFormStyle, vFormStyle } from "../../utils";
+import { baseFormStyle, vFormStyle } from "../../Utils/utils";
 
-function Protese() {
-  const proteseOptions = [
-    "Dedos",
-    "Metatarsiana",
-    "Lisfranc",
-    "Chopart",
-    "Syme",
-    "Transtibial",
-    "Desarticulação do Joelho",
-    "Transfemural",
-    "Desarticulação do Quadril",
-    "Hemipelvectomia",
+function Protese({ formData, handleChange }) {
+  const proteses = [
+    { id: "dedos", label: "Dedos" },
+    { id: "metatarsiana", label: "Metatarsiana" },
+    { id: "lisfranc", label: "Lisfranc" },
+    { id: "chopart", label: "Chopart" },
+    { id: "syme", label: "Syme" },
+    { id: "transtibial", label: "Transtibial" },
+    { id: "desarticulacao_joelho", label: "Desarticulação de Joelho" },
+    { id: "transfemural", label: "Transfemural" },
+    { id: "desarticulacao_quadril", label: "Desarticulação de Quadril" },
+    { id: "hemipelvectomia", label: "Hemipelvectomia" },
   ];
 
   return (
@@ -24,14 +24,22 @@ function Protese() {
           Nivel de Amputação
         </h2>
         <div className={baseFormStyle}>
-          {proteseOptions.map((option) => (
-            <Option key={option} name="produtos_protese" content={option} />
+          {proteses.map((protese) => (
+            <Option
+              key={protese.id}
+              name={protese.id}
+              value={protese.label}
+              checked={formData[protese.id]?.valor || false}
+              handleChange={handleChange}
+            />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
           <div className="ml-1 h-10">
             <Observacoes
               id={"observacoes_protese"}
-              name={"observacoes_protese"}
+              name={"protese"}
+              handleChange={handleChange}
+              value={formData.protese?.valor || ""}
             />
           </div>
         </div>
