@@ -6,6 +6,7 @@ import Protese from "./Protese";
 import Logo from "/Logo.png";
 
 function Frente({ formData, handleChange }) {
+  const operacao = sessionStorage.getItem("operacao");
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/* FORMULÁRIO */}
@@ -42,7 +43,7 @@ function Frente({ formData, handleChange }) {
                         name="endereco"
                         content="ENDEREÇO:"
                         width="20em"
-                        value={formData.localizacao?.valor || ""}
+                        value={formData.endereco?.valor || ""}
                         handleChange={handleChange}
                       />
                       <CampoForm
@@ -97,7 +98,11 @@ function Frente({ formData, handleChange }) {
                   </div>
                 </div>
                 <div className="flex flex-col mr-5 w-[15em] h-[7em] rounded-md border-[1.5px] border-black justify-center mt-5">
-                  <div className="border-b-[1.5px] border-black py-2 pl-2">
+                  <div
+                    className={`border-b-[1.5px] border-black py-2 pl-2 ${
+                      operacao === "atualizar" ? "opacity-50 select-none" : ""
+                    }`}
+                  >
                     <CampoForm
                       id="identidade_ficha_id_frente"
                       name="ficha_id"
@@ -105,6 +110,7 @@ function Frente({ formData, handleChange }) {
                       width="6.5em"
                       maxLength={16}
                       value={formData.ficha_id?.valor || ""}
+                      readOnly={operacao === "atualizar"}
                       handleChange={handleChange}
                     />
                   </div>

@@ -34,6 +34,7 @@ function CampoForm({
         maxLength={maxLength}
         type={type}
         readOnly={readOnly}
+        disabled={readOnly}
         {...rest}
       />
     </div>

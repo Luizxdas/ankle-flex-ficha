@@ -4,6 +4,8 @@ import Logo from "/Logo.png";
 import Perna from "/Perna.png";
 
 function Verso({ formData, handleChange }) {
+  const operacao = sessionStorage.getItem("operacao");
+
   return (
     <div className="bg-slate-400 flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}
@@ -94,7 +96,11 @@ function Verso({ formData, handleChange }) {
                   </div>
                 </div>
                 <div className="w-[8em] h-[5em] mx-6 rounded-md border-[1.5px] border-black mt-5">
-                  <div className="flex flex-col items-center text-center p-1">
+                  <div
+                    className={`flex flex-col items-center text-center p-1 ${
+                      operacao === "atualizar" ? "opacity-30" : ""
+                    }`}
+                  >
                     <CampoForm
                       id="identidade_ficha_id_verso"
                       name="ficha_id"
@@ -103,6 +109,7 @@ function Verso({ formData, handleChange }) {
                       centro={true}
                       maxLength={16}
                       value={formData.ficha_id?.valor || ""}
+                      readOnly={true}
                       handleChange={handleChange}
                     />
                   </div>
