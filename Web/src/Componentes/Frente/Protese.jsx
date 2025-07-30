@@ -1,6 +1,6 @@
 import Observacoes from "../Compartilhados/Observacoes";
 import Option from "../Compartilhados/Option";
-import { baseFormStyle, vFormStyle } from "../../Utils/utils";
+import { baseFormStyle, vFormStyle } from "../../utils/utils";
 
 function Protese({ formData, handleChange }) {
   const proteses = [

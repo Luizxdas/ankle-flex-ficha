@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { buscarTodosDados } from "../../api/api";
 import DadosLista from "./DadosLista";
 import CabecalhoLista from "./CabecalhoLista";
+import { buscarTodosDados } from "../../services/fichaService";
 
 function ListaPacientes() {
   const [dados, setDados] = useState([]);
@@ -12,7 +12,7 @@ function ListaPacientes() {
   const handleClick = (item) => {
     if (ativo === item) {
       setAtivo(null);
-      sessionStorage.removeItemo("ficha_link");
+      sessionStorage.removeItem("ficha_link");
     } else {
       setAtivo(item);
       sessionStorage.setItem("ficha_link", item._links.self.href);
@@ -62,15 +62,19 @@ function ListaPacientes() {
         </div>
       )}
       <div className="flex flex-col gap-2 mt-2">
-        {dados.map((item, index) => (
-          <DadosLista
-            key={index}
-            handleClick={handleClick}
-            item={item}
-            ativo={ativo}
-            index={index}
-          />
-        ))}
+        {dados ? (
+          dados.map((item, index) => (
+            <DadosLista
+              key={index}
+              handleClick={handleClick}
+              item={item}
+              ativo={ativo}
+              index={index}
+            />
+          ))
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );

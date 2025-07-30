@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import LogoHd from "/blank-logo-hd.png";
-import Botao from "./Componentes/Compartilhados/Botao";
+import Botao from "./componentes/Compartilhados/Botao";
 
 function Home() {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import Observacoes from "../Compartilhados/Observacoes";
 import Option from "../Compartilhados/Option";
-import { baseFormStyle, vFormStyle } from "../../Utils/utils";
+import { baseFormStyle, vFormStyle } from "../../utils/utils";
 
 function Palmilha({ formData, handleChange }) {
   const palmilhas = [

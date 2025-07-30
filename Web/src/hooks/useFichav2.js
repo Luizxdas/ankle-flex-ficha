@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { enviarDados } from "../api/api";
 import { useNavigate } from "react-router-dom";
-import { buscarDadosFicha } from "../api/api";
-import dadosForm from "../Utils/dadosForm";
+import dadosForm from "../utils/dadosForm";
+import { buscarDadosFicha, enviarDados } from "../services/fichaService";
 
 const useFichav2 = (formRef, setModal, formData, setFormData) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -105,7 +104,7 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
     } else {
       setFormData(dadosForm);
     }
-  }, [formData, setFormData]);
+  }, []);
 
   return {
     pagina: {

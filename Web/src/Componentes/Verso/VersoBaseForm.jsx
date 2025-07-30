@@ -1,6 +1,6 @@
 import CampoForm from "../Compartilhados/CampoForm";
 import Observacoes from "../Compartilhados/Observacoes";
-import { vFormStyle } from "../../Utils/utils";
+import { vFormStyle } from "../../utils/utils";
 
 function VersoBaseForm({ formData, handleChange }) {
   return (
@@ -14,6 +14,7 @@ function VersoBaseForm({ formData, handleChange }) {
             width={"10em"}
             border={true}
             centro={true}
+            value={formData.pe?.valor || ""}
             handleChange={handleChange}
           />
           <CampoForm
@@ -23,6 +24,7 @@ function VersoBaseForm({ formData, handleChange }) {
             width={"10em"}
             border={true}
             centro={true}
+            value={formData.joelho?.valor || ""}
             handleChange={handleChange}
           />
           <CampoForm
@@ -32,6 +34,7 @@ function VersoBaseForm({ formData, handleChange }) {
             width={"10em"}
             border={true}
             centro={true}
+            value={formData.quadril?.valor || ""}
             handleChange={handleChange}
           />
           <CampoForm
@@ -41,6 +44,7 @@ function VersoBaseForm({ formData, handleChange }) {
             width={"10em"}
             border={true}
             centro={true}
+            value={formData.encaixe?.valor || ""}
             handleChange={handleChange}
           />
           <CampoForm
@@ -50,6 +54,7 @@ function VersoBaseForm({ formData, handleChange }) {
             width={"10em"}
             border={true}
             centro={true}
+            value={formData.liner?.valor || ""}
             handleChange={handleChange}
           />
           <CampoForm
@@ -59,6 +64,7 @@ function VersoBaseForm({ formData, handleChange }) {
             width={"10em"}
             border={true}
             centro={true}
+            value={formData.n_liner?.valor || ""}
             handleChange={handleChange}
           />
           <div className="flex justify-start text-start ml-2">
