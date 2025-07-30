@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/fichas")
 public class FichaController {
 
     private final FichaService fichaService;
@@ -26,7 +27,7 @@ public class FichaController {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
-    @GetMapping("/fichas")
+    @GetMapping
     public ResponseEntity<PagedModel<EntityModel<ListaFichaDTO>>> buscarTodasAsFichas(
             Pageable pageable) {
 
@@ -43,21 +44,21 @@ public class FichaController {
         return ResponseEntity.ok(pagedModel);
     }
 
-    @GetMapping("/fichas/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<FichaDTO> buscarFichaPorId(@PathVariable Long id) {
         FichaDTO ficha = fichaService.buscarFicha(id);
         return ResponseEntity.ok(ficha);
     }
 
-    @PostMapping("/fichas")
+    @PostMapping
     public ResponseEntity<FichaDTO> salvarFicha(@RequestBody FichaDTO fichaDTO) {
         Ficha fichaSalvaEntity = fichaService.salvarFicha(fichaDTO);
         FichaDTO fichaSalvaDTO = FichaMapper.toFichaDTO(fichaSalvaEntity);
         return new ResponseEntity<>(fichaSalvaDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FichaDTO> atualizarFicha(@PathVariable Long id, @RequestBody FichaDTO fichaDTO) {
+    @PutMapping
+    public ResponseEntity<FichaDTO> atualizarFicha(@RequestBody FichaDTO fichaDTO) {
 
         Ficha fichaAtualizadaEntity = fichaService.atualizarFicha(fichaDTO);
 
