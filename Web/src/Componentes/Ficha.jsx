@@ -4,15 +4,17 @@ import Verso from "./Verso/Verso";
 import Botao from "./Compartilhados/Botao";
 import useFichav2 from "../hooks/useFichav2";
 import Modal from "./Compartilhados/Modal";
-import { formatarCampo, limparFicha } from "../Utils/utils";
-import dadosForm from "../Utils/dadosForm";
+import { formatarCampo, limparFicha } from "../utils/utils";
+import dadosForm from "../utils/dadosForm";
 
 function Ficha() {
   const operacao = sessionStorage.getItem("operacao");
   const formRef = useRef();
   const [modal, setModal] = useState("");
-  const [formData, setFormData] = useState(dadosForm);
-  const { pagina } = useFichav2(formRef, setModal, formData);
+  const [formData, setFormData] = useState(() =>
+    JSON.parse(JSON.stringify(dadosForm))
+  );
+  const { pagina } = useFichav2(formRef, setModal, formData, setFormData);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -40,6 +42,17 @@ function Ficha() {
             isLoading={pagina.isLoading}
             erro={pagina.error}
           />
+        </div>
+      )}
+      {pagina.isLoading && (
+        <div className="fixed w-screen h-screen bg-black/40 flex items-center justify-center z-10">
+          <div className="w-full h-full flex justify-center items-center ">
+            <div className="flex items-center justify-center space-x-2">
+              <span className="w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></span>
+            </div>
+          </div>
         </div>
       )}
       <div className=" bg-slate-400 flex flex-row items-center justify-center z-0">
