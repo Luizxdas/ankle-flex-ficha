@@ -19,7 +19,6 @@ public class FichaService {
 
     public FichaService(FichaRepository fichaRepository) {
         this.fichaRepository = fichaRepository;
-
     }
 
     public FichaDTO buscarFicha(Long fichaId) {
@@ -49,11 +48,32 @@ public class FichaService {
 
     public Page<ListaFichaDTO> buscarFichasParaLista(Pageable pageable) {
         return fichaRepository.findAll(pageable)
-                .map(ficha -> new ListaFichaDTO(
-                        ficha.getId(),
-                        ficha.getIdentidade().getNomePaciente(),
-                        ficha.getProdutos().stream().map(Produto::getTipo).toList(),
-                        ficha.getIdentidade().getDataFicha()));
+                .map(ficha -> {
+                    if (ficha == null) {
+                        return null;
+                    }
+
+                    Identidade identidade = ficha.getIdentidade();
+                    String nomePaciente = (identidade != null) ? identidade.getNomePaciente() : null;
+
+                    List<String> tiposProduto = null;
+                    if (ficha.getProdutos() != null) {
+                        tiposProduto = ficha.getProdutos().stream()
+                                .map(produto -> (produto != null) ? produto.getTipo() : null)
+                                .filter(java.util.Objects::nonNull)
+                                .toList();
+                    } else {
+                        tiposProduto = java.util.Collections.emptyList();
+                    }
+
+                    java.time.LocalDate dataFicha = (identidade != null) ? identidade.getDataFicha() : null;
+
+                    return new ListaFichaDTO(
+                            ficha.getId(),
+                            nomePaciente,
+                            tiposProduto,
+                            dataFicha);
+                });
     }
 
     public Ficha salvarFicha(FichaDTO fichaDTO) {
@@ -117,8 +137,9 @@ public class FichaService {
             throw new IllegalArgumentException("FichaDTO não pode ser nulo.");
         }
 
-        Ficha fichaEntity = new Ficha();
         Long fichaId = fichaDTO.identidadeDTO().fichaId();
+        Ficha fichaEntity = new Ficha();
+        fichaEntity.setId(fichaId);
 
         Ficha fichaExistente = fichaRepository.findById(fichaId)
                 .orElseThrow(() -> new EntityNotFoundException("Ficha com ID " + fichaId + " não encontrada"));
@@ -126,13 +147,50 @@ public class FichaService {
         Identidade identidadeEntity = FichaMapper.toIdentidadeEntity(fichaDTO.identidadeDTO());
         if (identidadeEntity != null) {
             identidadeEntity.setFicha(fichaEntity);
-            identidadeEntity.setId(fichaExistente.getId());
+            identidadeEntity.setId(fichaExistente.getIdentidade().getId());
             fichaEntity.setIdentidade(identidadeEntity);
         }
 
-        if (fichaDTO.informacaoDTO() != null) {
-            fichaExistente.setInformacao(FichaMapper.toInformacaoEntity(fichaDTO.informacaoDTO()));
+        Informacao informacaoEntity = FichaMapper.toInformacaoEntity(fichaDTO.informacaoDTO());
+        if (informacaoEntity != null) {
+            informacaoEntity.setFicha(fichaEntity);
+            informacaoEntity.setId(fichaExistente.getInformacao().getId());
+            fichaEntity.setInformacao(informacaoEntity);
         }
+
+        Caracteristica caracteristicaEntity = FichaMapper.toCaracteristicaEntity(fichaDTO.caracteristicasDTO());
+        if (caracteristicaEntity != null) {
+            caracteristicaEntity.setFicha(fichaEntity);
+            caracteristicaEntity.setId(fichaExistente.getCaracteristica().getId());
+            fichaEntity.setCaracteristica(caracteristicaEntity);
+        }
+
+        Localizacao localizacaoEntity = FichaMapper.toLocalizacaoEntity(fichaDTO.localizacaoDTO());
+        if (localizacaoEntity != null) {
+            localizacaoEntity.setFicha(fichaEntity);
+            localizacaoEntity.setId(fichaExistente.getLocalizacao().getId());
+            fichaEntity.setLocalizacao(localizacaoEntity);
+        }
+
+        Tipo tipoEntity = FichaMapper.toTipoEntity(fichaDTO.tipoDTO());
+        if (tipoEntity != null) {
+            tipoEntity.setFicha(fichaEntity);
+            tipoEntity.setId(fichaExistente.getTipo().getId());
+            fichaEntity.setTipo(tipoEntity);
+        }
+
+        Observacao observacaoEntity = FichaMapper.toObservacaoEntity(fichaDTO.observacaoDTO());
+        if (observacaoEntity != null) {
+            observacaoEntity.setFicha(fichaEntity);
+            observacaoEntity.setId(fichaExistente.getObservacao().getId());
+            fichaEntity.setObservacao(observacaoEntity);
+        }
+
+        List<Produto> produtosEntities = fichaDTO.produtoDTO().stream()
+                .map(FichaMapper::toProdutoEntity)
+                .peek(produto -> produto.setFicha(fichaEntity))
+                .collect(Collectors.toList());
+        fichaEntity.setProdutos(produtosEntities);
 
         return fichaRepository.save(fichaEntity);
     }
