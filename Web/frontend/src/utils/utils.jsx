@@ -35,14 +35,16 @@ export const formatarCampo = (nome, valor) => {
     case "telefone":
       return valor
         .replace(/\D/g, "")
+        .slice(0, 11)
         .replace(/^(\d{2})(\d)/g, "($1) $2")
-        .replace(/(\d{5})(\d{4})$/, "$1-$2");
+        .replace(/(\d{5})(\d)/, "$1-$2");
     case "data_ficha":
     case "data_entrega":
       return valor
         .replace(/\D/g, "")
+        .slice(0, 8)
         .replace(/(\d{2})(\d)/, "$1/$2")
-        .replace(/(\d{2})(\d{2})$/, "$1/$2");
+        .replace(/(\d{2})(\d)/, "$1/$2");
     case "preco":
       return parseFloat(valor.replace(/\D/g, "") / 100).toLocaleString(
         "pt-BR",
@@ -52,3 +54,19 @@ export const formatarCampo = (nome, valor) => {
       return valor;
   }
 };
+
+export function formatarPreco(valor) {
+  if (!valor) {
+    return 0;
+  }
+
+  const apenasNumerosEVirgula = String(valor).replace(/[^\d,]/g, "");
+
+  const valorComPonto = apenasNumerosEVirgula.replace(",", ".");
+
+  const numero = parseFloat(valorComPonto);
+
+  const valorEmCentavos = Math.round(numero * 100);
+
+  return valorEmCentavos;
+}

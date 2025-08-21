@@ -16,11 +16,13 @@ function DadosLista({ handleClick, item, ativo, index }) {
       <span className="w-[6em] text-center">{item.id}</span>
       <span className="w-[30em] text-center">{item.nome}</span>
       <span className="w-[14em] text-center overflow-hidden whitespace-nowrap text-ellipsis">
-        {item.tipo_produto.join(", ") ||
-          "Sem produtos"}
+        {[...new Set(item.tipo_produto)].join(", ") || "Sem produtos"}
       </span>
       <span className="w-[10em] text-center">
-        {new Date(item.data).toLocaleDateString("pt-BR")}
+        {(() => {
+            const [ano, mes, dia] = item.data.split("-");
+            return `${dia}/${mes}/${ano}`;
+        })()}
       </span>
     </button>
   );

@@ -11,7 +11,7 @@ function Palmilha({ formData, handleChange }) {
       label: "Valente-valente e apoio abóboda-plantar",
     },
     {
-      id: "apoio_aboboda_plantar",
+      id: "apoio_aboboda_plantar_u_assimetrico",
       label: "Apoio abóboda-plantar + U assimétrico",
     },
     { id: "apoio_1_4_esfera", label: "Apoio 1/4 esféra" },

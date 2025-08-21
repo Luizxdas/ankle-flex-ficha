@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dadosForm from "../utils/dadosForm";
 import { buscarDadosFicha, enviarDados } from "../services/fichaService";
+import { formatarPreco } from "../utils/utils";
 
 const useFichav2 = (formRef, setModal, formData, setFormData) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,7 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
     setModal(true);
 
     const dadosFormatados = formatarDados(formData);
+    console.log(dadosFormatados);
 
     try {
       await enviarDados(dadosFormatados);
@@ -52,12 +54,13 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
           if (!tabelas[obj.tabela]) {
             tabelas[obj.tabela] = {};
           }
-          tabelas[obj.tabela][id] = obj.valor;
+          id === "preco"
+            ? (tabelas[obj.tabela][id] = formatarPreco(obj.valor))
+            : (tabelas[obj.tabela][id] = obj.valor);
         }
       }
     }
 
-    console.log(tabelas);
     return tabelas;
   }
 
@@ -88,6 +91,11 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
           } else if (nome === "id") {
             const id = { id: valor };
             tabelasId[tabela] = id;
+          } else if (nome === "preco") {
+            novoFormData[nome].valor = parseFloat(valor / 100).toLocaleString(
+              "pt-BR",
+              { style: "currency", currency: "BRL" }
+            );
           } else {
             novoFormData[nome].valor = valor;
           }

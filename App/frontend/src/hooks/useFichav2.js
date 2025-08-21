@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dadosForm from "../utils/dadosForm";
-import { buscarDadosFicha, salvarDados, atualizarDados } from "../services/fichaService";
+import {
+  atualizarDados,
+  buscarDadosFicha,
+  salvarDados,
+} from "../services/fichaService";
+import { formatarPreco } from "../utils/utils.jsx";
 
 const useFichav2 = (formRef, setModal, formData, setFormData) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,9 +22,9 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
 
     try {
       if (operacao === "salvar") {
-          await salvarDados(dadosFormatados);
+        await salvarDados(dadosFormatados);
       } else if (operacao === "atualizar") {
-          await atualizarDados(dadosFormatados);
+        await atualizarDados(dadosFormatados);
       }
     } catch (error) {
       console.error("Erro durante a operação:", error.response.data.message);
@@ -57,7 +62,10 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
           if (!tabelas[obj.tabela]) {
             tabelas[obj.tabela] = {};
           }
-          tabelas[obj.tabela][id] = obj.valor;
+
+          id === "preco"
+            ? (tabelas[obj.tabela][id] = formatarPreco(obj.valor))
+            : (tabelas[obj.tabela][id] = obj.valor);
         }
       }
     }
@@ -93,6 +101,11 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
           } else if (nome === "id") {
             const id = { id: valor };
             tabelasId[tabela] = id;
+          } else if (nome === "preco") {
+            novoFormData[nome].valor = parseFloat(valor / 100).toLocaleString(
+              "pt-BR",
+              { style: "currency", currency: "BRL" }
+            );
           } else {
             novoFormData[nome].valor = valor;
           }
