@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import DadosLista from "./DadosLista";
 import CabecalhoLista from "./CabecalhoLista";
 
-function ListaPacientes({pagina, carregarDados, isLoading, error}) {
+function ListaPacientes({pagina, carregarDados, isLoading, error, setPaginaAtual}) {
     const [ativo, setAtivo] = useState(null);
 
     const selecionarFicha = (ficha) => {
@@ -44,14 +44,15 @@ function ListaPacientes({pagina, carregarDados, isLoading, error}) {
             </div>
         </div>)}
         <div className="flex-grow flex flex-col gap-2 mt-2 overflow-y-auto">
-
-            {pagina && pagina.data._embedded.lista_ficha_dtolist.map((item, index) => (<DadosLista
-                key={item.id || index}
-                handleClick={selecionarFicha}
-                item={item}
-                ativo={ativo}
-                index={index}
-            />))}
+            {pagina?.data?._embedded?.lista_ficha_dtolist?.map((item, index) => (
+                <DadosLista
+                    key={item.id || index}
+                    handleClick={selecionarFicha}
+                    item={item}
+                    ativo={ativo}
+                    index={index}
+                />
+            ))}
         </div>
         {pagina && pagina.totalPages > 1 && (<div className="flex justify-center items-center gap-4 p-4">
             <button

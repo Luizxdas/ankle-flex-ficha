@@ -42,7 +42,7 @@ function Pacientes() {
             <div className=" h-[50em] w-[70em] flex flex-col items-center p-2 space-y-4">
                 <Pesquisa setPesquisa={setPesquisa} pesquisa={pesquisa} carregarDados={carregarDados}/>
                 <Produtos produtos={produtos} setProdutos={setProdutos}/>
-                <ListaPacientes pagina={pagina} carregarDados={carregarDados} isLoading={isLoading} error={error}/>
+                <ListaPacientes pagina={pagina} carregarDados={carregarDados} isLoading={isLoading} error={error} setPaginaAtual={setPaginaAtual}/>
             </div>
 
             <div className="relative bottom-[14em] flex flex-col justify-center space-y-4 right-16">
