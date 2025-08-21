@@ -184,60 +184,69 @@ public class FichaService {
         }
 
         Long fichaId = fichaDTO.identidadeDTO().fichaId();
-        Ficha fichaEntity = new Ficha();
-        fichaEntity.setId(fichaId);
-
         Ficha fichaExistente = fichaRepository.findById(fichaId)
                 .orElseThrow(() -> new EntityNotFoundException("Ficha com ID " + fichaId + " não encontrada."));
 
         Identidade identidadeEntity = FichaMapper.toIdentidadeEntity(fichaDTO.identidadeDTO());
         if (identidadeEntity != null) {
-            identidadeEntity.setFicha(fichaEntity);
-            identidadeEntity.setId(fichaExistente.getIdentidade().getId());
-            fichaEntity.setIdentidade(identidadeEntity);
+            identidadeEntity.setFicha(fichaExistente);
+            if (fichaExistente.getIdentidade() != null) {
+                identidadeEntity.setId(fichaExistente.getIdentidade().getId());
+            }
+            fichaExistente.setIdentidade(identidadeEntity);
         }
 
         Informacao informacaoEntity = FichaMapper.toInformacaoEntity(fichaDTO.informacaoDTO());
         if (informacaoEntity != null) {
-            informacaoEntity.setFicha(fichaEntity);
-            informacaoEntity.setId(fichaExistente.getInformacao().getId());
-            fichaEntity.setInformacao(informacaoEntity);
+            informacaoEntity.setFicha(fichaExistente);
+            if (fichaExistente.getInformacao() != null) {
+                informacaoEntity.setId(fichaExistente.getInformacao().getId());
+            }
+            fichaExistente.setInformacao(informacaoEntity);
         }
 
         Caracteristica caracteristicaEntity = FichaMapper.toCaracteristicaEntity(fichaDTO.caracteristicasDTO());
         if (caracteristicaEntity != null) {
-            caracteristicaEntity.setFicha(fichaEntity);
-            caracteristicaEntity.setId(fichaExistente.getCaracteristica().getId());
-            fichaEntity.setCaracteristica(caracteristicaEntity);
+            caracteristicaEntity.setFicha(fichaExistente);
+            if (fichaExistente.getCaracteristica() != null) {
+                caracteristicaEntity.setId(fichaExistente.getCaracteristica().getId());
+            }
+            fichaExistente.setCaracteristica(caracteristicaEntity);
         }
 
         Localizacao localizacaoEntity = FichaMapper.toLocalizacaoEntity(fichaDTO.localizacaoDTO());
         if (localizacaoEntity != null) {
-            localizacaoEntity.setFicha(fichaEntity);
-            localizacaoEntity.setId(fichaExistente.getLocalizacao().getId());
-            fichaEntity.setLocalizacao(localizacaoEntity);
+            localizacaoEntity.setFicha(fichaExistente);
+            if (fichaExistente.getLocalizacao() != null) {
+                localizacaoEntity.setId(fichaExistente.getLocalizacao().getId());
+            }
+            fichaExistente.setLocalizacao(localizacaoEntity);
         }
 
         Tipo tipoEntity = FichaMapper.toTipoEntity(fichaDTO.tipoDTO());
         if (tipoEntity != null) {
-            tipoEntity.setFicha(fichaEntity);
-            tipoEntity.setId(fichaExistente.getTipo().getId());
-            fichaEntity.setTipo(tipoEntity);
+            tipoEntity.setFicha(fichaExistente);
+            if (fichaExistente.getTipo() != null) {
+                tipoEntity.setId(fichaExistente.getTipo().getId());
+            }
+            fichaExistente.setTipo(tipoEntity);
         }
 
         Observacao observacaoEntity = FichaMapper.toObservacaoEntity(fichaDTO.observacaoDTO());
         if (observacaoEntity != null) {
-            observacaoEntity.setFicha(fichaEntity);
-            observacaoEntity.setId(fichaExistente.getObservacao().getId());
-            fichaEntity.setObservacao(observacaoEntity);
+            observacaoEntity.setFicha(fichaExistente);
+            if (fichaExistente.getObservacao() != null) {
+                observacaoEntity.setId(fichaExistente.getObservacao().getId());
+            }
+            fichaExistente.setObservacao(observacaoEntity);
         }
 
         List<Produto> produtosEntities = fichaDTO.produtoDTO().stream()
                 .map(FichaMapper::toProdutoEntity)
-                .peek(produto -> produto.setFicha(fichaEntity))
+                .peek(produto -> produto.setFicha(fichaExistente))
                 .collect(Collectors.toList());
-        fichaEntity.setProdutos(produtosEntities);
+        fichaExistente.setProdutos(produtosEntities);
 
-        return fichaRepository.save(fichaEntity);
+        return fichaRepository.save(fichaExistente);
     }
 }
