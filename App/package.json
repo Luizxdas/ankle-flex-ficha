@@ -1,0 +1,54 @@
+{
+  "name": "ankle-flex-ficha",
+  "version": "1.0.0",
+  "main": "electron.js",
+  "build": {
+    "productName": "Ficha AF",
+    "appId": "com.ankleflex.ficha",
+    "artifactName": "${productName} Setup.${ext}",
+    "files": [
+      "electron.js",
+      "frontend/dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "jre-customizada/",
+        "to": "jre/"
+      },
+      {
+        "from": "backend/api/target/api-0.0.1-SNAPSHOT.jar",
+        "to": "backend/app.jar"
+      },
+      {
+        "from": "banco_ficha.db",
+        "to": "banco_ficha.db"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/AF.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "installerIcon": "build/AF.ico",
+      "uninstallerIcon": "build/AF.ico",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^37.3.1",
+    "electron-builder": "^26.0.12"
+  }
+}
