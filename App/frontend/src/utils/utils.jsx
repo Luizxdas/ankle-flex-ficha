@@ -25,7 +25,7 @@ export const limparFicha = (formRef) => {
 };
 
 export const imprimir = () => {
-  window.print;
+  window.print();
 };
 
 export const formatarCampo = (nome, valor) => {
