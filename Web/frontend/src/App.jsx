@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import Frente from "./Componentes/Frente/Frente";
-import Verso from "./Componentes/Verso/Verso";
-import Pacientes from "./Componentes/Pacientes/Pacientes";
+import Frente from "./componentes/Frente/Frente";
+import Verso from "./componentes/Verso/Verso";
+import Pacientes from "./componentes/Pacientes/Pacientes";
 import Home from "./Home";
-import Ficha from "./Componentes/Ficha";
+import Ficha from "./componentes/Ficha";
 import RequireAuth from "./auth/RequireAuth";
 import { AuthProvider } from "./auth/AuthProvider";
-import Login from "./Auth/Login";
+import Login from "./auth/Login";
 
 function App() {
   return (

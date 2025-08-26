@@ -49,6 +49,20 @@ export const login = async (username, password) => {
   }
 };
 
+export const logout = async () => {
+  try {
+    localStorage.removeItem("accessToken");
+    await apiClient.post("/auth/logout");
+    return true;
+  } catch (error) {
+    if (error.request) {
+      throw new Error("Erro de conexão. Verifique sua internet.");
+    } else {
+      throw new Error("Erro interno na aplicação.");
+    }
+  }
+};
+
 export const refresh = async () => {
   try {
     const response = await apiClient.post("/auth/refresh", {});

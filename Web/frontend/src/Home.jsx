@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import LogoHd from "/blank-logo-hd.png";
 import Botao from "./componentes/Compartilhados/Botao";
+import { logout } from "./services/fichaService";
 
 function Home() {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ function Home() {
     navigate("/pacientes");
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
     <div className="h-screen w-screen bg-slate-400 flex items-center justify-center">
       <div className="bg-slate-300 p-4 rounded-lg flex flex-col justify-center items-center space-y-4 mb-24">
@@ -27,9 +33,13 @@ function Home() {
             className="w-[185px] h-[140px]"
           />
         </div>
-        <Botao conteudo={"Buscar ficha"} onClick={handleBuscar} />
+        <div className="flex flex-row gap-x-6">
+          <Botao conteudo={"Buscar ficha"} onClick={handleBuscar} />
 
-        <Botao conteudo={"Criar ficha"} onClick={handleCriar} />
+          <Botao conteudo={"Criar ficha"} onClick={handleCriar} />
+
+          <Botao conteudo={"Sair"} onClick={handleLogout} />
+        </div>
       </div>
     </div>
   );
