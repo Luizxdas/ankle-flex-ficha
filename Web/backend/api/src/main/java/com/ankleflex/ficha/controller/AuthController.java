@@ -2,14 +2,12 @@ package com.ankleflex.ficha.controller;
 
 import com.ankleflex.ficha.dto.AuthResponseDTO;
 import com.ankleflex.ficha.dto.LoginDTO;
-import com.ankleflex.ficha.dto.RegisterDTO;
 import com.ankleflex.ficha.entity.User;
 import com.ankleflex.ficha.jwt.JwtUtils;
 import com.ankleflex.ficha.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +21,6 @@ public class AuthController {
     public AuthController(UserService userService, JwtUtils  jwtUtils) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterDTO registerDTO) {
-        userService.register(registerDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
