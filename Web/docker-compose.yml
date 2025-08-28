@@ -1,9 +1,9 @@
-name: 'ficha-app'
+name: "ficha-web"
 
 services:
   frontend:
     build: ./frontend
-    container_name: ficha-frontend
+    container_name: ficha-web-frontend
     ports:
       - "5173:80"
     depends_on:
@@ -11,7 +11,7 @@ services:
 
   backend:
     build: ./backend/api
-    container_name: ficha-backend
+    container_name: ficha-web-backend
     ports:
       - "8080:8080"
     environment:
@@ -24,7 +24,7 @@ services:
 
   db:
     image: postgres:17
-    container_name: ficha-db
+    container_name: ficha-web-db
     restart: always
     environment:
       - POSTGRES_USER=${SPRING_DATASOURCE_USERNAME}
