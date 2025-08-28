@@ -1,0 +1,16 @@
+name: "ficha-app"
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: ficha-app-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend/api
+    container_name: ficha-app-backend
+    ports:
+      - "8080:8080"
