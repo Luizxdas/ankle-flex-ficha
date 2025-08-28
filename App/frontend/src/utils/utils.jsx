@@ -9,7 +9,7 @@ export const limparFicha = (formRef) => {
     return;
   }
 
-  sessionStorage.removeItem("dados");
+  sessionStorage.removeItem("ficha_link");
 
   const inputs = formRef.current.querySelectorAll(
     "input, textarea, select, checkbox"

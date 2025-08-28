@@ -31,6 +31,11 @@ function Ficha() {
     }));
   };
 
+  const handleLimpar = () => {
+      setFormData(JSON.parse(JSON.stringify(dadosForm)));
+      limparFicha(formRef);
+  }
+
   return (
     <div>
       {modal && (
@@ -62,7 +67,7 @@ function Ficha() {
               <Botao conteudo={"Voltar"} onClick={pagina.handleVoltar} />
               <Botao
                 conteudo={"Limpar Ficha"}
-                onClick={() => limparFicha(formRef)}
+                onClick={handleLimpar}
               />
             </div>
           </div>

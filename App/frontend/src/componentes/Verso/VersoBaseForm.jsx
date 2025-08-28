@@ -67,7 +67,7 @@ function VersoBaseForm({ formData, handleChange }) {
             value={formData.n_liner?.valor || ""}
             handleChange={handleChange}
           />
-          <div className="flex justify-start text-start ml-2">
+          <div className="px-1 h-40">
             <Observacoes
               id={"observacoes_verso"}
               name={"verso"}

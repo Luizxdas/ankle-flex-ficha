@@ -34,7 +34,7 @@ function Protese({ formData, handleChange }) {
             />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
-          <div className="ml-1 h-10">
+          <div className="h-28 px-1 flex items-center text-center justify-center">
             <Observacoes
               id={"observacoes_protese"}
               name={"protese"}

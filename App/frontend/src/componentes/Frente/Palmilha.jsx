@@ -33,7 +33,7 @@ function Palmilha({ formData, handleChange }) {
             />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
-          <div className="ml-1 h-10">
+          <div className="px-1 h-60 flex items-center text-center justify-center">
             <Observacoes
               id={"observacoes_palmilha"}
               name={"palmilha"}

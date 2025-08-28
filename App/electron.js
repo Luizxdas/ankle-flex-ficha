@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, screen } = require("electron");
 const path = require("path");
 const { spawn, execSync } = require("child_process");
 
@@ -20,9 +20,11 @@ function createLoadingWindow() {
 }
 
 function createWindow() {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: Math.floor(width * 0.9),
+    height: Math.floor(height * 0.9),
     show: false,
     webPreferences: {
       nodeIntegration: false,

@@ -20,7 +20,7 @@
         "to": "backend/app.jar"
       },
       {
-        "from": "banco_ficha.db",
+        "from": "backend/api/banco_ficha.db",
         "to": "banco_ficha.db"
       }
     ],
