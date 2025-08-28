@@ -23,7 +23,7 @@ Projeto desenvolvido para uma empresa de produtos ortopédicos, com o objetivo d
 
 1. **Acesse a página de releases:**
 
-https://github.com/Luizxdas/ankle-flex-ficha/releases
+   https://github.com/Luizxdas/ankle-flex-ficha/releases
 
 2. **Baixe o .exe da versão mais recente**
 

@@ -94,4 +94,4 @@ LinkedIn - [https://www.linkedin.com/in/luizxdas/]
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto foi desenvolvido sob encomenda e fins profissionais, mas a estrutura, o código e a arquitetura podem ser utilizados como referência educacional.
