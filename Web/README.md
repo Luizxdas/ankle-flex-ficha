@@ -15,9 +15,9 @@ Versão Web do projeto desenvolvido para uma empresa de produtos ortopédicos, c
 
 ## Documentação
 
-- [Página Inicial](./)
-- [Versão Web](./Web/README.md) – aplicação web (Spring Boot + PostgreSQL)
-- [Versão Desktop App](./App/README.md) – aplicação desktop (Electron + SQLite)
+- [Página Inicial](https://github.com/Luizxdas/ankle-flex-ficha/tree/fichav3)
+- [Versão Web](./) – Aplicação web (Spring Boot + PostgreSQL)
+- [Versão Desktop App](https://github.com/Luizxdas/ankle-flex-ficha/blob/fichav3/App/README.md) – aplicação desktop (Electron + SQLite)
 
 ---
 
