@@ -1,9 +1,11 @@
 const { app, BrowserWindow, screen } = require("electron");
 const path = require("path");
+const fs = require("fs");
 const { spawn, execSync } = require("child_process");
 
 let mainWindow;
 let springBootProcess;
+let loadingWindow;
 
 function createLoadingWindow() {
   loadingWindow = new BrowserWindow({
@@ -21,6 +23,11 @@ function createLoadingWindow() {
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  let zoomLevel = 1.0;
+
+  if (width < 1450) {
+    zoomLevel = 0.9;
+  }
 
   mainWindow = new BrowserWindow({
     width: Math.floor(width * 0.9),
@@ -29,6 +36,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      zoomFactor: zoomLevel,
     },
   });
 
@@ -42,13 +50,28 @@ app.on("ready", () => {
   createWindow();
 
   const jarPath = path.join(process.resourcesPath, "backend", "app.jar");
-
   const javaExecutable =
     process.platform === "win32" ? "jre/bin/java.exe" : "jre/bin/java";
-
   const javaPath = path.join(process.resourcesPath, javaExecutable);
 
-  springBootProcess = spawn(javaPath, ["-jar", jarPath]);
+  const userDataPath = app.getPath("userData");
+  const dbPath = path.join(userDataPath, "banco_ficha.db");
+
+  if (!fs.existsSync(dbPath)) {
+    const defaultDbPath = path.join(process.resourcesPath, "banco_ficha.db");
+    try {
+      fs.copyFileSync(defaultDbPath, dbPath);
+      console.log("Banco inicial copiado para:", dbPath);
+    } catch (err) {
+      console.error("Erro ao copiar banco inicial:", err);
+    }
+  }
+
+  springBootProcess = spawn(javaPath, [
+    `-Dspring.datasource.url=jdbc:sqlite:${dbPath}`,
+    "-jar",
+    jarPath,
+  ]);
 
   let isApiReady = false;
 
