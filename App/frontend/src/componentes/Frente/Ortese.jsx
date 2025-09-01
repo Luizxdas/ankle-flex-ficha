@@ -31,7 +31,7 @@ function Ortese({ formData, handleChange }) {
             />
           ))}
           <div className="w-full h-[1.5px] border-b-[1.5px] border-black" />
-          <div className="px-1 h-36 flex items-center text-center justify-center">
+          <div className="px-1 h-32 flex items-center text-center justify-center">
             <Observacoes
               id={"observacoes_ortese"}
               name={"ortese"}

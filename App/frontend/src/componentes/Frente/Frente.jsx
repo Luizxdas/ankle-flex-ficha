@@ -8,7 +8,7 @@ import Logo from "/Logo.png";
 function Frente({ formData, handleChange }) {
   const operacao = sessionStorage.getItem("operacao");
   return (
-    <div className="bg-slate-400 flex justify-center items-center flex-row">
+    <div className="flex justify-center items-center flex-row">
       {/* FORMULÁRIO */}
       <div>
         <div className="bg-white shadow-md h-[50em]">

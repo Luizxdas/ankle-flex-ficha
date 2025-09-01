@@ -32,12 +32,12 @@ function Ficha() {
   };
 
   const handleLimpar = () => {
-      setFormData(JSON.parse(JSON.stringify(dadosForm)));
-      limparFicha(formRef);
-  }
+    setFormData(JSON.parse(JSON.stringify(dadosForm)));
+    limparFicha(formRef);
+  };
 
   return (
-    <div>
+    <div className="bg-slate-400">
       {modal && (
         <div className="fixed w-screen h-screen bg-black/40 flex items-center justify-center z-10">
           <Modal
@@ -60,15 +60,12 @@ function Ficha() {
           </div>
         </div>
       )}
-      <div className=" bg-slate-400 flex flex-row items-center justify-center z-0">
-        <div className="print:hidden relative right-44">
-          <div className="fixed top-10">
+      <div className="flex justify-center z-0">
+        <div className="print:hidden flex mt-8 mr-4">
+          <div>
             <div className="flex flex-col space-y-4">
               <Botao conteudo={"Voltar"} onClick={pagina.handleVoltar} />
-              <Botao
-                conteudo={"Limpar Ficha"}
-                onClick={handleLimpar}
-              />
+              <Botao conteudo={"Limpar Ficha"} onClick={handleLimpar} />
             </div>
           </div>
         </div>
@@ -87,8 +84,8 @@ function Ficha() {
           </div>
         </form>
 
-        <div className="print:hidden relative">
-          <div className="ml-8 fixed top-10">
+        <div className="print:hidden flex mt-8 ml-4">
+          <div>
             <div className="flex flex-col space-y-4">
               <Botao
                 conteudo={operacao === "atualizar" ? "Atualizar" : "Salvar"}
