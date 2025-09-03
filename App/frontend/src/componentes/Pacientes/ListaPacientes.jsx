@@ -55,7 +55,7 @@ function ListaPacientes({
               </span>
               <span className="">Erro ao buscar pacientes!</span>
               <span className="text-xl mt-1 mb-2">
-                {error.response.data.message || "Erro ao buscar pacientes"}
+                {error?.message || "Erro ao buscar pacientes"}
               </span>
             </div>
           </div>

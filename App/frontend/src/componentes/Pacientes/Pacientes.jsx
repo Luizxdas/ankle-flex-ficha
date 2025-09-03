@@ -33,7 +33,7 @@ function Pacientes() {
 
   const handleDeletar = async () => {
     try {
-      await deletarFicha(sessionStorage.getItem("ficha_link"));
+      await deletarFicha(sessionStorage.getItem("ficha_id"));
       setMensagemModal("Ficha deletada com sucesso!");
     } catch (error) {
       console.error(error);
