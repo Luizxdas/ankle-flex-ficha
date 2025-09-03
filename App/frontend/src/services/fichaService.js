@@ -3,7 +3,6 @@ import qs from "qs";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:8080/api",
-  withCredentials: true,
   paramsSerializer: (params) => {
     return qs.stringify(params, { arrayFormat: "repeat" });
   },
@@ -40,6 +39,6 @@ export const buscarDadosPaginados = async (
   return await apiClient.get(`/fichas`, { params });
 };
 
-export const deletarFicha = (ficha_link) => {
-  return apiClient.delete(ficha_link);
+export const deletarFicha = (ficha_id) => {
+  return apiClient.delete(`/fichas/${ficha_id}`);
 };
