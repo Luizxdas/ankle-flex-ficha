@@ -77,8 +77,7 @@ public class FichaMapper {
         return new ObservacaoDTO(
                 entity.getId(),
                 entity.getFicha() != null ? entity.getFicha().getId() : null,
-                entity.getProtese(), entity.getOrtese(),
-                entity.getColete(), entity.getColete(), entity.getVerso()
+                entity.getProtese(), entity.getOrtese(), entity.getPalmilha(), entity.getColete(), entity.getVerso()
         );
     }
 
