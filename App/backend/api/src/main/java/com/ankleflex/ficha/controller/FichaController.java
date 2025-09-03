@@ -72,4 +72,11 @@ public class FichaController {
         FichaDTO fichaAtualizadaDTO = FichaMapper.toFichaDTO(fichaAtualizadaEntity);
         return new ResponseEntity<>(fichaAtualizadaDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarFichaPorId(@PathVariable Long id) {
+        fichaService.deletarFicha(id);
+
+        return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

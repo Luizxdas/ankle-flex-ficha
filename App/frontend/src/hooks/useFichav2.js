@@ -8,7 +8,7 @@ import {
 } from "../services/fichaService";
 import { formatarPreco } from "../utils/utils.jsx";
 
-const useFichav2 = (formRef, setModal, formData, setFormData) => {
+const useFichav2 = (setModal, setMensagemModal, formData, setFormData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -23,8 +23,10 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
     try {
       if (operacao === "salvar") {
         await salvarDados(dadosFormatados);
+        setMensagemModal("Dados salvos com sucesso!");
       } else if (operacao === "atualizar") {
         await atualizarDados(dadosFormatados);
+        setMensagemModal("Dados atualizados com sucesso!");
       }
     } catch (error) {
       console.error("Erro durante a operação:", error.response.data.message);
@@ -70,7 +72,6 @@ const useFichav2 = (formRef, setModal, formData, setFormData) => {
       }
     }
 
-    console.log(tabelas);
     return tabelas;
   }
 

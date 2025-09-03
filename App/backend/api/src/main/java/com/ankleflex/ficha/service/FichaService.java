@@ -249,4 +249,12 @@ public class FichaService {
 
         return fichaRepository.save(fichaExistente);
     }
+
+    public void deletarFicha(Long fichaId) {
+        if (!fichaRepository.existsById(fichaId)) {
+            throw new EntityNotFoundException("Ficha com ID " + fichaId + " não encontrada");
+        }
+
+        fichaRepository.deleteById(fichaId);
+    }
 }

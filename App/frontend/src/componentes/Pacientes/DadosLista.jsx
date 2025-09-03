@@ -1,4 +1,4 @@
-function DadosLista({ handleClick, item, ativo, index }) {
+function DadosLista({ handleClick, handleDoubleClick, item, ativo, index }) {
   let bgColor = "";
 
   if (ativo === item) {
@@ -10,6 +10,7 @@ function DadosLista({ handleClick, item, ativo, index }) {
   return (
     <button
       onClick={() => handleClick(item)}
+      onDoubleClick={() => handleDoubleClick(item)}
       key={item.ficha_id}
       className={`flex justify-between h-[2em] pt-1 ${bgColor}`}
     >
@@ -20,8 +21,8 @@ function DadosLista({ handleClick, item, ativo, index }) {
       </span>
       <span className="w-[10em] text-center">
         {(() => {
-            const [ano, mes, dia] = item.data.split("-");
-            return `${dia}/${mes}/${ano}`;
+          const [ano, mes, dia] = item.data.split("-");
+          return `${dia}/${mes}/${ano}`;
         })()}
       </span>
     </button>

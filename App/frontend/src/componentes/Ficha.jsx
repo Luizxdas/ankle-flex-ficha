@@ -3,7 +3,7 @@ import Frente from "./Frente/Frente";
 import Verso from "./Verso/Verso";
 import Botao from "./Compartilhados/Botao";
 import useFichav2 from "../hooks/useFichav2";
-import Modal from "./Compartilhados/Modal";
+import Modal from "./Compartilhados/modal/Modal";
 import { formatarCampo, limparFicha } from "../utils/utils";
 import dadosForm from "../utils/dadosForm";
 
@@ -11,16 +11,22 @@ function Ficha() {
   const operacao = sessionStorage.getItem("operacao");
   const formRef = useRef();
   const [modal, setModal] = useState("");
+  const [mensagemModal, setMensagemModal] = useState("");
   const [formData, setFormData] = useState(() =>
     JSON.parse(JSON.stringify(dadosForm))
   );
-  const { pagina } = useFichav2(formRef, setModal, formData, setFormData);
+  const { pagina } = useFichav2(
+    setModal,
+    setMensagemModal,
+    formData,
+    setFormData
+  );
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
 
     const formattedValue =
-      type === "checkbox" ? checked : formatarCampo(name, value);
+      type === "checkbox" ? checked : formatarCampo(name, value.toUpperCase());
 
     setFormData((prevData) => ({
       ...prevData,
@@ -42,6 +48,7 @@ function Ficha() {
         <div className="fixed w-screen h-screen bg-black/40 flex items-center justify-center z-10">
           <Modal
             tipo={modal}
+            mensagem={mensagemModal}
             onConfirm={pagina.onModalConfirm}
             onClose={pagina.onModalClose}
             isLoading={pagina.isLoading}
