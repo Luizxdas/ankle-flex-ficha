@@ -1,19 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import Pesquisa from "./Pesquisa";
-import ListaPacientes from "./ListaPacientes";
-import Botao from "../Compartilhados/Botao";
-import Produtos from "./Produtos";
+import { useEffect, useState } from "react";
 import {
   buscarDadosPaginados,
   deletarFicha,
 } from "../../services/fichaService.js";
+import Pesquisa from "./Pesquisa";
+import ListaPacientes from "./ListaPacientes";
+import Botao from "../Compartilhados/Botao";
+import Produtos from "./Produtos";
 import Modal from "../Compartilhados/modal/Modal.jsx";
 
 function Pacientes() {
   const navigate = useNavigate();
   const [pesquisa, setPesquisa] = useState("");
   const [produtos, setProdutos] = useState([]);
+  const [ficha, setFicha] = useState(null);
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [pagina, setPagina] = useState(null);
   const [modal, setModal] = useState("");
@@ -22,22 +23,35 @@ function Pacientes() {
   const [error, setError] = useState("");
 
   const handleConfirmarModal = () => {
-    const ficha_id = sessionStorage.getItem("ficha_id");
-    if (ficha_id) {
+    if (ficha?.id) {
       setModal("confirmar");
-      setMensagemModal(`Deletar a ficha de ID: ${ficha_id}?`);
+      setMensagemModal(`Deletar a ficha de ID: ${ficha.id}?`);
     } else {
-      setModal(true);
+      setModal("erro");
+      setMensagemModal("Nenhuma ficha selecionada!");
+    }
+  };
+
+  const handleEditar = () => {
+    if (!ficha) {
+      setModal("erro");
+      setMensagemModal("Nenhuma ficha selecionada!");
+    } else {
+      navigate("/ficha", {
+        state: { operacao: "atualizar", fichaLink: ficha?._links.self.href },
+      });
     }
   };
 
   const handleDeletar = async () => {
     try {
-      await deletarFicha(sessionStorage.getItem("ficha_id"));
+      await deletarFicha(ficha.id);
+      setFicha(null);
       setMensagemModal("Ficha deletada com sucesso!");
-    } catch (error) {
-      console.error(error);
-      setModal(true);
+    } catch (e) {
+      setError(e);
+      setModal("erro");
+      setMensagemModal(e.message || "Erro ao deletar a ficha.");
     } finally {
       await carregarDados();
     }
@@ -46,15 +60,31 @@ function Pacientes() {
   const carregarDados = async () => {
     try {
       setLoading(true);
-      const resposta = await buscarDadosPaginados(0, 20, pesquisa, produtos);
+      const resposta = await buscarDadosPaginados(
+        paginaAtual,
+        20,
+        pesquisa,
+        produtos
+      );
       setPagina(resposta);
       setLoading(false);
-    } catch (error) {
-      console.error("Erro ao carregar dados:", error);
+    } catch (e) {
+      console.error(
+        "Erro ao carregar dados:",
+        e?.message || "Erro ao buscar pacientes"
+      );
       setLoading(false);
-      setError(error);
+      setError(e);
     }
   };
+
+  useEffect(() => {
+    setPaginaAtual(0);
+  }, [pesquisa, produtos]);
+
+  useEffect(() => {
+    carregarDados();
+  }, [paginaAtual, produtos, pesquisa]);
 
   return (
     <div className="h-screen w-screen bg-slate-400 flex justify-center items-center flex-row">
@@ -88,16 +118,17 @@ function Pacientes() {
         />
         <Produtos produtos={produtos} setProdutos={setProdutos} />
         <ListaPacientes
+          ficha={ficha}
+          setFicha={setFicha}
           pagina={pagina}
-          carregarDados={carregarDados}
+          setPaginaAtual={setPaginaAtual}
           isLoading={isLoading}
           error={error}
-          setPaginaAtual={setPaginaAtual}
         />
       </div>
 
       <div className="relative bottom-[11em] flex flex-col justify-center space-y-4 right-16">
-        <Botao conteudo={"Editar ficha"} onClick={() => navigate("/ficha")} />
+        <Botao conteudo={"Editar ficha"} onClick={handleEditar} />
         <Botao conteudo={"Deletar Ficha"} onClick={handleConfirmarModal} />
       </div>
     </div>

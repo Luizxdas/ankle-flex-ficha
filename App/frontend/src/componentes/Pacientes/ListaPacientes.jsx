@@ -1,38 +1,31 @@
-import { useEffect, useState } from "react";
 import DadosLista from "./DadosLista";
 import CabecalhoLista from "./CabecalhoLista";
 import { useNavigate } from "react-router-dom";
 
 function ListaPacientes({
+  ficha,
+  setFicha,
   pagina,
-  carregarDados,
+  setPaginaAtual,
   isLoading,
   error,
-  setPaginaAtual,
 }) {
   const navigate = useNavigate();
-  const [ativo, setAtivo] = useState(null);
 
-  const selecionarFicha = (ficha) => {
-    if (ativo === ficha) {
-      setAtivo(null);
-      sessionStorage.removeItem("ficha_link");
+  const selecionar = (item) => {
+    if (item === ficha) {
+      setFicha(null);
     } else {
-      setAtivo(ficha);
-      sessionStorage.setItem("ficha_link", ficha._links.self.href);
-      sessionStorage.setItem("ficha_id", ficha.id);
+      setFicha(item);
     }
   };
 
-  const handleDoubleClick = (ficha) => {
-    setAtivo(ficha);
-    sessionStorage.setItem("ficha_link", ficha._links.self.href);
-    navigate("/ficha");
+  const handleDoubleClick = (item) => {
+    setFicha(item);
+    navigate("/ficha", {
+      state: { fichaLink: item?._links.self.href },
+    });
   };
-
-  useEffect(() => {
-    carregarDados();
-  }, []);
 
   return (
     <div className="w-[60em] h-[45em] flex flex-col p-[6px] bg-gray-100">
@@ -65,10 +58,10 @@ function ListaPacientes({
         {pagina?.data?._embedded?.lista_ficha_dtolist?.map((item, index) => (
           <DadosLista
             key={item.id || index}
-            handleClick={selecionarFicha}
+            handleClick={selecionar}
             handleDoubleClick={handleDoubleClick}
             item={item}
-            ativo={ativo}
+            ficha={ficha}
             index={index}
           />
         ))}
