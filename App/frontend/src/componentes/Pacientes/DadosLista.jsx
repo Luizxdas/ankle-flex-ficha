@@ -1,7 +1,7 @@
-function DadosLista({ handleClick, handleDoubleClick, item, ativo, index }) {
+function DadosLista({ handleClick, handleDoubleClick, item, ficha, index }) {
   let bgColor = "";
 
-  if (ativo === item) {
+  if (ficha === item) {
     bgColor = "bg-blue-400";
   } else {
     bgColor = index % 2 === 0 ? "bg-slate-400" : "bg-slate-300";

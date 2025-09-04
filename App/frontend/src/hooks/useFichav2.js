@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import dadosForm from "../utils/dadosForm";
 import {
   atualizarDados,
@@ -12,13 +12,14 @@ const useFichav2 = (setModal, setMensagemModal, formData, setFormData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { fichaLink, operacao } = location.state || {};
 
   const handleSalvar = async () => {
     setIsLoading(true);
     setModal(true);
 
     const dadosFormatados = formatarDados(formData);
-    const operacao = sessionStorage.getItem("operacao");
 
     try {
       if (operacao === "salvar") {
@@ -30,6 +31,12 @@ const useFichav2 = (setModal, setMensagemModal, formData, setFormData) => {
       }
     } catch (error) {
       console.error("Erro durante a operação:", error.response.data.message);
+      setModal("erro");
+      setMensagemModal(
+        error.response?.data?.message || "Erro ao tentar ",
+        operacao,
+        " a ficha."
+      );
       setError(error.response.data.message);
     } finally {
       setIsLoading(false);
@@ -76,9 +83,9 @@ const useFichav2 = (setModal, setMensagemModal, formData, setFormData) => {
   }
 
   useEffect(() => {
-    async function preencherFicha(ficha_link) {
+    async function preencherFicha() {
       setIsLoading(true);
-      const dados = await buscarDadosFicha(ficha_link);
+      const dados = await buscarDadosFicha(fichaLink);
       setIsLoading(false);
 
       if (!dados) {
@@ -116,10 +123,8 @@ const useFichav2 = (setModal, setMensagemModal, formData, setFormData) => {
       setFormData(novoFormData);
     }
 
-    const ficha_link = sessionStorage.getItem("ficha_link");
-
-    if (ficha_link) {
-      preencherFicha(ficha_link);
+    if (fichaLink) {
+      preencherFicha();
     } else {
       setFormData(dadosForm);
     }

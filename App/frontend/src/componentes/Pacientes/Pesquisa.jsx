@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Pesquisa({ setPesquisa, pesquisa, carregarDados }) {
   const pacienteRef = useRef(null);

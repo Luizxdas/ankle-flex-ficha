@@ -6,15 +6,11 @@ function Home() {
   const navigate = useNavigate();
 
   const handleCriar = () => {
-    sessionStorage.setItem("operacao", "salvar");
-    sessionStorage.removeItem("ficha_link");
-    navigate("/ficha");
+    navigate("/ficha", { state: { operacao: "salvar" } });
   };
 
   const handleBuscar = () => {
-    sessionStorage.setItem("operacao", "atualizar");
-    sessionStorage.removeItem("ficha_link");
-    navigate("/pacientes");
+    navigate("/pacientes", { state: { operacao: "atualizar" } });
   };
 
   return (

@@ -3,9 +3,7 @@ import VersoBaseForm from "./VersoBaseForm";
 import Logo from "/Logo.png";
 import Perna from "/Perna.png";
 
-function Verso({ formData, handleChange }) {
-  const operacao = sessionStorage.getItem("operacao");
-
+function Verso({ formData, handleChange, operacao }) {
   return (
     <div className="flex justify-center items-center flex-row">
       {/*  FORMULÁRIO */}

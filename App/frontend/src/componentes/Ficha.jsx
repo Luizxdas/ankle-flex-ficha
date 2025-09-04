@@ -1,20 +1,22 @@
 import { useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { formatarCampo, limparFicha } from "../utils/utils";
 import Frente from "./Frente/Frente";
 import Verso from "./Verso/Verso";
 import Botao from "./Compartilhados/Botao";
 import useFichav2 from "../hooks/useFichav2";
 import Modal from "./Compartilhados/modal/Modal";
-import { formatarCampo, limparFicha } from "../utils/utils";
 import dadosForm from "../utils/dadosForm";
 
 function Ficha() {
-  const operacao = sessionStorage.getItem("operacao");
+  const location = useLocation();
   const formRef = useRef();
   const [modal, setModal] = useState("");
   const [mensagemModal, setMensagemModal] = useState("");
   const [formData, setFormData] = useState(() =>
     JSON.parse(JSON.stringify(dadosForm))
   );
+  const { operacao } = location.state || {};
   const { pagina } = useFichav2(
     setModal,
     setMensagemModal,
@@ -52,7 +54,6 @@ function Ficha() {
             onConfirm={pagina.onModalConfirm}
             onClose={pagina.onModalClose}
             isLoading={pagina.isLoading}
-            erro={pagina.error}
           />
         </div>
       )}
@@ -81,11 +82,19 @@ function Ficha() {
           <div className="flex flex-col">
             <div className="print:hidden mt-8"></div>
             <div className="w-[297mm] h-[200mm]">
-              <Frente formData={formData} handleChange={handleChange} />
+              <Frente
+                formData={formData}
+                handleChange={handleChange}
+                operacao={operacao}
+              />
             </div>
             <div className="print:hidden my-12"></div>
             <div className="page-break w-[297mm] h-[200mm]">
-              <Verso formData={formData} handleChange={handleChange} />
+              <Verso
+                formData={formData}
+                handleChange={handleChange}
+                operacao={operacao}
+              />
             </div>
             <div className="print:hidden mb-12"></div>
           </div>
@@ -96,7 +105,7 @@ function Ficha() {
             <div className="flex flex-col space-y-4">
               <Botao
                 conteudo={operacao === "atualizar" ? "Atualizar" : "Salvar"}
-                onClick={() => pagina.handleSalvar(formRef)}
+                onClick={() => pagina.handleSalvar()}
               />
               <Botao conteudo={"Imprimir"} onClick={() => window.print()} />
             </div>

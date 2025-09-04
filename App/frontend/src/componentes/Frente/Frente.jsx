@@ -5,8 +5,7 @@ import Palmilha from "./Palmilha";
 import Protese from "./Protese";
 import Logo from "/Logo.png";
 
-function Frente({ formData, handleChange }) {
-  const operacao = sessionStorage.getItem("operacao");
+function Frente({ formData, handleChange, operacao }) {
   return (
     <div className="flex justify-center items-center flex-row">
       {/* FORMULÁRIO */}
