@@ -1,7 +1,8 @@
 const { app, BrowserWindow, screen } = require("electron");
+const { spawn, execSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const { spawn, execSync } = require("child_process");
+const fetch = require("node-fetch");
 
 let mainWindow;
 let springBootProcess;
@@ -18,6 +19,7 @@ function createLoadingWindow() {
       contextIsolation: true,
     },
   });
+
   loadingWindow.loadFile(path.join(__dirname, "loading.html"));
 }
 
@@ -26,7 +28,7 @@ function createWindow() {
   let zoomLevel = 1.0;
 
   if (width < 1450) {
-    zoomLevel = 0.9;
+    zoomLevel = 0.8;
   }
 
   mainWindow = new BrowserWindow({
@@ -45,9 +47,34 @@ function createWindow() {
   );
 }
 
+async function waitForApiReady(url, timeoutMs = 30000, intervalMs = 5000) {
+  const start = Date.now();
+
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.status === "UP") {
+        console.log("API está UP!");
+        return true;
+      }
+    } catch (err) {
+      console.log("Erro ao tentar conectar na API: ", err.message);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+
+  console.error("Timeout: API não iniciou dentro do limite.");
+  return false;
+}
+
 app.on("ready", () => {
   createLoadingWindow();
   createWindow();
+
+  let isApiReady = false;
 
   const jarPath = path.join(process.resourcesPath, "backend", "app.jar");
   const javaExecutable =
@@ -73,28 +100,43 @@ app.on("ready", () => {
     jarPath,
   ]);
 
-  let isApiReady = false;
+  (async () => {
+    isApiReady = await waitForApiReady(
+      "http://localhost:8080/actuator/health",
+      30000,
+      5000
+    );
 
-  springBootProcess.stdout.on("data", (data) => {
-    const log = data.toString();
-    console.log(`Spring Boot: ${log}`);
-
-    if (log.includes("Started") && !isApiReady) {
-      isApiReady = true;
-      console.log("API Spring Boot está pronta!");
-
+    if (isApiReady) {
       if (loadingWindow) {
         loadingWindow.close();
       }
-
       mainWindow.maximize();
       mainWindow.show();
       mainWindow.focus();
+    } else {
+      const { dialog } = require("electron");
+      dialog.showErrorBox(
+        "Erro na Inicialização",
+        "Não foi possível iniciar o servidor local. O aplicativo será fechado."
+      );
+      app.quit();
     }
+  })();
+
+  springBootProcess.stdout.on("data", (data) => {
+    console.log(`Spring Boot: ${data}`);
   });
 
   springBootProcess.stderr.on("data", (data) => {
     console.error(`Spring Boot error: ${data}`);
+  });
+
+  loadingWindow.on("closed", () => {
+    if (!isApiReady) {
+      console.log("Usuário fechou a tela de loading antes da API iniciar.");
+      app.quit();
+    }
   });
 });
 

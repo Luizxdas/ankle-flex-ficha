@@ -8,6 +8,7 @@
     "artifactName": "${productName} Setup.${ext}",
     "files": [
       "electron.js",
+      "loading.html",
       "frontend/dist/**/*"
     ],
     "extraResources": [
@@ -50,5 +51,8 @@
   "devDependencies": {
     "electron": "^37.3.1",
     "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0"
   }
 }
