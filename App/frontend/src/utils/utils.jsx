@@ -30,12 +30,14 @@ export const formatarCampo = (nome, valor) => {
   switch (nome) {
     case "cep":
       return valor.replace(/\D/g, "").replace(/(\d{5})(\d)/, "$1-$2");
+
     case "telefone":
       return valor
         .replace(/\D/g, "")
         .slice(0, 11)
         .replace(/^(\d{2})(\d)/g, "($1) $2")
         .replace(/(\d{5})(\d)/, "$1-$2");
+
     case "data_ficha":
     case "data_entrega":
       return valor
@@ -43,11 +45,16 @@ export const formatarCampo = (nome, valor) => {
         .slice(0, 8)
         .replace(/(\d{2})(\d)/, "$1/$2")
         .replace(/(\d{2})(\d)/, "$1/$2");
+
     case "preco":
       return parseFloat(valor.replace(/\D/g, "") / 100).toLocaleString(
         "pt-BR",
         { style: "currency", currency: "BRL" }
       );
+
+    case "altura":
+      return valor.replace(/\D/g, "");
+
     default:
       return valor;
   }
